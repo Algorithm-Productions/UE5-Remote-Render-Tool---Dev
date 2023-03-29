@@ -25,17 +25,17 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         (cmd_tokens, cmd_switches, cmd_parameters) = unreal.SystemLibrary.\
             parse_command_line(unreal.SystemLibrary.get_command_line())
 
-        self.map_path = cmd_tokens[0]
+        self.level_path = cmd_tokens[0]
         self.job_id = cmd_parameters['JobId']
-        self.seq_path = cmd_parameters['LevelSequence']
-        self.preset_path = cmd_parameters['MoviePipelineConfig']
+        self.sequence_path = cmd_parameters['LevelSequence']
+        self.config_path = cmd_parameters['MoviePipelineConfig']
 
     def add_job(self):
         job = self.queue.allocate_new_job(unreal.MoviePipelineExecutorJob)
-        job.map = unreal.SoftObjectPath(self.map_path)
-        job.sequence = unreal.SoftObjectPath(self.seq_path)
+        job.map = unreal.SoftObjectPath(self.level_path)
+        job.sequence = unreal.SoftObjectPath(self.sequence_path)
 
-        preset_path = unreal.SoftObjectPath(self.preset_path)
+        preset_path = unreal.SoftObjectPath(self.config_path)
         u_preset = unreal.SystemLibrary.\
             conv_soft_obj_path_to_soft_obj_ref(preset_path)
         job.set_configuration(u_preset)

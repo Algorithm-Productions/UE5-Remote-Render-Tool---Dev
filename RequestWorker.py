@@ -16,15 +16,15 @@ WORKER_NAME = 'RENDER_MACHINE_01'
 UNREAL_EXE = r'C:\Program Files\Epic Games\UE_5.0\Engine\Binaries\Win64\UnrealEditor.exe'
 
 
-def render(uuid, project_path, umap_path, useq_path, uconfig_path):
+def render(uuid, project_path, level_path, sequence_path, config_path):
     command = [
         UNREAL_EXE,
         project_path,
 
-        umap_path,
+        level_path,
         "-JobId={}".format(uuid),
-        "-LevelSequence={}".format(useq_path),
-        "-MoviePipelineConfig={}".format(uconfig_path),
+        "-LevelSequence={}".format(sequence_path),
+        "-MoviePipelineConfig={}".format(config_path),
 
         "-game",
         "-MoviePipelineLocalExecutorClass=/Script/MovieRenderPipelineCore.MoviePipelinePythonHostExecutor",
@@ -63,9 +63,9 @@ if __name__ == '__main__':
             output = render(
                 uuid,
                 rrequest.project_path,
-                rrequest.umap_path,
-                rrequest.useq_path,
-                rrequest.uconfig_path
+                rrequest.level_path,
+                rrequest.sequence_path,
+                rrequest.config_path
             )
 
             LOGGER.info("finished rendering job %s", uuid)
