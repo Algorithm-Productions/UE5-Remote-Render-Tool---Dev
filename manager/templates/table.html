@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href= {{url_for('static', filename="main.css")}}>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Render Queue</title>
+</head>
+
+<body style = "text-align:center;">
+    <table id = "table" align = "center" border="1px"></table>
+
+    <a href="{{ link }}" class="btn btn-info" role="button"> {{ btnText }}</a>
+
+    <script src = {{url_for('static', filename="updateProgress.js")}}></script>
+
+    <script src = {{url_for('static', filename="createTable.js")}}></script>
+    <script>
+        createTable( {{requests|tojson|safe}} );
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

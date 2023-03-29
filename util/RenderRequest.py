@@ -170,6 +170,17 @@ def read_all():
     return reqs
 
 
+def read_archive():
+    reqs = list()
+    files = os.listdir(DATABASE + "/old")
+    uuids = [os.path.splitext(os.path.basename(f))[0] for f in files if f.endswith('.json')]
+    for uuid in uuids:
+        req = RenderRequest.from_db(uuid)
+        reqs.append(req)
+
+    return reqs
+
+
 def remove_db(uuid):
     os.remove(os.path.join(DATABASE, '{}.json'.format(uuid)))
 
