@@ -1,7 +1,3 @@
-"""
-Client to submit new render request to server
-"""
-
 import logging
 
 from util import client
@@ -12,14 +8,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 def send(d):
-    """
-    Send/Submit a new render request
-
-    :param d: dict. a render request serialized as dictionary
-    """
     rrequest = client.add_request(d)
     if rrequest:
-        LOGGER.info('request %s sent to server', rrequest.uid)
+        LOGGER.info('request %s sent to server', rrequest.uuid)
 
 
 if __name__ == '__main__':

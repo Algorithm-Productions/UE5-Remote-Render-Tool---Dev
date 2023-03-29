@@ -18,16 +18,16 @@ function updateProgress(data){
     var requests = data.results;
 
     for (var i = 0; i < requests.length; i++){
-        var uid = requests[i]['uid'];
+        var uuid = requests[i]['uuid'];
         var progress = requests[i]['progress'];
         var time_estimate = requests[i]['time_estimate'];
         var status = requests[i]['status'];
 
-        var bar = document.getElementById(uid + '_progress');
+        var bar = document.getElementById(uuid + '_progress');
         bar.style.width = progress + '%';
         bar.innerHTML = progress + '%';
 
-        document.getElementById(uid + '_estimate').innerHTML = time_estimate;
-        document.getElementById(uid + '_status').innerHTML = status;
+        document.getElementById(uuid + '_estimate').innerHTML = time_estimate;
+        document.getElementById(uuid + '_status').innerHTML = status;
     }
 }

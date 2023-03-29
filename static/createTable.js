@@ -1,6 +1,6 @@
 function createTable(list){
     // header row
-    cols = ['uid', 'name', 'owner', 'worker', 'time_created', 'status', 'priority', 'time_estimate', 'progress'];
+    cols = ['uuid', 'name', 'owner', 'worker', 'time_created', 'status', 'priority', 'time_estimate', 'progress'];
     var table = document.createElement("table");
     var tr = table.insertRow(-1);
     for (var i = 0; i < cols.length; i++) {
@@ -13,7 +13,7 @@ function createTable(list){
     // data rows
     for (var i = 0; i < list.length; i++) {
         var trow = table.insertRow(-1);
-        var uid = list[i]['uid'];
+        var uuid = list[i]['uuid'];
 
         for (var j = 0; j < cols.length; j++) {
             var cell = trow.insertCell(-1);
@@ -34,7 +34,7 @@ function createTable(list){
                 container.appendChild(bar);
 
                 bar.setAttribute('class', 'progressBar');
-                bar.setAttribute('id', uid + '_progress');
+                bar.setAttribute('id', uuid + '_progress');
 
                 bar.style.width = list[i]['progress'] + '%';
                 bar.innerHTML = list[i]['progress'] + '%';
@@ -42,11 +42,11 @@ function createTable(list){
             }
 
             if (cols[j] == 'time_estimate'){
-                cell.setAttribute('id', uid + '_estimate');
+                cell.setAttribute('id', uuid + '_estimate');
             }
 
             if (cols[j] == 'status'){
-                cell.setAttribute('id', uid + '_status');
+                cell.setAttribute('id', uuid + '_status');
             }
 
         }
