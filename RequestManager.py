@@ -13,6 +13,7 @@ MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 HTML_FOLDER = os.path.join(MODULE_PATH, 'html')
 
 LOGGER = logging.getLogger(__name__)
+DEFAULT_WORKER = "DESKTOP-8R73OMV"
 
 app = Flask(__name__)
 FLASK_EXE = r'E:\Epic\UE_5.0\Engine\Binaries\ThirdParty\Python3\Win64\Scripts\flask.exe'
@@ -77,13 +78,13 @@ def update_request(uuid):
 
 def new_request_trigger(req):
     if req.worker:
+        req.update(status=RenderRequest.RenderStatus.ready_to_start)
         return
 
-    worker = 'RENDER_MACHINE_01'
-    assign_request(req, worker)
+    assign_request(req, DEFAULT_WORKER)
 
     time.sleep(4)
-    LOGGER.info('assigned job %s to %s', req.uuid, worker)
+    LOGGER.info('assigned job %s to %s', req.uuid, DEFAULT_WORKER)
 
 
 def assign_request(req, worker):

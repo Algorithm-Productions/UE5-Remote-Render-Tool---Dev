@@ -51,15 +51,11 @@ def remove_request(uuid):
     return RenderRequest.RenderRequest.from_dict(response.json())
 
 
-def update_request(uuid, progress=0, status='', time_estimate=''):
+def update_request(uuid, params):
     try:
         response = requests.put(
             SERVER_API_URL+'/put/{}'.format(uuid),
-            params={
-                'progress': progress,
-                'status': status,
-                'time_estimate': time_estimate
-            }
+            params
         )
     except requests.exceptions.ConnectionError:
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)

@@ -2,6 +2,7 @@ import logging
 import os
 import subprocess
 import time
+import platform
 
 from util import Client
 from util import RenderRequest
@@ -11,7 +12,7 @@ LOGGER = logging.getLogger(__name__)
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 
-WORKER_NAME = 'RENDER_MACHINE_01'
+WORKER_NAME = platform.node()
 UNREAL_EXE = r'C:\Program Files\Epic Games\UE_5.0\Engine\Binaries\Win64\UnrealEditor.exe'
 
 

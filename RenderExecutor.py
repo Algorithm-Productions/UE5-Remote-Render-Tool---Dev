@@ -109,7 +109,6 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
         time.sleep(1)
 
-        # update to server
         progress = 100
         time_estimate = 'N/A'
         status = RenderRequest.RenderStatus.finished
