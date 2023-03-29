@@ -1,5 +1,3 @@
-// run ajax request to auto update progress field
-
 $(document).ready(function(){
     setInterval(
         function(){ajaxRequest()},
@@ -15,15 +13,15 @@ function ajaxRequest(){
 
 
 function updateProgress(data){
-    var requests = data.results;
+    const requests = data.results;
 
-    for (var i = 0; i < requests.length; i++){
-        var uuid = requests[i]['uuid'];
-        var progress = requests[i]['progress'];
-        var time_estimate = requests[i]['time_estimate'];
-        var status = requests[i]['status'];
+    for (let i = 0; i < requests.length; i++){
+        const uuid = requests[i]['uuid'];
+        const progress = requests[i]['progress'];
+        const time_estimate = requests[i]['time_estimate'];
+        const status = requests[i]['status'];
 
-        var bar = document.getElementById(uuid + '_progress');
+        const bar = document.getElementById(uuid + '_progress');
         bar.style.width = progress + '%';
         bar.innerHTML = progress + '%';
 

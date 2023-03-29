@@ -1,36 +1,31 @@
 function createTable(list){
-    // header row
-    cols = ['uuid', 'name', 'owner', 'worker', 'time_created', 'status', 'priority', 'time_estimate', 'progress'];
-    var table = document.createElement("table");
-    var tr = table.insertRow(-1);
-    for (var i = 0; i < cols.length; i++) {
+    const cols = ['uuid', 'name', 'owner', 'worker', 'time_created', 'status', 'priority', 'time_estimate', 'progress'];
+    const table = document.createElement("table");
+    const tr = table.insertRow(-1);
+    for (let i = 0; i < cols.length; i++) {
         // header th elements
-        var theader = document.createElement("th");
+        const theader = document.createElement("th");
         theader.innerHTML = cols[i];
         tr.appendChild(theader);
     }
 
-    // data rows
-    for (var i = 0; i < list.length; i++) {
-        var trow = table.insertRow(-1);
-        var uuid = list[i]['uuid'];
+    for (let i = 0; i < list.length; i++) {
+        const trow = table.insertRow(-1);
+        const uuid = list[i]['uuid'];
 
-        for (var j = 0; j < cols.length; j++) {
-            var cell = trow.insertCell(-1);
+        for (let j = 0; j < cols.length; j++) {
+            const cell = trow.insertCell(-1);
             cell.innerHTML = list[i][cols[j]];
 
-            // add id tag to specific cells for ajax
-            if (cols[j] == 'progress'){
-                // container
+            if (cols[j] === 'progress'){
                 cell.innerHTML = '';
                 cell.style.width = '200px';
 
-                var container = document.createElement("div");
+                const container = document.createElement("div");
                 cell.appendChild(container);
                 container.setAttribute('class', 'progressContainer');
 
-                // bar
-                var bar = document.createElement("div");
+                const bar = document.createElement("div");
                 container.appendChild(bar);
 
                 bar.setAttribute('class', 'progressBar');
@@ -41,18 +36,18 @@ function createTable(list){
 
             }
 
-            if (cols[j] == 'time_estimate'){
+            if (cols[j] === 'time_estimate'){
                 cell.setAttribute('id', uuid + '_estimate');
             }
 
-            if (cols[j] == 'status'){
+            if (cols[j] === 'status'){
                 cell.setAttribute('id', uuid + '_status');
             }
 
         }
     }
 
-    var el = document.getElementById("table");
+    const el = document.getElementById("table");
     el.innerHTML = "";
     el.appendChild(table);
 }
