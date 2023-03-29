@@ -102,7 +102,7 @@ if __name__ == '__main__':
     command = [
         FLASK_EXE,
         '--app',
-        'requestManager.py',
+        'RequestManager.py',
         '--debug',
         'run',
         '-h',
