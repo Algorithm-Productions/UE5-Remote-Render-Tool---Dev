@@ -8,9 +8,9 @@ LOGGER = logging.getLogger(__name__)
 
 
 def send(d):
-    rrequest = Client.add_request(d)
-    if rrequest:
-        LOGGER.info('request %s sent to server', rrequest.uuid)
+    req = Client.add_request(d)
+    if req:
+        LOGGER.info('request %s sent to server', req.uuid)
 
 
 if __name__ == '__main__':

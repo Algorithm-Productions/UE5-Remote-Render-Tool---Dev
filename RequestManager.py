@@ -51,11 +51,11 @@ def delete_request(uuid):
 @app.post('/api/post')
 def create_request():
     data = request.get_json(force=True)
-    rrequest = RenderRequest.RenderRequest.from_dict(data)
-    rrequest.write_json()
-    new_request_trigger(rrequest)
+    req = RenderRequest.RenderRequest.from_dict(data)
+    req.write_json()
+    new_request_trigger(req)
 
-    return rrequest.to_dict()
+    return req.to_dict()
 
 
 @app.put('/api/put/<uuid>')
@@ -75,20 +75,20 @@ def update_request(uuid):
     return rr.to_dict()
 
 
-def new_request_trigger(rrequest):
-    if rrequest.worker:
+def new_request_trigger(req):
+    if req.worker:
         return
 
     worker = 'RENDER_MACHINE_01'
-    assign_request(rrequest, worker)
+    assign_request(req, worker)
 
     time.sleep(4)
-    LOGGER.info('assigned job %s to %s', rrequest.uuid, worker)
+    LOGGER.info('assigned job %s to %s', req.uuid, worker)
 
 
-def assign_request(rrequest, worker):
-    rrequest.assign(worker)
-    rrequest.update(status=RenderRequest.RenderStatus.ready_to_start)
+def assign_request(req, worker):
+    req.assign(worker)
+    req.update(status=RenderRequest.RenderStatus.ready_to_start)
 
 
 if __name__ == '__main__':

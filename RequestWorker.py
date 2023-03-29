@@ -6,7 +6,6 @@ import time
 from util import Client
 from util import RenderRequest
 
-
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 
@@ -51,21 +50,21 @@ def render(uuid, project_path, level_path, sequence_path, config_path):
 if __name__ == '__main__':
     LOGGER.info('Starting render worker %s', WORKER_NAME)
     while True:
-        rrequests = Client.get_all_requests()
-        uuids = [rrequest.uuid for rrequest in rrequests
-                if rrequest.worker == WORKER_NAME and
-                rrequest.status == RenderRequest.RenderStatus.ready_to_start]
+        reqs = Client.get_all_requests()
+        uuids = [req.uuid for req in reqs
+                 if req.worker == WORKER_NAME and
+                 req.status == RenderRequest.RenderStatus.ready_to_start]
 
         for uuid in uuids:
             LOGGER.info('rendering job %s', uuid)
 
-            rrequest = RenderRequest.RenderRequest.from_db(uuid)
+            req = RenderRequest.RenderRequest.from_db(uuid)
             output = render(
                 uuid,
-                rrequest.project_path,
-                rrequest.level_path,
-                rrequest.sequence_path,
-                rrequest.config_path
+                req.project_path,
+                req.level_path,
+                req.sequence_path,
+                req.config_path
             )
 
             LOGGER.info("finished rendering job %s", uuid)

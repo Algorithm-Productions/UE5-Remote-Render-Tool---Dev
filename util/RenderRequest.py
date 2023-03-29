@@ -33,7 +33,7 @@ class RenderRequest(object):
             time_created='',
             priority=0,
             category='',
-            tags=[],
+            tags=None,
             status='',
             project_path='',
             level_path='',
@@ -56,7 +56,7 @@ class RenderRequest(object):
         self.time_created = time_created or datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         self.priority = priority or 0
         self.category = category
-        self.tags = tags
+        self.tags = [] if tags is None else tags
         self.status = status or RenderStatus.unassigned
         self.project_path = project_path
         self.level_path = level_path
@@ -158,15 +158,16 @@ class RenderRequest(object):
 
         write_db(self.__dict__)
 
+
 def read_all():
-    rrequests = list()
+    reqs = list()
     files = os.listdir(DATABASE)
     uuids = [os.path.splitext(os.path.basename(f))[0] for f in files if f.endswith('.json')]
     for uuid in uuids:
-        rrequest = RenderRequest.from_db(uuid)
-        rrequests.append(rrequest)
+        req = RenderRequest.from_db(uuid)
+        reqs.append(req)
 
-    return rrequests
+    return reqs
 
 
 def remove_db(uuid):
