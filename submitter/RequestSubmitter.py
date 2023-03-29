@@ -1,6 +1,5 @@
 import logging
 
-import RequestWorker
 from util import Client
 
 
