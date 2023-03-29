@@ -1,6 +1,6 @@
 import logging
 import socket
-import uuid
+import uuid as uuidGen
 import os
 import json
 from datetime import datetime
@@ -22,45 +22,47 @@ class RenderStatus(object):
 class RenderRequest(object):
     def __init__(
             self,
-            uid='',
+            uuid='',
             name='',
             owner='',
             worker='',
             time_created='',
             priority=0,
             category='',
-            tags=[],
+            tags=None,
             status='',
-            umap_path='',
-            useq_path='',
-            uconfig_path='',
+            project_path='',
+            level_path='',
+            sequence_path='',
+            config_path='',
             output_path='',
             width=0,
             height=0,
             frame_rate=0,
-            format='',
+            dataFormat='',
             start_frame=0,
             end_frame=0,
             time_estimate='',
             progress=0
     ):
-        self.uid = uid or str(uuid.uuid4())[:4]
+        self.uuid = uuid or str(uuidGen.uuid4())[:16]
         self.name = name
         self.owner = owner or socket.gethostname()
         self.worker = worker
         self.time_created = time_created or datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         self.priority = priority or 0
         self.category = category
-        self.tags = tags
+        self.tags = ([] if tags is None else tags)
         self.status = status or RenderStatus.unassigned
-        self.umap_path = umap_path
-        self.useq_path = useq_path
-        self.uconfig_path = uconfig_path
+        self.project_path = project_path
+        self.level_path = level_path
+        self.sequence_path = sequence_path
+        self.config_path = config_path
         self.output_path = output_path
         self.width = width or 1280
         self.height = height or 720
         self.frame_rate = frame_rate or 30
-        self.format = format or 'JPG'
+        self.dataFormat = dataFormat or 'PNG'
         self.start_frame = start_frame or 0
         self.end_frame = end_frame or 0
         self.length = self.end_frame - self.start_frame
@@ -68,42 +70,43 @@ class RenderRequest(object):
         self.progress = progress
 
     @classmethod
-    def from_db(cls, uid):
-        request_file = os.path.join(DATABASE, '{}.json'.format(uid))
+    def from_db(cls, uuid):
+        request_file = os.path.join(DATABASE, '{}.json'.format(uuid))
         with open(request_file, 'r') as fp:
             try:
                 request_dict = json.load(fp)
             except Exception as e:
-                LOGGER.error('Failed to load request object from db: %s', e)
+                LOGGER.error('[RENDER REQUESTS] Failed to load request object from db: %s', e)
                 return None
         return cls.from_dict(request_dict)
 
     @classmethod
-    def from_dict(cls, d):
-        uid = d.get('uid') or ''
-        name = d.get('name') or ''
-        owner = d.get('owner') or ''
-        worker = d.get('worker') or ''
-        time_created = d.get('time_created') or ''
-        priority = d.get('priority') or 0
-        category = d.get('category') or ''
-        tags = d.get('tags') or []
-        status = d.get('status') or ''
-        umap_path = d.get('umap_path') or ''
-        useq_path = d.get('useq_path') or ''
-        uconfig_path = d.get('uconfig_path') or ''
-        output_path = d.get('output_path') or ''
-        width = d.get('width') or 0
-        height = d.get('height') or 0
-        frame_rate = d.get('frame_rate') or 0
-        format = d.get('format') or ''
-        start_frame = d.get('start_frame') or 0
-        end_frame = d.get('end_frame') or 0
-        time_estimate = d.get('time_estimate') or ''
-        progress = d.get('progress') or 0
+    def from_dict(cls, data):
+        uuid = data.get('uuid') or ''
+        name = data.get('name') or ''
+        owner = data.get('owner') or ''
+        worker = data.get('worker') or ''
+        time_created = data.get('time_created') or ''
+        priority = data.get('priority') or 0
+        category = data.get('category') or ''
+        tags = data.get('tags') or []
+        status = data.get('status') or ''
+        project_path = data.get('project_path') or ''
+        level_path = data.get('level_path') or ''
+        sequence_path = data.get('sequence_path') or ''
+        config_path = data.get('config_path') or ''
+        output_path = data.get('output_path') or ''
+        width = data.get('width') or 0
+        height = data.get('height') or 0
+        frame_rate = data.get('frame_rate') or 0
+        dataFormat = data.get('dataFormat') or ''
+        start_frame = data.get('start_frame') or 0
+        end_frame = data.get('end_frame') or 0
+        time_estimate = data.get('time_estimate') or ''
+        progress = data.get('progress') or 0
 
         return cls(
-            uid=uid,
+            uuid=uuid,
             name=name,
             owner=owner,
             worker=worker,
@@ -112,14 +115,15 @@ class RenderRequest(object):
             category=category,
             tags=tags,
             status=status,
-            umap_path=umap_path,
-            useq_path=useq_path,
-            uconfig_path=uconfig_path,
+            project_path=project_path,
+            level_path=level_path,
+            sequence_path=sequence_path,
+            config_path=config_path,
             output_path=output_path,
             width=width,
             height=height,
             frame_rate=frame_rate,
-            format=format,
+            dataFormat=dataFormat,
             start_frame=start_frame,
             end_frame=end_frame,
             time_estimate=time_estimate,
@@ -133,7 +137,7 @@ class RenderRequest(object):
         write_db(self.__dict__)
 
     def remove(self):
-        remove_db(self.uid)
+        remove_db(self.uuid)
 
     def update(self, progress=0, status='', time_estimate=''):
         if progress:
@@ -154,16 +158,16 @@ class RenderRequest(object):
 def read_all():
     requests = list()
     files = os.listdir(DATABASE)
-    uids = [os.path.splitext(os.path.basename(f))[0] for f in files if f.endswith('.json')]
-    for uid in uids:
-        request = RenderRequest.from_db(uid)
+    uuids = [os.path.splitext(os.path.basename(f))[0] for f in files if f.endswith('.json')]
+    for uuid in uuids:
+        request = RenderRequest.from_db(uuid)
         requests.append(request)
 
     return requests
 
 
-def remove_db(uid):
-    os.remove(os.path.join(DATABASE, '{}.json'.format(uid)))
+def remove_db(uuid):
+    os.remove(os.path.join(DATABASE, '{}.json'.format(uuid)))
 
 
 def remove_all():
@@ -173,7 +177,7 @@ def remove_all():
 
 
 def write_db(data):
-    uid = data['uid']
-    LOGGER.info('writing to %s', uid)
-    with open(os.path.join(DATABASE, '{}.json'.format(uid)), 'w') as fp:
+    uuid = data['uuid']
+    LOGGER.info('[RENDER REQUESTS] Writing to %s', uuid)
+    with open(os.path.join(DATABASE, '{}.json'.format(uuid)), 'w') as fp:
         json.dump(data, fp, indent=4)

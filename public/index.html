@@ -9,10 +9,10 @@
 <body style = "text-align:center;">
     <table id = "table" align = "center" border="1px"></table>
 
-    <script src = {{url_for('static', filename="updateProgress.js")}}></script>>
+    <script src = {{url_for('static', filename="updateProgress.js")}}></script>
     <script src = {{url_for('static', filename="createTable.js")}}></script>
     <script>
-        createTable( {{requests|tojson|safe}} );
+        createTable( {{requests|tojson|safe}} )
     </script>
 </body>
 

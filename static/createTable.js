@@ -1,5 +1,5 @@
 function createTable(list){
-    const cols = ['uid', 'name', 'owner', 'worker', 'time_created', 'status', 'priority', 'time_estimate', 'progress'];
+    const cols = ['uuid', 'name', 'owner', 'worker', 'time_created', 'status', 'priority', 'time_estimate', 'progress'];
     const table = document.createElement("table");
     const tr = table.insertRow(-1);
     for (let i = 0; i < cols.length; i++) {
@@ -10,7 +10,7 @@ function createTable(list){
 
     for (let i = 0; i < list.length; i++) {
         const trow = table.insertRow(-1);
-        const uid = list[i]['uid'];
+        const uuid = list[i]['uuid'];
 
         for (let j = 0; j < cols.length; j++) {
             const cell = trow.insertCell(-1);
@@ -20,7 +20,7 @@ function createTable(list){
                 cell.innerHTML = '';
                 cell.style.width = '200px';
 
-                var container = document.createElement("div");
+                const container = document.createElement("div");
                 cell.appendChild(container);
                 container.setAttribute('class', 'progressContainer');
 
@@ -28,7 +28,7 @@ function createTable(list){
                 container.appendChild(bar);
 
                 bar.setAttribute('class', 'progressBar');
-                bar.setAttribute('id', uid + '_progress');
+                bar.setAttribute('id', uuid + '_progress');
 
                 bar.style.width = list[i]['progress'] + '%';
                 bar.innerHTML = list[i]['progress'] + '%';
@@ -36,11 +36,11 @@ function createTable(list){
             }
 
             if (cols[j] === 'time_estimate'){
-                cell.setAttribute('id', uid + '_estimate');
+                cell.setAttribute('id', uuid + '_estimate');
             }
 
             if (cols[j] === 'status'){
-                cell.setAttribute('id', uid + '_status');
+                cell.setAttribute('id', uuid + '_status');
             }
 
         }

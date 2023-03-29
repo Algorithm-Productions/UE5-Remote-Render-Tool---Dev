@@ -6,18 +6,18 @@ from flask import Flask
 from flask import request
 from flask import render_template
 
-from util import renderRequest
+from util import RenderRequest
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 HTML_FOLDER = os.path.join(MODULE_PATH, 'html')
 LOGGER = logging.getLogger(__name__)
-app = Flask(__name__)
-FLASK_EXE = r'C:\Users\Cinema_4D\Desktop\Victor\UE5-Remote-Render-Tool\venv\Scripts\flask.exe'
+app = Flask(__name__, template_folder="./public")
+FLASK_EXE = r'C:\Users\Cinema_4D\Documents\Victor\UE5-Remote-Render-Tool\venv\Scripts\flask.exe'
 
 
 @app.route('/')
 def index_page():
-    reqs = renderRequest.read_all()
+    reqs = RenderRequest.read_all()
     if not reqs:
         return 'Welcome!'
 
@@ -28,39 +28,40 @@ def index_page():
 
 @app.get('/api/get')
 def get_all_requests():
-    reqs = renderRequest.read_all()
+    reqs = RenderRequest.read_all()
     jsons = [req.to_dict() for req in reqs]
 
     return {"results": jsons}
 
 
-@app.get('/api/get/<uid>')
-def get_request(uid):
-    req = renderRequest.RenderRequest.from_db(uid)
+@app.get('/api/get/<uuid>')
+def get_request(uuid):
+    req = RenderRequest.RenderRequest.from_db(uuid)
     return req.to_dict()
 
 
-@app.delete('/api/delete/<uid>')
-def delete_request(uid):
-    renderRequest.remove_db(uid)
+@app.delete('/api/delete/<uuid>')
+def delete_request(uuid):
+    RenderRequest.remove_db(uuid)
 
 
 @app.post('/api/post')
 def create_request():
+    LOGGER.info("entered API POST")
     data = request.get_json(force=True)
-    req = renderRequest.RenderRequest.from_dict(data)
+    req = RenderRequest.RenderRequest.from_dict(data)
     req.write_json()
     new_request_trigger(req)
 
     return req.to_dict()
 
 
-@app.put('/api/put/<uid>')
-def update_request(uid):
+@app.put('/api/put/<uuid>')
+def update_request(uuid):
     content = request.data.decode('utf-8')
     progress, time_estimate, status = content.split(';')
 
-    req = renderRequest.RenderRequest.from_db(uid)
+    req = RenderRequest.RenderRequest.from_db(uuid)
     if not req:
         return {}
 
@@ -80,12 +81,12 @@ def new_request_trigger(req):
     assign_request(req, worker)
 
     time.sleep(4)
-    LOGGER.info('assigned job %s to %s', req.uid, worker)
+    LOGGER.info('assigned job %s to %s', req.uuid, worker)
 
 
 def assign_request(req, worker):
     req.assign(worker)
-    req.update(status=renderRequest.RenderStatus.ready_to_start)
+    req.update(status=RenderRequest.RenderStatus.ready_to_start)
 
 
 if __name__ == '__main__':
@@ -93,13 +94,12 @@ if __name__ == '__main__':
     import os
 
     env = os.environ.copy()
-    print(env)
     env['PYTHONPATH'] += os.pathsep + MODULE_PATH
 
     command = [
         FLASK_EXE,
         '--app',
-        'requestManager.py',
+        'RequestManager.py',
         '--debug',
         'run',
         '-h',

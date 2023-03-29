@@ -1,8 +1,8 @@
 import time
 import UnrealPythonStub.unreal as unreal
 
-from util import client
-from util import renderRequest
+from util import Client
+from util import RenderRequest
 
 
 @unreal.uclass()
@@ -13,9 +13,9 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
     def __init__(self, outer=None, name="None"):
         super().__init__(outer, name)
         self.queue = None
-        self.map_path = None
-        self.seq_path = None
-        self.preset_path = None
+        self.levelPath = None
+        self.sequencePath = None
+        self.configPath = None
 
     def _post_init(self):
         self.pipeline = None
@@ -31,17 +31,17 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
         (cmd_tokens, cmd_switches, cmd_parameters) = unreal.SystemLibrary. \
             parse_command_line(unreal.SystemLibrary.get_command_line())
 
-        self.map_path = cmd_tokens[0]
+        self.levelPath = cmd_tokens[0]
         self.job_id = cmd_parameters['JobId']
-        self.seq_path = cmd_parameters['LevelSequence']
-        self.preset_path = cmd_parameters['MoviePipelineConfig']
+        self.sequencePath = cmd_parameters['LevelSequence']
+        self.configPath = cmd_parameters['MoviePipelineConfig']
 
     def add_job(self):
         job = self.queue.allocate_new_job(unreal.MoviePipelineExecutorJob)
-        job.map = unreal.SoftObjectPath(self.map_path)
-        job.sequence = unreal.SoftObjectPath(self.seq_path)
+        job.map = unreal.SoftObjectPath(self.levelPath)
+        job.sequence = unreal.SoftObjectPath(self.sequencePath)
 
-        preset_path = unreal.SoftObjectPath(self.preset_path)
+        preset_path = unreal.SoftObjectPath(self.configPath)
         u_preset = unreal.SystemLibrary. \
             conv_soft_obj_path_to_soft_obj_ref(preset_path)
         job.set_configuration(u_preset)
@@ -52,7 +52,6 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
     def execute_delayed(self, queue):
         self.parse_argument()
 
-        # render pipeline creation
         self.pipeline = unreal.new_object(
             self.target_pipeline_class,
             outer=self.get_last_loaded_world(),
@@ -78,7 +77,7 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
         if not self.pipeline:
             return
 
-        status = renderRequest.RenderStatus.in_progress
+        status = RenderRequest.RenderStatus.in_progress
         progress = 100 * unreal.MoviePipelineLibrary. \
             get_completion_percentage(self.pipeline)
         time_estimate = unreal.MoviePipelineLibrary. \
@@ -91,7 +90,7 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
         time_estimate = '{}h:{}m:{}s'.format(hours, minutes, seconds)
 
         self.send_http_request(
-            '{}/put/{}'.format(client.SERVER_URL, self.job_id),
+            '{}/put/{}'.format(Client.SERVER_URL, self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)
@@ -118,9 +117,9 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
 
         progress = 100
         time_estimate = 'N/A'
-        status = renderRequest.RenderStatus.finished
+        status = RenderRequest.RenderStatus.finished
         self.send_http_request(
-            '{}/put/{}'.format(client.SERVER_URL, self.job_id),
+            '{}/put/{}'.format(Client.SERVER_URL, self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)

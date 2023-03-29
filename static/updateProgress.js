@@ -16,16 +16,16 @@ function updateProgress(data){
     const requests = data.results;
 
     for (let i = 0; i < requests.length; i++){
-        const uid = requests[i]['uid'];
+        const uuid = requests[i]['uuid'];
         const progress = requests[i]['progress'];
         const time_estimate = requests[i]['time_estimate'];
         const status = requests[i]['status'];
 
-        const bar = document.getElementById(uid + '_progress');
+        const bar = document.getElementById(uuid + '_progress');
         bar.style.width = progress + '%';
         bar.innerHTML = progress + '%';
 
-        document.getElementById(uid + '_estimate').innerHTML = time_estimate;
-        document.getElementById(uid + '_status').innerHTML = status;
+        document.getElementById(uuid + '_estimate').innerHTML = time_estimate;
+        document.getElementById(uuid + '_status').innerHTML = status;
     }
 }
