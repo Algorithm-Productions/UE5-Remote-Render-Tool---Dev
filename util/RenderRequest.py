@@ -49,7 +49,7 @@ class RenderRequest(object):
             time_estimate='',
             progress=0
     ):
-        self.uid = uuid or str(genUUID.uuid4())[:4]
+        self.uuid = uuid or str(genUUID.uuid4())[:4]
         self.name = name
         self.owner = owner or socket.gethostname()
         self.worker = worker

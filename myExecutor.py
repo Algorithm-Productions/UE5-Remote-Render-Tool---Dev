@@ -1,8 +1,8 @@
 import time
 import unreal
 
-from util import client
-from util import renderRequest
+from util import Client
+from util import RenderRequest
 
 
 @unreal.uclass()
@@ -71,7 +71,7 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
         if not self.pipeline:
             return
 
-        status = renderRequest.RenderStatus.in_progress
+        status = RenderRequest.RenderStatus.in_progress
         progress = 100 * unreal.MoviePipelineLibrary.\
             get_completion_percentage(self.pipeline)
         time_estimate = unreal.MoviePipelineLibrary.\
@@ -84,7 +84,7 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
         time_estimate = '{}h:{}m:{}s'.format(hours, minutes, seconds)
 
         self.send_http_request(
-            '{}/put/{}'.format(client.SERVER_API_URL, self.job_id),
+            '{}/put/{}'.format(Client.SERVER_API_URL, self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)
@@ -112,9 +112,9 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
         # update to server
         progress = 100
         time_estimate = 'N/A'
-        status = renderRequest.RenderStatus.finished
+        status = RenderRequest.RenderStatus.finished
         self.send_http_request(
-            '{}/put/{}'.format(client.SERVER_API_URL, self.job_id),
+            '{}/put/{}'.format(Client.SERVER_API_URL, self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)

@@ -3,8 +3,8 @@ import os
 import subprocess
 import time
 
-from util import client
-from util import renderRequest
+from util import Client
+from util import RenderRequest
 
 
 logging.basicConfig(level=logging.INFO)
@@ -51,15 +51,15 @@ def render(uuid, project_path, umap_path, useq_path, uconfig_path):
 if __name__ == '__main__':
     LOGGER.info('Starting render worker %s', WORKER_NAME)
     while True:
-        rrequests = client.get_all_requests()
+        rrequests = Client.get_all_requests()
         uuids = [rrequest.uuid for rrequest in rrequests
                 if rrequest.worker == WORKER_NAME and
-                rrequest.status == renderRequest.RenderStatus.ready_to_start]
+                rrequest.status == RenderRequest.RenderStatus.ready_to_start]
 
         for uuid in uuids:
             LOGGER.info('rendering job %s', uuid)
 
-            rrequest = renderRequest.RenderRequest.from_db(uuid)
+            rrequest = RenderRequest.RenderRequest.from_db(uuid)
             output = render(
                 uuid,
                 rrequest.project_path,

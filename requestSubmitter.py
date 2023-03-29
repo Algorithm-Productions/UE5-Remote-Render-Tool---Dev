@@ -1,6 +1,6 @@
 import logging
 
-from util import client
+from util import Client
 
 
 logging.basicConfig(level=logging.INFO)
@@ -8,7 +8,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def send(d):
-    rrequest = client.add_request(d)
+    rrequest = Client.add_request(d)
     if rrequest:
         LOGGER.info('request %s sent to server', rrequest.uuid)
 

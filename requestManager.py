@@ -6,7 +6,7 @@ from flask import Flask
 from flask import request
 from flask import render_template
 
-from util import renderRequest
+from util import RenderRequest
 
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -21,7 +21,7 @@ FLASK_EXE = r'E:\Epic\UE_5.0\Engine\Binaries\ThirdParty\Python3\Win64\Scripts\fl
 
 @app.route('/')
 def index_page():
-    rrequests = renderRequest.read_all()
+    rrequests = RenderRequest.read_all()
     if not rrequests:
         return 'Welcome!'
 
@@ -32,7 +32,7 @@ def index_page():
 
 @app.get('/api/get')
 def get_all_requests():
-    rrequests = renderRequest.read_all()
+    rrequests = RenderRequest.read_all()
     jsons = [rrequest.to_dict() for rrequest in rrequests]
 
     return {"results": jsons}
@@ -40,19 +40,19 @@ def get_all_requests():
 
 @app.get('/api/get/<uuid>')
 def get_request(uuid):
-    rr = renderRequest.RenderRequest.from_db(uuid)
+    rr = RenderRequest.RenderRequest.from_db(uuid)
     return rr.to_dict()
 
 
 @app.delete('/api/delete/<uuid>')
 def delete_request(uuid):
-    renderRequest.remove_db(uuid)
+    RenderRequest.remove_db(uuid)
 
 
 @app.post('/api/post')
 def create_request():
     data = request.get_json(force=True)
-    rrequest = renderRequest.RenderRequest.from_dict(data)
+    rrequest = RenderRequest.RenderRequest.from_dict(data)
     rrequest.write_json()
     new_request_trigger(rrequest)
 
@@ -64,7 +64,7 @@ def update_request(uuid):
     content = request.data.decode('utf-8')
     progress, time_estimate, status = content.split(';')
 
-    rr = renderRequest.RenderRequest.from_db(uuid)
+    rr = RenderRequest.RenderRequest.from_db(uuid)
     if not rr:
         return {}
 
@@ -89,7 +89,7 @@ def new_request_trigger(rrequest):
 
 def assign_request(rrequest, worker):
     rrequest.assign(worker)
-    rrequest.update(status=renderRequest.RenderStatus.ready_to_start)
+    rrequest.update(status=RenderRequest.RenderStatus.ready_to_start)
 
 
 if __name__ == '__main__':

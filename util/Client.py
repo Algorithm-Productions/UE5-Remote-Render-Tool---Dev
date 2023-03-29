@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from . import renderRequest
+from . import RenderRequest
 
 
 LOGGER = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ def get_all_requests():
         return
 
     results = response.json()['results']
-    return [renderRequest.RenderRequest.from_dict(result) for result in results]
+    return [RenderRequest.RenderRequest.from_dict(result) for result in results]
 
 
 def get_request(uuid):
@@ -28,7 +28,7 @@ def get_request(uuid):
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
 
-    return renderRequest.RenderRequest.from_dict(response.json())
+    return RenderRequest.RenderRequest.from_dict(response.json())
 
 
 def add_request(d):
@@ -38,7 +38,7 @@ def add_request(d):
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
     
-    return renderRequest.RenderRequest.from_dict(response.json())
+    return RenderRequest.RenderRequest.from_dict(response.json())
 
 
 def remove_request(uuid):
@@ -48,7 +48,7 @@ def remove_request(uuid):
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
     
-    return renderRequest.RenderRequest.from_dict(response.json())
+    return RenderRequest.RenderRequest.from_dict(response.json())
 
 
 def update_request(uuid, progress=0, status='', time_estimate=''):
@@ -65,4 +65,4 @@ def update_request(uuid, progress=0, status='', time_estimate=''):
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
 
-    return renderRequest.RenderRequest.from_dict(response.json())
+    return RenderRequest.RenderRequest.from_dict(response.json())
