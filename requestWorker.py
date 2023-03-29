@@ -28,7 +28,7 @@ def render(uuid, project_path, umap_path, useq_path, uconfig_path):
 
         "-game",
         "-MoviePipelineLocalExecutorClass=/Script/MovieRenderPipelineCore.MoviePipelinePythonHostExecutor",
-        "-ExecutorPythonClass=/Engine/PythonTypes.MyExecutor",
+        "-ExecutorPythonClass=/Engine/PythonTypes.RenderExecutor",
 
         "-windowed",
         "-resX=1280",

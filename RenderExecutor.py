@@ -6,7 +6,7 @@ from util import RenderRequest
 
 
 @unreal.uclass()
-class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
+class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
     pipeline = unreal.uproperty(unreal.MoviePipeline)
     job_id = unreal.uproperty(unreal.Text)
@@ -66,7 +66,7 @@ class MyExecutor(unreal.MoviePipelinePythonHostExecutor):
 
     @unreal.ufunction(override=True)
     def on_begin_frame(self):
-        super(MyExecutor, self).on_begin_frame()
+        super(RenderExecutor, self).on_begin_frame()
 
         if not self.pipeline:
             return
