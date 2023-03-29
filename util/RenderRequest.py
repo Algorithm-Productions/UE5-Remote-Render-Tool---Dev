@@ -85,29 +85,29 @@ class RenderRequest(object):
         return cls.from_dict(request_dict)
 
     @classmethod
-    def from_dict(cls, d):
-        uuid = d.get('uuid') or ''
-        name = d.get('name') or ''
-        owner = d.get('owner') or ''
-        worker = d.get('worker') or ''
-        time_created = d.get('time_created') or ''
-        priority = d.get('priority') or 0
-        category = d.get('category') or ''
-        tags = d.get('tags') or []
-        status = d.get('status') or ''
-        project_path = d.get('project_path')
-        level_path = d.get('level_path') or ''
-        sequence_path = d.get('sequence_path') or ''
-        config_path = d.get('config_path') or ''
-        output_path = d.get('output_path') or ''
-        width = d.get('width') or 0
-        height = d.get('height') or 0
-        frame_rate = d.get('frame_rate') or 0
-        format = d.get('format') or ''
-        start_frame = d.get('start_frame') or 0
-        end_frame = d.get('end_frame') or 0
-        time_estimate = d.get('time_estimate') or ''
-        progress = d.get('progress') or 0
+    def from_dict(cls, data):
+        uuid = data.get('uuid') or ''
+        name = data.get('name') or ''
+        owner = data.get('owner') or ''
+        worker = data.get('worker') or ''
+        time_created = data.get('time_created') or ''
+        priority = data.get('priority') or 0
+        category = data.get('category') or ''
+        tags = data.get('tags') or []
+        status = data.get('status') or ''
+        project_path = data.get('project_path')
+        level_path = data.get('level_path') or ''
+        sequence_path = data.get('sequence_path') or ''
+        config_path = data.get('config_path') or ''
+        output_path = data.get('output_path') or ''
+        width = data.get('width') or 0
+        height = data.get('height') or 0
+        frame_rate = data.get('frame_rate') or 0
+        format = data.get('format') or ''
+        start_frame = data.get('start_frame') or 0
+        end_frame = data.get('end_frame') or 0
+        time_estimate = data.get('time_estimate') or ''
+        progress = data.get('progress') or 0
 
         return cls(
             uuid=uuid,

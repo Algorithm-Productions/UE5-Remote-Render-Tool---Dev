@@ -129,5 +129,3 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                 for k, v in render_pass_data.items():
                     if k.name == 'FinalImage':
                         outputs = v.file_paths
-                        # get all final output images
-                        # unreal.log(outputs)

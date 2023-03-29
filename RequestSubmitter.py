@@ -7,8 +7,8 @@ logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 
 
-def send(d):
-    req = Client.add_request(d)
+def send(data):
+    req = Client.add_request(data)
     if req:
         LOGGER.info('request %s sent to server', req.uuid)
 

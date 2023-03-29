@@ -31,9 +31,9 @@ def get_request(uuid):
     return RenderRequest.RenderRequest.from_dict(response.json())
 
 
-def add_request(d):
+def add_request(data):
     try:
-        response = requests.post(SERVER_API_URL+'/post', json=d)
+        response = requests.post(SERVER_API_URL+'/post', json=data)
     except requests.exceptions.ConnectionError:
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
