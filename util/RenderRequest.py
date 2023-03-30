@@ -143,7 +143,7 @@ class RenderRequest(object):
     def remove(self):
         remove_db(self.uuid)
 
-    def update(self, progress, status, time_estimate):
+    def update(self, progress=None, status=None, time_estimate=None):
         if progress:
             self.progress = progress
         if status:
