@@ -14,13 +14,13 @@ DATABASE = os.path.join(ROOT_PATH, 'database')
 
 
 class RenderStatus(object):
-    unassigned = 'un-assigned'
-    ready_to_start = 'ready to start'
-    in_progress = 'in progress'
-    finished = 'finished'
-    errored = 'errored'
-    cancelled = 'cancelled'
-    paused = 'paused'
+    unassigned = 'Un-Assigned'
+    ready_to_start = 'Ready to Start'
+    in_progress = 'In Progress'
+    finished = 'Finished'
+    errored = 'Errored'
+    cancelled = 'Cancelled'
+    paused = 'Paused'
 
 
 class RenderRequest(object):

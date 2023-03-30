@@ -1,10 +1,15 @@
+@font-face {
+    font-family: "GT Pressura Typeface Normal";
+    src: url("./fonts/gt-pressura-mono-regular.ttf");
+}
+
 .notificationBlock {
-    font-family: 'DM Sans';
+    font-family: 'GT Pressura Typeface Normal';
 }
 
 .notificationBlock .notificationCover {
-    border: 3px solid #170F49;
-    background-color: #D9DBE9;
+    border: 3px solid #373737;
+    background-color: #C5C6D0;
     border-radius: 15px;
     width: 50%;
     height: 150%;
@@ -20,6 +25,6 @@
     font-weight: 1000;
     margin-top: 0.5%;
     margin-bottom: 0.5%;
-    color: #0B132B;
+    color: #232023;
     font-style: italic;
 }

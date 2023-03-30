@@ -98,7 +98,7 @@ def new_request_trigger(req):
 
     assign_request(req, DEFAULT_WORKER)
 
-    time.sleep(4)
+    time.sleep(3)
     LOGGER.info('assigned job %s to %s', req.uuid, DEFAULT_WORKER)
 
 

@@ -1,9 +1,14 @@
+@font-face {
+    font-family: "GT Pressura Typeface Normal";
+    src: url("./fonts/gt-pressura-mono-regular.ttf");
+}
+
 body {
     padding: 3%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    font-family: 'DM Sans';
+    font-family: 'GT Pressura Typeface Normal';
 }
 
 .headerBlock {
@@ -16,8 +21,8 @@ body {
 
 .footer {
     margin-top: auto;
-    border-top: 1.5px solid #D9DBE9;
-    font-family: 'DM Sans';
+    border-top: 1.5px solid #373737;
+    font-family: 'GT Pressura Typeface Normal';
 }
 
 .footer h5 {
@@ -28,20 +33,20 @@ body {
 .mainTitleBlock {
     padding-bottom: 2.5%;
     text-align: center;
-    font-family: 'DM Sans';
+    font-family: 'GT Pressura Typeface Normal';
 }
 
 .mainTitleBlock h1 {
     font-weight: 1000;
-    color: #6F6C90;
+    color: #322D31;
     font-size: 60px;
 }
 
 .buttonBlock {
     padding-bottom: 7.5%;
-    font-family: 'DM Sans';
-    margin-left: 0px;
-    margin-right: 0px;
+    font-family: 'GT Pressura Typeface Normal';
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .buttonBlock .leftPadding {
@@ -52,7 +57,7 @@ body {
 }
 
 .buttonBlock .buttonCover {
-    border: 1.5px solid #D9DBE9;
+    border: 1.5px solid #373737;
     border-radius: 15px;
     width: 30%;
     height: 150%;
@@ -79,11 +84,11 @@ body {
     display: inline-block;
     vertical-align: middle;
     font-weight: 1000;
-    color: #4A3AFF;
+    color: #373737;
     font-size: 25px;
     text-decoration: none;
 }
 
 .buttonBlock .buttonCover:hover a {
-    color: #3328b2;
+    color: #232023;
 }
