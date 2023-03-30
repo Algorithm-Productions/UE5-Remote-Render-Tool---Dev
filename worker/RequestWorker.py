@@ -3,17 +3,19 @@ import os
 import subprocess
 import time
 import platform
+from dotenv import load_dotenv
 
 from util import Client
 from util import RenderRequest
 
 logging.basicConfig(level=logging.INFO)
+load_dotenv()
 LOGGER = logging.getLogger(__name__)
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 WORKER_NAME = platform.node()
-UNREAL_EXE = r'C:\Program Files\Epic Games\UE_5.0\Engine\Binaries\Win64\UnrealEditor.exe'
+UNREAL_EXE = os.getenv("UNREAL_EXE")
 
 
 def render(uuid, project_path, level_path, sequence_path, config_path):

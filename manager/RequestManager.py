@@ -1,6 +1,7 @@
 import logging
 import time
 import os
+from dotenv import load_dotenv
 
 from flask import Flask
 from flask import request
@@ -8,15 +9,15 @@ from flask import render_template
 
 from util import RenderRequest
 
-
+load_dotenv()
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 HTML_FOLDER = os.path.join(MODULE_PATH, 'html')
 
 LOGGER = logging.getLogger(__name__)
-DEFAULT_WORKER = "DESKTOP-8R73OMV"
+DEFAULT_WORKER = os.getenv("DEFAULT_WORKER")
 
 app = Flask(__name__)
-FLASK_EXE = r'E:\Epic\UE_5.0\Engine\Binaries\ThirdParty\Python3\Win64\Scripts\flask.exe'
+FLASK_EXE = os.getenv("FLASK_EXE")
 
 
 @app.route('/')
@@ -33,6 +34,7 @@ def queue_page():
     jsons = [rrequest.to_dict() for rrequest in rrequests]
 
     return render_template('queue.html', requests=jsons)
+
 
 @app.route('/archive/')
 def archive_page():

@@ -4,13 +4,14 @@ import uuid as genUUID
 import os
 import json
 from datetime import datetime
+from dotenv import load_dotenv
 
-
+load_dotenv()
 LOGGER = logging.getLogger(__name__)
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.dirname(MODULE_PATH)
-DATABASE = os.path.join(ROOT_PATH, 'database')
+DATABASE = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER"))
 
 
 class RenderStatus(object):
