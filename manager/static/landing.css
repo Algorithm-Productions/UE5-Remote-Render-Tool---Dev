@@ -1,0 +1,25 @@
+.notificationBlock {
+    font-family: 'DM Sans';
+}
+
+.notificationBlock .notificationCover {
+    border: 3px solid #170F49;
+    background-color: #D9DBE9;
+    border-radius: 15px;
+    width: 50%;
+    height: 150%;
+    line-height: 150%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+	box-shadow: 0 10px 29px 0 rgba(68, 88, 144, 0.1);
+	transition: all 0.3s ease-in-out;
+}
+
+.notificationBlock .notificationCover h1 {
+    font-weight: 1000;
+    margin-top: 0.5%;
+    margin-bottom: 0.5%;
+    color: #0B132B;
+    font-style: italic;
+}

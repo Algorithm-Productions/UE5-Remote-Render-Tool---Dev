@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Render Tracker - Landing</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=DM Sans' rel='stylesheet'>
+    <link rel="stylesheet" type="text/css" href= {{url_for('static', filename="landing.css")}}>
+    <link rel="stylesheet" type="text/css" href= {{url_for('static', filename="global.css")}}>
+
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid headerBlock">
+        <div class="row">
+            <img src="../static/imgs/logo.png">
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row mainTitleBlock">
+            <h1> Render Panel Pages </h1>
+        </div>
+        <div class="row buttonBlock">
+            <div class="col leftPadding" align="center">
+                <div class="buttonCover">
+                    <a href="/queue"> <img src="../static/imgs/current.png" /> Current Renders </a>
+                </div>
+            </div>
+            <div class="col rightPadding" align="center">
+                <div class="buttonCover">
+                    <a href="/archive"> <img src="../static/imgs/archives.png" /> Render Archive </a>
+                </div>
+            </div>
+        </div>
+        <div class="row notificationBlock">
+            <div class="col" align="center">
+                <div class="notificationCover">
+                    <h1> Notification Text </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid footer">
+        <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

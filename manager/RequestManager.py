@@ -21,24 +21,28 @@ FLASK_EXE = r'E:\Epic\UE_5.0\Engine\Binaries\ThirdParty\Python3\Win64\Scripts\fl
 
 @app.route('/')
 def index_page():
+    return render_template('landing.html')
+
+
+@app.route('/queue/')
+def queue_page():
     rrequests = RenderRequest.read_all()
     if not rrequests:
-        return render_template('text.html', text="No Ongoing Renders", btnText="See Archive", link="/old")
+        return render_template('error.html', errorText="No Ongoing Renders", title="Render Queue")
 
     jsons = [rrequest.to_dict() for rrequest in rrequests]
 
-    return render_template('table.html', requests=jsons, btnText="See Archive", link="/old")
+    return render_template('queue.html', requests=jsons)
 
-
-@app.route('/old/')
-def about_page():
+@app.route('/archive/')
+def archive_page():
     rrequests = RenderRequest.read_archive()
     if not rrequests:
-        return render_template('text.html', text="No Prior Renders", btnText="Back", link="/")
+        return render_template('error.html', errorText="No Ongoing Renders", title="Render Archive")
 
     jsons = [rrequest.to_dict() for rrequest in rrequests]
 
-    return render_template('table.html', requests=jsons, btnText="Back", link="/")
+    return render_template('archive.html', requests=jsons)
 
 
 @app.get('/api/get')

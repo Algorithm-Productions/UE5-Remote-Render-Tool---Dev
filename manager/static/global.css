@@ -1,0 +1,89 @@
+body {
+    padding: 3%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'DM Sans';
+}
+
+.headerBlock {
+    padding-bottom: 5%;
+}
+
+.headerBlock img {
+    width: 7.5%;
+}
+
+.footer {
+    margin-top: auto;
+    border-top: 1.5px solid #D9DBE9;
+    font-family: 'DM Sans';
+}
+
+.footer h5 {
+    padding-top: 1%;
+    font-style: italic;
+}
+
+.mainTitleBlock {
+    padding-bottom: 2.5%;
+    text-align: center;
+    font-family: 'DM Sans';
+}
+
+.mainTitleBlock h1 {
+    font-weight: 1000;
+    color: #6F6C90;
+    font-size: 60px;
+}
+
+.buttonBlock {
+    padding-bottom: 7.5%;
+    font-family: 'DM Sans';
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.buttonBlock .leftPadding {
+    margin-right: -25%;
+}
+.buttonBlock .rightPadding {
+    margin-left: -25%;
+}
+
+.buttonBlock .buttonCover {
+    border: 1.5px solid #D9DBE9;
+    border-radius: 15px;
+    width: 30%;
+    height: 150%;
+    line-height: 150%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+	box-shadow: 0 10px 29px 0 rgba(68, 88, 144, 0.1);
+	transition: all 0.3s ease-in-out;
+}
+
+.buttonBlock .buttonCover:hover {
+    -webkit-transform: translateY(-5px);
+    transform: translateY(-5px);
+}
+
+.buttonBlock .buttonCover img {
+    width: 25%;
+    padding-right: 5%;
+}
+
+.buttonBlock .buttonCover a {
+    line-height: normal;
+    display: inline-block;
+    vertical-align: middle;
+    font-weight: 1000;
+    color: #4A3AFF;
+    font-size: 25px;
+    text-decoration: none;
+}
+
+.buttonBlock .buttonCover:hover a {
+    color: #3328b2;
+}
