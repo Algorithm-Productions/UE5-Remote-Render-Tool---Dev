@@ -74,7 +74,7 @@ def create_request():
     return req.to_dict()
 
 
-@app.put('/api/put/<uuid>')
+@app.put('/put/<uuid>')
 def update_request(uuid):
     content = request.data.decode('utf-8')
     progress, time_estimate, status = content.split(';')
