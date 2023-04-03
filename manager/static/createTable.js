@@ -1,5 +1,5 @@
 function createTable(list){
-    const cols = ['uuid', 'name', 'owner', 'worker', 'time_created', 'status', 'priority', 'time_estimate', 'progress'];
+    const cols = ['uuid', 'name', 'owner', 'worker', 'time_created', 'status', 'time_estimate', 'progress'];
     const table = document.createElement("table");
     const tr = table.insertRow(-1);
     for (let i = 0; i < cols.length; i++) {
