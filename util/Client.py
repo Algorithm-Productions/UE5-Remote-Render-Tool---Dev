@@ -5,8 +5,10 @@ from dotenv import load_dotenv
 
 from . import RenderRequest
 
-load_dotenv()
 LOGGER = logging.getLogger(__name__)
+
+MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(MODULE_PATH, '../.env'))
 
 SERVER_URL = os.getenv("SERVER_URL")
 SERVER_API_URL = SERVER_URL + os.getenv("API_EXT")

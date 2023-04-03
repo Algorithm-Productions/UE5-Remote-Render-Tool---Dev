@@ -76,7 +76,7 @@ def create_request():
     return req.to_dict()
 
 
-@app.put('/put/<uuid>')
+@app.put('/api/put/<uuid>')
 def update_request(uuid):
     content = request.data.decode('utf-8')
     progress, time_estimate, status = content.split(';')
@@ -110,23 +110,9 @@ def assign_request(req, worker):
 
 
 if __name__ == '__main__':
-    import subprocess
     import os
 
     env = os.environ.copy()
     env['PYTHONPATH'] += os.pathsep + MODULE_PATH
 
-    command = [
-        FLASK_EXE,
-        '--app',
-        'RequestManager.py',
-        '--debug',
-        'run',
-        '-h',
-        'localhost',
-        '-p',
-        '5000'
-    ]
-
-    proc = subprocess.Popen(command, env=env)
-    LOGGER.info(proc.communicate())
+    app.run(port=5000, debug=True)

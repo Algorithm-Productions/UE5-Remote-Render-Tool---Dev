@@ -7,14 +7,13 @@ from util import RenderRequest
 
 @unreal.uclass()
 class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
-
     pipeline = unreal.uproperty(unreal.MoviePipeline)
     job_id = unreal.uproperty(unreal.Text)
 
     def _post_init(self):
         self.pipeline = None
         self.queue = None
-        self.job_id = None
+        self.job_id = ""
 
         self.http_response_recieved_delegate.add_function_unique(
             self,
@@ -22,7 +21,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         )
 
     def parse_argument(self):
-        (cmd_tokens, cmd_switches, cmd_parameters) = unreal.SystemLibrary.\
+        (cmd_tokens, cmd_switches, cmd_parameters) = unreal.SystemLibrary. \
             parse_command_line(unreal.SystemLibrary.get_command_line())
 
         self.level_path = cmd_tokens[0]
@@ -36,7 +35,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         job.sequence = unreal.SoftObjectPath(self.sequence_path)
 
         preset_path = unreal.SoftObjectPath(self.config_path)
-        u_preset = unreal.SystemLibrary.\
+        u_preset = unreal.SystemLibrary. \
             conv_soft_obj_path_to_soft_obj_ref(preset_path)
         job.set_configuration(u_preset)
 
@@ -72,9 +71,9 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             return
 
         status = RenderRequest.RenderStatus.in_progress
-        progress = 100 * unreal.MoviePipelineLibrary.\
+        progress = 100 * unreal.MoviePipelineLibrary. \
             get_completion_percentage(self.pipeline)
-        time_estimate = unreal.MoviePipelineLibrary.\
+        time_estimate = unreal.MoviePipelineLibrary. \
             get_estimated_time_remaining(self.pipeline)
 
         if not time_estimate:
@@ -84,7 +83,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         time_estimate = '{}h:{}m:{}s'.format(hours, minutes, seconds)
 
         self.send_http_request(
-            '{}/put/{}'.format(Client.SERVER_API_URL, self.job_id),
+            "{}/put/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)
@@ -113,7 +112,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         time_estimate = 'N/A'
         status = RenderRequest.RenderStatus.finished
         self.send_http_request(
-            '{}/put/{}'.format(Client.SERVER_API_URL, self.job_id),
+            "{}/put/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)
