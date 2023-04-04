@@ -118,6 +118,13 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             unreal.Map(str, str)
         )
 
+        self.send_http_request(
+            "{}/archive/{}".format(Client.SERVER_API_URL, self.job_id),
+            "PUT",
+            '{};{};{}'.format(progress, time_estimate, status),
+            unreal.Map(str, str)
+        )
+
     @unreal.ufunction(ret=None, params=[unreal.MoviePipelineOutputData])
     def on_pipeline_finished(self, results):
         output_data = results

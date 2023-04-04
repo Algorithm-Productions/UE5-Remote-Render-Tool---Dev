@@ -168,8 +168,12 @@ class RenderRequest(object):
         write_db(self.__dict__)
 
     def calcFinish(self, defaultVal, ignoreDefault=False):
+        if self.time_estimate == 'N/A':
+            self.estimated_finish = 'N/A'
+            return
+
         if self.time_estimate != '':
-            start = datetime.strptime(self.time_created, "%m/%d/%Y, %H:%M:%S")
+            start = datetime.now()
             end = datetime.strptime(self.time_estimate, '%Hh:%Mm:%Ss')
             delta = timedelta(hours=end.hour, minutes=end.minute, seconds=end.second, microseconds=end.microsecond)
             self.estimated_finish = ((not ignoreDefault) and defaultVal) or ((start + delta).strftime("%m/%d/%Y, %H:%M:%S"))
@@ -180,17 +184,6 @@ class RenderRequest(object):
 def read_all():
     reqs = list()
     files = os.listdir(DATABASE)
-    uuids = [os.path.splitext(os.path.basename(f))[0] for f in files if f.endswith('.json')]
-    for uuid in uuids:
-        req = RenderRequest.from_db(uuid)
-        reqs.append(req)
-
-    return reqs
-
-
-def read_archive():
-    reqs = list()
-    files = os.listdir(DATABASE + "/old")
     uuids = [os.path.splitext(os.path.basename(f))[0] for f in files if f.endswith('.json')]
     for uuid in uuids:
         req = RenderRequest.from_db(uuid)

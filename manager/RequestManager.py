@@ -7,7 +7,7 @@ from flask import Flask, send_from_directory, make_response, redirect, url_for
 from flask import request
 from flask import render_template
 
-from util import RenderRequest
+from util import RenderRequest, RenderArchive
 
 load_dotenv()
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -45,7 +45,7 @@ def queue_page():
 
 @app.route('/archive/')
 def archive_page():
-    rrequests = RenderRequest.read_archive()
+    rrequests = RenderArchive.read_all()
     if not rrequests:
         return render_template('error.html', errorText="No Archived Renders", title="Render Archive",
                                page_passer="archive_page")
@@ -68,6 +68,9 @@ def set_theme(theme="lightmode-index_page"):
 @app.get('/api/get')
 def get_all_requests():
     rrequests = RenderRequest.read_all()
+    if not rrequests:
+        return {"results": []}
+
     jsons = [rrequest.to_dict() for rrequest in rrequests]
 
     return {"results": jsons}
@@ -92,6 +95,21 @@ def create_request():
     new_request_trigger(req)
 
     return req.to_dict()
+
+
+@app.put('/api/archive/<uuid>')
+def archive_request(uuid):
+    content = request.data.decode('utf-8')
+    print(content)
+
+    renderRequest = RenderRequest.RenderRequest.from_db(uuid)
+    if not renderRequest:
+        return {}
+    renderArchive = RenderArchive.RenderArchive(uuid=uuid, renderRequest=renderRequest)
+
+    renderArchive.write_json()
+
+    return renderArchive.to_dict()
 
 
 @app.put('/api/put/<uuid>')
