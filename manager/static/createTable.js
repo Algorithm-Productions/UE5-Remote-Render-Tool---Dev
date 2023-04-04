@@ -1,11 +1,12 @@
 function createTable(list){
-    const cols = ['uuid', 'name', 'owner', 'worker', 'time_created', 'status', 'time_estimate', 'progress'];
+    const cols = ['uuid', 'name', 'owner', 'worker', 'time_created', 'status', 'estimated_finish', 'time_estimate', 'progress', 'output_path'];
     const table = document.createElement("table");
     const tr = table.insertRow(-1);
     for (let i = 0; i < cols.length; i++) {
-        // header th elements
         const theader = document.createElement("th");
-        theader.innerHTML = cols[i];
+        if (cols[i] !== 'output_path')
+            theader.innerHTML = cols[i];
+
         tr.appendChild(theader);
     }
 
@@ -16,6 +17,17 @@ function createTable(list){
         for (let j = 0; j < cols.length; j++) {
             const cell = trow.insertCell(-1);
             cell.innerHTML = list[i][cols[j]];
+
+            if (cols[j] === 'output_path') {
+                const btn = document.createElement("button")
+                cell.className = 'copyCell'
+                btn.innerText = `🔗`
+                btn.className = 'copyBtn'
+                btn.addEventListener('click', () => handleClick(list[i][cols[j]]), false)
+
+                trow.deleteCell(-1)
+                trow.appendChild(btn)
+            }
 
             if (cols[j] === 'progress'){
                 cell.innerHTML = '';
@@ -40,6 +52,10 @@ function createTable(list){
                 cell.setAttribute('id', uuid + '_estimate');
             }
 
+            if (cols[j] === 'estimated_finish'){
+                cell.setAttribute('id', uuid + '_finished');
+            }
+
             if (cols[j] === 'status'){
                 cell.setAttribute('id', uuid + '_status');
             }
@@ -52,5 +68,9 @@ function createTable(list){
     el.appendChild(table);
 }
 
+
+function handleClick(path) {
+    navigator.clipboard.writeText(path).catch(e => console.error(e.message))
+}
 
 

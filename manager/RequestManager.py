@@ -3,7 +3,7 @@ import time
 import os
 from dotenv import load_dotenv
 
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask import request
 from flask import render_template
 
@@ -18,6 +18,12 @@ DEFAULT_WORKER = os.getenv("DEFAULT_WORKER")
 
 app = Flask(__name__)
 FLASK_EXE = os.getenv("FLASK_EXE")
+
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.png', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/')

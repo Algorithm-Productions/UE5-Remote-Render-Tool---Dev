@@ -3,7 +3,7 @@ import socket
 import uuid as genUUID
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
 LOGGER = logging.getLogger(__name__)
@@ -50,6 +50,7 @@ class RenderRequest(object):
             start_frame=0,
             end_frame=0,
             time_estimate='',
+            estimated_finish='',
             progress=0
     ):
         self.uuid = uuid or str(genUUID.uuid4())[:4]
@@ -75,6 +76,8 @@ class RenderRequest(object):
         self.length = self.end_frame - self.start_frame
         self.time_estimate = time_estimate
         self.progress = progress
+        self.estimated_finish = estimated_finish or ''
+        self.calcFinish(estimated_finish)
 
     @classmethod
     def from_db(cls, uuid):
@@ -110,6 +113,7 @@ class RenderRequest(object):
         start_frame = data.get('start_frame') or 0
         end_frame = data.get('end_frame') or 0
         time_estimate = data.get('time_estimate') or ''
+        estimated_finish = data.get('estimated_finish') or ''
         progress = data.get('progress') or 0
 
         return cls(
@@ -134,6 +138,7 @@ class RenderRequest(object):
             start_frame=start_frame,
             end_frame=end_frame,
             time_estimate=time_estimate,
+            estimated_finish=estimated_finish,
             progress=progress
         )
 
@@ -146,13 +151,14 @@ class RenderRequest(object):
     def remove(self):
         remove_db(self.uuid)
 
-    def update(self, progress=None, status=None, time_estimate=None):
+    def update(self, progress=None, status=None, time_estimate=None, estimated_finish=None):
         if progress:
             self.progress = progress
         if status:
             self.status = status
         if time_estimate:
             self.time_estimate = time_estimate
+            self.calcFinish(self.estimated_finish, True)
 
         write_db(self.__dict__)
 
@@ -160,6 +166,15 @@ class RenderRequest(object):
         self.worker = worker
 
         write_db(self.__dict__)
+
+    def calcFinish(self, defaultVal, ignoreDefault=False):
+        if self.time_estimate != '':
+            start = datetime.strptime(self.time_created, "%m/%d/%Y, %H:%M:%S")
+            end = datetime.strptime(self.time_estimate, '%Hh:%Mm:%Ss')
+            delta = timedelta(hours=end.hour, minutes=end.minute, seconds=end.second, microseconds=end.microsecond)
+            self.estimated_finish = ((not ignoreDefault) and defaultVal) or ((start + delta).strftime("%m/%d/%Y, %H:%M:%S"))
+        else:
+            self.estimated_finish = ((not ignoreDefault) and defaultVal) or ''
 
 
 def read_all():

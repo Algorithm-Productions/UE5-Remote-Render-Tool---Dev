@@ -19,6 +19,7 @@ function updateProgress(data){
         const uuid = requests[i]['uuid'];
         const progress = requests[i]['progress'];
         const time_estimate = requests[i]['time_estimate'];
+        const estimated_finish = requests[i]['estimated_finish'];
         const status = requests[i]['status'];
 
         const bar = document.getElementById(uuid + '_progress');
@@ -26,6 +27,7 @@ function updateProgress(data){
         bar.innerHTML = progress + '%';
 
         document.getElementById(uuid + '_estimate').innerHTML = time_estimate;
+        document.getElementById(uuid + '_finished').innerHTML = estimated_finish;
         document.getElementById(uuid + '_status').innerHTML = status;
     }
 }
