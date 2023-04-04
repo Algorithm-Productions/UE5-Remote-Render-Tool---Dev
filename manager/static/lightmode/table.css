@@ -1,6 +1,6 @@
 @font-face {
     font-family: "GT Pressura Typeface Normal";
-    src: url("./fonts/gt-pressura-mono-regular.ttf");
+    src: url("../fonts/gt-pressura-mono-regular.ttf");
 }
 
 table {
@@ -25,12 +25,16 @@ th, td {
     padding: 12px 15px;
 }
 
+td {
+    color: #322D31;
+}
+
 tr {
     border-bottom: 1px solid #373737;
 }
 
 tr:nth-of-type(odd) {
-    background-color: #f1f2f7;
+    background-color: #e8e8e8;
 }
 
 tr:last-of-type {

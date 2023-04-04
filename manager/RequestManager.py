@@ -3,7 +3,7 @@ import time
 import os
 from dotenv import load_dotenv
 
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, make_response, redirect, url_for
 from flask import request
 from flask import render_template
 
@@ -35,7 +35,8 @@ def index_page():
 def queue_page():
     rrequests = RenderRequest.read_all()
     if not rrequests:
-        return render_template('error.html', errorText="No Ongoing Renders", title="Render Queue")
+        return render_template('error.html', errorText="No Ongoing Renders", title="Render Queue",
+                               page_passer="queue_page")
 
     jsons = [rrequest.to_dict() for rrequest in rrequests]
 
@@ -46,11 +47,22 @@ def queue_page():
 def archive_page():
     rrequests = RenderRequest.read_archive()
     if not rrequests:
-        return render_template('error.html', errorText="No Ongoing Renders", title="Render Archive")
+        return render_template('error.html', errorText="No Archived Renders", title="Render Archive",
+                               page_passer="archive_page")
 
     jsons = [rrequest.to_dict() for rrequest in rrequests]
 
     return render_template('archive.html', requests=jsons)
+
+
+@app.route("/set")
+@app.route("/set/<theme>")
+def set_theme(theme="lightmode-index_page"):
+    print(theme)
+    args = theme.split("-")
+    res = make_response(redirect(url_for(args[1])))
+    res.set_cookie("theme", args[0])
+    return res
 
 
 @app.get('/api/get')

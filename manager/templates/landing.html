@@ -2,23 +2,46 @@
 <html lang="en">
 <head>
     <title>Render Tracker - Landing</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='imgs/favicon.png') }}">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href= {{url_for('static', filename="landing.css")}}>
-    <link rel="stylesheet" type="text/css" href= {{url_for('static', filename="global.css")}}>
 
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    {% if request.cookies.get("theme") %}
+        <link rel="stylesheet" href="/static/{{ request.cookies.get("theme") }}/landing.css">
+        <link rel="stylesheet" href="/static/{{ request.cookies.get("theme") }}/global.css">
+    {% else %}
+        <link rel="stylesheet" type="text/css" href= {{ url_for('static', filename="lightmode/landing.css") }}>
+        <link rel="stylesheet" type="text/css" href= {{ url_for('static', filename="lightmode/global.css") }}>
+    {% endif %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </head>
 <body>
     <div class="container-fluid headerBlock">
         <div class="row">
-            <img src="../static/imgs/logo.png">
+            <div class="col">
+                {% if request.cookies.get("theme") == "darkmode" %}
+                    <img src="../static/imgs/logo-darkmode.png">
+                {% else %}
+                    <img src="../static/imgs/logo.png">
+                {% endif %}
+            </div>
+            <div class="col switchBlock">
+                <label class="switch">
+                    {% if request.cookies.get("theme") == "darkmode" %}
+                        <input type="checkbox" checked onclick="toggleMode('index_page')">
+                    {% else %}
+                        <input type="checkbox" onclick="toggleMode('index_page')">
+                    {% endif %}
+                    <span class="slider round"></span>
+                </label>
+            </div>
         </div>
     </div>
+
     <div class="container-fluid">
         <div class="row mainTitleBlock">
             <h1> Render Panel Pages </h1>
@@ -26,12 +49,12 @@
         <div class="row buttonBlock">
             <div class="col leftPadding" align="center">
                 <div class="buttonCover">
-                    <a href="/queue"> <img src="../static/imgs/current.png" /> Current Renders </a>
+                    <a href="/queue"> <img src="../static/imgs/current.png"/> Current Renders </a>
                 </div>
             </div>
             <div class="col rightPadding" align="center">
                 <div class="buttonCover">
-                    <a href="/archive"> <img src="../static/imgs/archives.png" /> Render Archive </a>
+                    <a href="/archive"> <img src="../static/imgs/archives.png"/> Render Archive </a>
                 </div>
             </div>
         </div>
@@ -43,9 +66,12 @@
             </div>
         </div>
     </div>
+
     <div class="container-fluid footer">
         <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
     </div>
+
+    <script src= {{ url_for('static', filename="js/toggleMode.js") }}></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

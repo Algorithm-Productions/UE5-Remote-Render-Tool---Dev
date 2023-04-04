@@ -1,0 +1,72 @@
+@font-face {
+    font-family: "GT Pressura Typeface Normal";
+    src: url("../fonts/gt-pressura-mono-regular.ttf");
+}
+
+table {
+    border-collapse: collapse;
+    border: 0px;
+    border-radius:6px;
+    font-family: 'GT Pressura Typeface Normal';
+    min-width: 400px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+th {
+    background-color: #c8c8c8;
+    color: #000000;
+    text-align: left;
+    height: 30px;
+    text-transform: uppercase;
+    border-top: none;
+}
+
+th, td {
+    padding: 12px 15px;
+}
+
+td {
+    color: #cdd2ce
+}
+
+tr {
+    border-bottom: 1px solid #c8c8c8;
+}
+
+tr:nth-of-type(odd) {
+    background-color: #171717;
+}
+
+tr:last-of-type {
+    border-bottom: 2px solid #c8c8c8;
+}
+
+.progressContainer {
+  width: 100%;
+  background-color: #cccccc;
+}
+
+.progressBar {
+  height: 30px;
+  background-color: #525236;
+  text-align: center;
+  line-height: 30px;
+  color: white;
+}
+
+.tableBlock {
+    padding-bottom: 5%;
+}
+
+.copyBtn {
+    margin: 12px 15px;
+    font-size: 25px;
+	box-shadow: 0 10px 29px 0 rgba(68, 88, 144, 0.1);
+	transition: all 0.3s ease-in-out;
+}
+
+.copyBtn:hover {
+    -webkit-transform: translateY(-5px);
+    transform: translateY(-5px);
+    background-color: #3f3f3f;
+}
