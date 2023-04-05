@@ -32,11 +32,11 @@ class HardwareStats(object):
 
     @classmethod
     def from_dict(cls, data):
-        name = data.get('name') or ''
-        cpu = data.get('cpu') or ''
-        gpu = data.get('gpu') or ''
-        ram = data.get('ram') or ''
-        vram = data.get('vram') or ''
+        name = (data.get('name') or '') if data else ''
+        cpu = (data.get('cpu') or '') if data else ''
+        gpu = (data.get('gpu') or '') if data else ''
+        ram = (data.get('ram') or '') if data else ''
+        vram = (data.get('vram') or '') if data else ''
 
         return cls(
             name=name,
@@ -54,26 +54,28 @@ class RenderArchive(object):
     def __init__(
             self,
             uuid='',
-            renderRequest=None,
-            hardwareStats=None,
-            totalTime='',
-            finishTime='',
-            avgFrame=0,
-            frameMap=None,
-            perFrameSamples=0,
+            project_name='',
+            render_request=None,
+            hardware_stats=None,
+            total_time='',
+            finish_time='',
+            avg_frame=0,
+            frame_map=None,
+            per_frame_samples=0,
             resolution=''
     ):
-        if not frameMap:
-            frameMap = []
+        if not frame_map:
+            frame_map = []
 
-        self.uuid = uuid or renderRequest.uuid
-        self.renderRequest = renderRequest
-        self.hardwareStats = hardwareStats
-        self.totalTime = totalTime
-        self.finishTime = finishTime
-        self.avgFrame = avgFrame
-        self.frameMap = frameMap
-        self.perFrameSamples = perFrameSamples
+        self.uuid = uuid or render_request.uuid
+        self.project_name = project_name
+        self.render_request = render_request
+        self.hardware_stats = hardware_stats
+        self.total_time = total_time
+        self.finish_time = finish_time
+        self.avg_frame = avg_frame
+        self.frame_map = frame_map
+        self.per_frame_samples = per_frame_samples
         self.resolution = resolution
 
     @classmethod
@@ -90,47 +92,50 @@ class RenderArchive(object):
     @classmethod
     def from_dict(cls, data):
         uuid = data.get('uuid') or ''
-        totalTime = data.get('totalTime') or ''
-        finishTime = data.get('finishTime') or ''
-        avgFrame = data.get('avgFrame') or ''
-        frameMap = data.get('frameMap') or ''
-        perFrameSamples = data.get('perFrameSamples') or ''
+        project_name = data.get('project_name') or ''
+        total_time = data.get('total_time') or ''
+        finish_time = data.get('finish_time') or ''
+        avg_frame = data.get('avg_frame') or ''
+        frame_map = data.get('frame_map') or ''
+        per_frame_samples = data.get('per_frame_samples') or ''
         resolution = data.get('resolution') or ''
 
-        renderRequest = RenderRequest.from_dict(data.get('renderRequest'))
-        hardwareStats = HardwareStats.from_dict(data.get('hardwareStats'))
+        render_request = RenderRequest.from_dict(data.get('render_request'))
+        hardware_stats = HardwareStats.from_dict(data.get('hardware_stats'))
 
         return cls(
             uuid=uuid,
-            renderRequest=renderRequest,
-            hardwareStats=hardwareStats,
-            totalTime=totalTime,
-            finishTime=finishTime,
-            avgFrame=avgFrame,
-            frameMap=frameMap,
-            perFrameSamples=perFrameSamples,
+            project_name=project_name,
+            render_request=render_request,
+            hardware_stats=hardware_stats,
+            total_time=total_time,
+            finish_time=finish_time,
+            avg_frame=avg_frame,
+            frame_map=frame_map,
+            per_frame_samples=per_frame_samples,
             resolution=resolution
         )
 
     def copy(self):
         return RenderArchive(
             uuid=self.uuid,
-            renderRequest=self.renderRequest,
-            hardwareStats=self.hardwareStats,
-            totalTime=self.totalTime,
-            finishTime=self.finishTime,
-            avgFrame=self.avgFrame,
-            frameMap=self.frameMap,
-            perFrameSamples=self.perFrameSamples,
+            project_name=self.project_name,
+            render_request=self.render_request,
+            hardware_stats=self.hardware_stats,
+            total_time=self.total_time,
+            finish_time=self.finish_time,
+            avg_frame=self.avg_frame,
+            frame_map=self.frame_map,
+            per_frame_samples=self.per_frame_samples,
             resolution=self.resolution
         )
 
     def to_dict(self):
         copy = self.copy()
-        if self.renderRequest:
-            copy.renderRequest = self.renderRequest.to_dict()
-        if copy.hardwareStats:
-            copy.hardwareStats = self.hardwareStats.to_dict()
+        if self.render_request:
+            copy.render_request = self.render_request.to_dict()
+        if self.hardware_stats:
+            copy.hardware_stats = self.hardware_stats.to_dict()
         return copy.__dict__
 
     def write_json(self):
@@ -145,7 +150,7 @@ def read_all():
     files = os.listdir(DATABASE)
     uuids = [os.path.splitext(os.path.basename(f))[0] for f in files if f.endswith('.json')]
     for uuid in uuids:
-        req = RenderRequest.from_db(uuid)
+        req = RenderArchive.from_db(uuid)
         reqs.append(req)
 
     return reqs

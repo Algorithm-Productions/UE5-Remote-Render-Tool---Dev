@@ -106,7 +106,7 @@ def archive_request(uuid):
     renderRequest = RenderRequest.RenderRequest.from_db(uuid)
     if not renderRequest:
         return {}
-    renderArchive = RenderArchive.RenderArchive(uuid=uuid, renderRequest=renderRequest)
+    renderArchive = RenderArchive.RenderArchive(uuid=uuid, render_request=renderRequest)
 
     renderArchive.write_json()
 
