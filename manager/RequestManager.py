@@ -52,6 +52,8 @@ def archive_page():
 
     jsons = [rrequest.to_dict() for rrequest in rrequests]
 
+    print(jsons)
+
     return render_template('archive.html', requests=jsons)
 
 
@@ -100,7 +102,6 @@ def create_request():
 @app.put('/api/archive/<uuid>')
 def archive_request(uuid):
     content = request.data.decode('utf-8')
-    print(content)
 
     renderRequest = RenderRequest.RenderRequest.from_db(uuid)
     if not renderRequest:

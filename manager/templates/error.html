@@ -10,10 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     {% if request.cookies.get("theme") %}
-        <link rel="stylesheet" href="/static/{{ request.cookies.get("theme") }}/table.css">
         <link rel="stylesheet" href="/static/{{ request.cookies.get("theme") }}/global.css">
     {% else %}
-        <link rel="stylesheet" type="text/css" href= {{ url_for('static', filename="lightmode/landing.css") }}>
         <link rel="stylesheet" type="text/css" href= {{ url_for('static', filename="lightmode/global.css") }}>
     {% endif %}
 
