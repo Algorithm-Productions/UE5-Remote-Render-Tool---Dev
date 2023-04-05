@@ -2,6 +2,8 @@ import json
 import logging
 import time
 import os
+from datetime import datetime
+
 from dotenv import load_dotenv
 
 from flask import Flask, send_from_directory, make_response, redirect, url_for
@@ -121,6 +123,9 @@ def archive_request(uuid):
     renderArchive.frame_map = args[4].split(",")
     renderArchive.per_frame_samples = int(args[5])
     renderArchive.resolution = args[6]
+
+    renderArchive.total_time = str(datetime.strptime(renderArchive.finish_time, "%m/%d/%Y, %H:%M:%S") - datetime.strptime(
+        renderRequest.time_created, "%m/%d/%Y, %H:%M:%S"))
 
     renderArchive.write_json()
 
