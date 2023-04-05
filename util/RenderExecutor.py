@@ -1,4 +1,6 @@
 import time
+from datetime import datetime
+
 import unreal
 
 from util import Client
@@ -118,10 +120,19 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             unreal.Map(str, str)
         )
 
+        projectName = ''
+        hardwareStats = {}
+        finishTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+        avgFrame = 0
+        frameMap = []
+        perFrameSamples = 0
+        resolution = ''
+
         self.send_http_request(
             "{}/archive/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
-            '{};{};{}'.format(progress, time_estimate, status),
+            '{};{};{};{};{};{};{}'.format(projectName, hardwareStats, finishTime, avgFrame, frameMap, perFrameSamples,
+                                          resolution),
             unreal.Map(str, str)
         )
 

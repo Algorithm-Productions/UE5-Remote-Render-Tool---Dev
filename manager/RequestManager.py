@@ -102,11 +102,24 @@ def create_request():
 @app.put('/api/archive/<uuid>')
 def archive_request(uuid):
     content = request.data.decode('utf-8')
+    args = content.split(";")
+    print(args, len(args))
+
+    if len(args) != 7:
+        return {}
 
     renderRequest = RenderRequest.RenderRequest.from_db(uuid)
     if not renderRequest:
         return {}
+
     renderArchive = RenderArchive.RenderArchive(uuid=uuid, render_request=renderRequest)
+    renderArchive.project_name = args[0]
+    # renderArchive.hardware_stats = args[1]
+    renderArchive.finish_time = args[2]
+    renderArchive.avg_frame = int(args[3])
+    # renderArchive.frame_map = args[4]
+    renderArchive.per_frame_samples = int(args[5])
+    renderArchive.resolution = args[6]
 
     renderArchive.write_json()
 
