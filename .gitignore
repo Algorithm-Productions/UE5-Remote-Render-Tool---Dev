@@ -76,3 +76,4 @@ fabric.properties
 .idea/
 database
 .env
+venv

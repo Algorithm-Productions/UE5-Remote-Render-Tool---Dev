@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 import os
@@ -8,6 +9,7 @@ from flask import request
 from flask import render_template
 
 from util import RenderRequest, RenderArchive
+from util.RenderArchive import HardwareStats
 
 load_dotenv()
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -60,7 +62,6 @@ def archive_page():
 @app.route("/set")
 @app.route("/set/<theme>")
 def set_theme(theme="lightmode-index_page"):
-    print(theme)
     args = theme.split("-")
     res = make_response(redirect(url_for(args[1])))
     res.set_cookie("theme", args[0])
@@ -103,7 +104,7 @@ def create_request():
 def archive_request(uuid):
     content = request.data.decode('utf-8')
     args = content.split(";")
-    print(args, len(args))
+    print(args)
 
     if len(args) != 7:
         return {}
@@ -114,10 +115,10 @@ def archive_request(uuid):
 
     renderArchive = RenderArchive.RenderArchive(uuid=uuid, render_request=renderRequest)
     renderArchive.project_name = args[0]
-    # renderArchive.hardware_stats = args[1]
+    renderArchive.hardware_stats = HardwareStats.from_dict(eval(args[1]))
     renderArchive.finish_time = args[2]
     renderArchive.avg_frame = int(args[3])
-    # renderArchive.frame_map = args[4]
+    renderArchive.frame_map = args[4].split(",")
     renderArchive.per_frame_samples = int(args[5])
     renderArchive.resolution = args[6]
 

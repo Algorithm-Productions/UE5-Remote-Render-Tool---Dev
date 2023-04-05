@@ -1,10 +1,14 @@
 import time
 from datetime import datetime
+import GPUtil
+import psutil
+import platform
 
 import unreal
 
 from util import Client
 from util import RenderRequest
+from util.RenderArchive import HardwareStats
 
 
 @unreal.uclass()
@@ -121,18 +125,20 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         )
 
         projectName = ''
-        hardwareStats = {}
+        hardwareStats = HardwareStats(platform.node(), platform.processor(), GPUtil.getGPUs()[0].name,
+                                      get_size(psutil.virtual_memory().total),
+                                      GPUtil.getGPUs()[0].memoryTotal).to_dict()
         finishTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         avgFrame = 0
-        frameMap = []
+        frameMapStringified = ",".join(["1", "2", "3", "4", "5"])
         perFrameSamples = 0
         resolution = ''
 
         self.send_http_request(
             "{}/archive/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
-            '{};{};{};{};{};{};{}'.format(projectName, hardwareStats, finishTime, avgFrame, frameMap, perFrameSamples,
-                                          resolution),
+            '{};{};{};{};{};{};{}'.format(projectName, hardwareStats, finishTime, avgFrame, frameMapStringified,
+                                          perFrameSamples, resolution),
             unreal.Map(str, str)
         )
 
@@ -145,3 +151,11 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                 for k, v in render_pass_data.items():
                     if k.name == 'FinalImage':
                         outputs = v.file_paths
+
+
+def get_size(bytes, suffix="B"):
+    factor = 1024
+    for unit in ["", "K", "M", "G", "T", "P"]:
+        if bytes < factor:
+            return f"{bytes:.2f}{unit}{suffix}"
+        bytes /= factor
