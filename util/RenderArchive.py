@@ -4,6 +4,7 @@ import json
 from dotenv import load_dotenv
 
 from util.RenderRequest import RenderRequest
+from util.RenderSettings import RenderSettings
 
 LOGGER = logging.getLogger(__name__)
 
@@ -61,8 +62,7 @@ class RenderArchive(object):
             finish_time='',
             avg_frame=0,
             frame_map=None,
-            per_frame_samples=0,
-            resolution=''
+            render_settings=None
     ):
         if not frame_map:
             frame_map = []
@@ -75,8 +75,7 @@ class RenderArchive(object):
         self.finish_time = finish_time
         self.avg_frame = avg_frame
         self.frame_map = frame_map
-        self.per_frame_samples = per_frame_samples
-        self.resolution = resolution
+        self.render_settings = render_settings
 
     @classmethod
     def from_db(cls, uuid):
@@ -97,11 +96,10 @@ class RenderArchive(object):
         finish_time = data.get('finish_time') or ''
         avg_frame = data.get('avg_frame') or ''
         frame_map = data.get('frame_map') or ''
-        per_frame_samples = data.get('per_frame_samples') or ''
-        resolution = data.get('resolution') or ''
 
         render_request = RenderRequest.from_dict(data.get('render_request'))
         hardware_stats = HardwareStats.from_dict(data.get('hardware_stats'))
+        render_settings = RenderSettings.from_dict(data.get('render_settings'))
 
         return cls(
             uuid=uuid,
@@ -112,8 +110,7 @@ class RenderArchive(object):
             finish_time=finish_time,
             avg_frame=avg_frame,
             frame_map=frame_map,
-            per_frame_samples=per_frame_samples,
-            resolution=resolution
+            render_settings=render_settings
         )
 
     def copy(self):
@@ -126,8 +123,7 @@ class RenderArchive(object):
             finish_time=self.finish_time,
             avg_frame=self.avg_frame,
             frame_map=self.frame_map,
-            per_frame_samples=self.per_frame_samples,
-            resolution=self.resolution
+            render_settings=self.render_settings
         )
 
     def to_dict(self):
@@ -136,6 +132,8 @@ class RenderArchive(object):
             copy.render_request = self.render_request.to_dict()
         if self.hardware_stats:
             copy.hardware_stats = self.hardware_stats.to_dict()
+        if self.render_settings:
+            copy.render_settings = self.render_settings.to_dict()
         return copy.__dict__
 
     def write_json(self):

@@ -108,7 +108,7 @@ def archive_request(uuid):
 
     args = content.split(";")
     renderRequest = RenderRequest.RenderRequest.from_db(uuid)
-    if (not renderRequest) or len(args) != 7:
+    if (not renderRequest) or len(args) != 5:
         return {}
 
     print(args)
@@ -159,8 +159,6 @@ def buildArchive(uuid, renderRequest, metadata):
     renderArchive.finish_time = metadata[2]
     renderArchive.avg_frame = int(metadata[3])
     renderArchive.frame_map = metadata[4].split(",")
-    renderArchive.per_frame_samples = int(metadata[5])
-    renderArchive.resolution = metadata[6]
 
     renderArchive.total_time = str(
         datetime.strptime(renderArchive.finish_time, "%m/%d/%Y, %H:%M:%S") - datetime.strptime(

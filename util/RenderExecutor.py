@@ -144,8 +144,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.send_http_request(
             "{}/archive/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
-            '{};{};{};{};{};{};{}'.format(self.project_name, hardwareStats, finishTime, avgFrame, frameMapStringified,
-                                          perFrameSamples, resolution),
+            '{};{};{};{};{}'.format(self.project_name, hardwareStats, finishTime, avgFrame, frameMapStringified),
             unreal.Map(str, str)
         )
 
