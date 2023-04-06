@@ -105,28 +105,15 @@ def create_request():
 @app.put('/api/archive/<uuid>')
 def archive_request(uuid):
     content = request.data.decode('utf-8')
+
     args = content.split(";")
+    renderRequest = RenderRequest.RenderRequest.from_db(uuid)
+    if (not renderRequest) or len(args) != 7:
+        return {}
+
     print(args)
 
-    if len(args) != 7:
-        return {}
-
-    renderRequest = RenderRequest.RenderRequest.from_db(uuid)
-    if not renderRequest:
-        return {}
-
-    renderArchive = RenderArchive.RenderArchive(uuid=uuid, render_request=renderRequest)
-    renderArchive.project_name = args[0]
-    renderArchive.hardware_stats = HardwareStats.from_dict(eval(args[1]))
-    renderArchive.finish_time = args[2]
-    renderArchive.avg_frame = int(args[3])
-    renderArchive.frame_map = args[4].split(",")
-    renderArchive.per_frame_samples = int(args[5])
-    renderArchive.resolution = args[6]
-
-    renderArchive.total_time = str(datetime.strptime(renderArchive.finish_time, "%m/%d/%Y, %H:%M:%S") - datetime.strptime(
-        renderRequest.time_created, "%m/%d/%Y, %H:%M:%S"))
-
+    renderArchive = buildArchive(uuid, renderRequest, args)
     renderArchive.write_json()
 
     return renderArchive.to_dict()
@@ -163,6 +150,23 @@ def new_request_trigger(req):
 def assign_request(req, worker):
     req.assign(worker)
     req.update(status=RenderRequest.RenderStatus.ready_to_start)
+
+
+def buildArchive(uuid, renderRequest, metadata):
+    renderArchive = RenderArchive.RenderArchive(uuid=uuid, render_request=renderRequest)
+    renderArchive.project_name = metadata[0]
+    renderArchive.hardware_stats = HardwareStats.from_dict(eval(metadata[1]))
+    renderArchive.finish_time = metadata[2]
+    renderArchive.avg_frame = int(metadata[3])
+    renderArchive.frame_map = metadata[4].split(",")
+    renderArchive.per_frame_samples = int(metadata[5])
+    renderArchive.resolution = metadata[6]
+
+    renderArchive.total_time = str(
+        datetime.strptime(renderArchive.finish_time, "%m/%d/%Y, %H:%M:%S") - datetime.strptime(
+            renderRequest.time_created, "%m/%d/%Y, %H:%M:%S"))
+
+    return renderArchive
 
 
 if __name__ == '__main__':
