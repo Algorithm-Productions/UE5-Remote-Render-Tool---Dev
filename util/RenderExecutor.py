@@ -16,12 +16,14 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
     pipeline = unreal.uproperty(unreal.MoviePipeline)
     job_id = unreal.uproperty(unreal.Text)
     project_name = unreal.uproperty(unreal.Text)
+    jobConfig = unreal.uproperty(unreal.MoviePipelineMasterConfig)
 
     def _post_init(self):
         self.pipeline = None
         self.queue = None
         self.job_id = ""
         self.project_name = ""
+        self.jobConfig = None
 
         self.http_response_recieved_delegate.add_function_unique(
             self,
@@ -47,6 +49,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         u_preset = unreal.SystemLibrary. \
             conv_soft_obj_path_to_soft_obj_ref(preset_path)
         job.set_configuration(u_preset)
+        self.jobConfig = job.get_configuration()
 
         return job
 
@@ -133,8 +136,10 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         finishTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         avgFrame = 0
         frameMapStringified = ",".join(["1", "2", "3", "4", "5"])
-        perFrameSamples = 0
-        resolution = ''
+        perFrameSamples = self.jobConfig.find_setting_by_class(
+            unreal.MoviePipelineAntiAliasingSetting).spatial_sample_count * self.jobConfig.find_setting_by_class(
+            unreal.MoviePipelineAntiAliasingSetting).temporal_sample_count
+        resolution = getRes(self.jobConfig.find_setting_by_class(unreal.MoviePipelineOutputSetting).output_resolution)
 
         self.send_http_request(
             "{}/archive/{}".format(Client.SERVER_API_URL, self.job_id),
@@ -176,3 +181,7 @@ def getProjectName(path):
         return ''
 
     return splitFile[0]
+
+
+def getRes(intPoint):
+    return str(intPoint.x) + "x" + str(intPoint.y)
