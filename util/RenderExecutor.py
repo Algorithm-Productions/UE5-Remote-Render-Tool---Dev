@@ -15,11 +15,13 @@ from util.RenderArchive import HardwareStats
 class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
     pipeline = unreal.uproperty(unreal.MoviePipeline)
     job_id = unreal.uproperty(unreal.Text)
+    project_name = unreal.uproperty(unreal.Text)
 
     def _post_init(self):
         self.pipeline = None
         self.queue = None
         self.job_id = ""
+        self.project_name = ""
 
         self.http_response_recieved_delegate.add_function_unique(
             self,
@@ -34,6 +36,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.job_id = cmd_parameters['JobId']
         self.sequence_path = cmd_parameters['LevelSequence']
         self.config_path = cmd_parameters['MoviePipelineConfig']
+        self.project_name = getProjectName(cmd_parameters["ProjectPath"])
 
     def add_job(self):
         job = self.queue.allocate_new_job(unreal.MoviePipelineExecutorJob)
@@ -124,7 +127,6 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             unreal.Map(str, str)
         )
 
-        projectName = ''
         hardwareStats = HardwareStats(platform.node(), platform.processor(), GPUtil.getGPUs()[0].name,
                                       get_size(psutil.virtual_memory().total),
                                       GPUtil.getGPUs()[0].memoryTotal).to_dict()
@@ -137,7 +139,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.send_http_request(
             "{}/archive/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
-            '{};{};{};{};{};{};{}'.format(projectName, hardwareStats, finishTime, avgFrame, frameMapStringified,
+            '{};{};{};{};{};{};{}'.format(self.project_name, hardwareStats, finishTime, avgFrame, frameMapStringified,
                                           perFrameSamples, resolution),
             unreal.Map(str, str)
         )
@@ -159,3 +161,18 @@ def get_size(bytes, suffix="B"):
         if bytes < factor:
             return f"{bytes:.2f}{unit}{suffix}"
         bytes /= factor
+
+
+def getProjectName(path):
+    if not path:
+        return ''
+
+    splitPath = path.split("\\")
+    if len(splitPath) == 0:
+        return ''
+
+    splitFile = splitPath[-1].split(".")
+    if len(splitFile) == 0:
+        return ''
+
+    return splitFile[0]

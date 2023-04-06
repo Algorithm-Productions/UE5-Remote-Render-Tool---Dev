@@ -25,6 +25,7 @@ def render(uuid, project_path, level_path, sequence_path, config_path):
 
         level_path,
         "-JobId={}".format(uuid),
+        "-ProjectPath={}".format(project_path),
         "-LevelSequence={}".format(sequence_path),
         "-MoviePipelineConfig={}".format(config_path),
 
