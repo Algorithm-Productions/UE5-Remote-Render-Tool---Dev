@@ -181,18 +181,20 @@ def getProjectName(path):
     return splitFile[0]
 
 
+def getOutputTypes(configs):
+    pass
+
+
 def getRenderSettings(masterConfig):
     outputTypes = []
     renderTypes = []
-    aaSettings = None
-    consoleSettings = None
-    highResSettings = None
-    outputSettings = None
+    aaSettings = AASettings.from_unreal(masterConfig.find_setting_by_class(unreal.MoviePipelineAntiAliasingSetting))
+    consoleSettings = ConsoleSettings.from_unreal(
+        masterConfig.find_setting_by_class(unreal.MoviePipelineConsoleVariableSetting))
+    highResSettings = HighResSettings.from_unreal(
+        masterConfig.find_setting_by_class(unreal.MoviePipelineHighResSetting))
+    outputSettings = OutputSettings.from_unreal(masterConfig.find_setting_by_class(unreal.MoviePipelineOutputSetting))
 
     return RenderSettings(output_types=outputTypes, render_types=renderTypes, aa_settings=aaSettings,
                           console_settings=consoleSettings, high_res_settings=highResSettings,
                           output_settings=outputSettings)
-
-
-def getRes(intPoint):
-    return str(intPoint.x) + "x" + str(intPoint.y)

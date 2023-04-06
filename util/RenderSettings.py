@@ -41,6 +41,19 @@ class AASettings(object):
             engineWarmUpCount=engineWarmUpCount
         )
 
+    @classmethod
+    def from_unreal(cls, unrealClass):
+        return cls(
+            spatialSampleCount=unrealClass.spatial_sample_count,
+            temporalSampleCount=unrealClass.temporal_sample_count,
+            overrideAA=unrealClass.override_anti_aliasing,
+            aaMethod=str(unrealClass.anti_aliasing_method),
+            useCameraCutForWarmUp=unrealClass.use_camera_cut_for_warm_up,
+            renderWarmUpFrames=unrealClass.render_warm_up_frames,
+            renderWarmUpCount=unrealClass.render_warm_up_count,
+            engineWarmUpCount=unrealClass.engine_warm_up_count
+        )
+
     def to_dict(self):
         return self.__dict__
 
@@ -65,7 +78,7 @@ class ConsoleSettings(object):
 
     @classmethod
     def from_dict(cls, data):
-        consoleVariables = (eval(data["consoleVariables"]) or {}) if data else {}
+        consoleVariables = (data["consoleVariables"] or {}) if data else {}
         startConsoleCommands = (data["consoleVariables"] or []) if data else []
         endConsoleCommands = (data["endConsoleCommands"] or []) if data else []
 
@@ -73,6 +86,14 @@ class ConsoleSettings(object):
             consoleVariables=consoleVariables,
             startConsoleCommands=startConsoleCommands,
             endConsoleCommands=endConsoleCommands
+        )
+
+    @classmethod
+    def from_unreal(cls, unrealClass):
+        return cls(
+            consoleVariables=str(unrealClass.console_variables),
+            startConsoleCommands=str(unrealClass.start_console_commands),
+            endConsoleCommands=str(unrealClass.end_console_commands)
         )
 
     def to_dict(self):
@@ -108,6 +129,16 @@ class HighResSettings(object):
             overlapRatio=overlapRatio,
             overrideSubSurfaceScattering=overrideSubSurfaceScattering,
             burleySampleCount=burleySampleCount
+        )
+
+    @classmethod
+    def from_unreal(cls, unrealClass):
+        return cls(
+            tileCount=unrealClass.tile_count,
+            textureSharpnessBias=unrealClass.texture_sharpness_bias,
+            overlapRatio=unrealClass.overlap_ratio,
+            overrideSubSurfaceScattering=unrealClass.override_sub_surface_scattering,
+            burleySampleCount=unrealClass.burley_sample_count
         )
 
     def to_dict(self):
@@ -187,6 +218,27 @@ class OutputSettings(object):
             customEndFrame=customEndFrame,
             versionNumber=versionNumber,
             autoVersion=autoVersion
+        )
+
+    @classmethod
+    def from_unreal(cls, unrealClass):
+        return cls(
+            outputDirectory=unrealClass.output_directory.path,
+            fileNameFormat=unrealClass.file_name_format,
+            outputResolutionX=unrealClass.output_resolution.x,
+            outputResolutionY=unrealClass.output_resolution.y,
+            useCustomFrameRate=unrealClass.use_custom_frame_rate,
+            outputFrameRate=unrealClass.output_frame_rate.numerator,
+            overrideExistingOutput=unrealClass.override_existing_output,
+            zeroPadFrameNumbers=unrealClass.zero_pad_frame_numbers,
+            frameNumberOffset=unrealClass.frame_number_offset,
+            handleFrameCount=unrealClass.handle_frame_count,
+            outputFrameStep=unrealClass.output_frame_step,
+            useCustomPlaybackRange=unrealClass.use_custom_playback_range,
+            customStartFrame=unrealClass.custom_start_frame,
+            customEndFrame=unrealClass.custom_end_frame,
+            versionNumber=unrealClass.version_number,
+            autoVersion=unrealClass.auto_version
         )
 
     def to_dict(self):
