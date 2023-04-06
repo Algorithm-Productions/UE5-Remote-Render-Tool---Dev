@@ -9,6 +9,7 @@ import unreal
 from util import Client
 from util import RenderRequest
 from util.RenderArchive import HardwareStats
+from util.RenderSettings import RenderSettings, AASettings, ConsoleSettings, HighResSettings, OutputSettings
 
 
 @unreal.uclass()
@@ -136,15 +137,13 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         finishTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         avgFrame = 0
         frameMapStringified = ",".join(["1", "2", "3", "4", "5"])
-        perFrameSamples = self.jobConfig.find_setting_by_class(
-            unreal.MoviePipelineAntiAliasingSetting).spatial_sample_count * self.jobConfig.find_setting_by_class(
-            unreal.MoviePipelineAntiAliasingSetting).temporal_sample_count
-        resolution = getRes(self.jobConfig.find_setting_by_class(unreal.MoviePipelineOutputSetting).output_resolution)
+        renderSettings = str(getRenderSettings(self.jobConfig).to_dict())
 
         self.send_http_request(
             "{}/archive/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
-            '{};{};{};{};{}'.format(self.project_name, hardwareStats, finishTime, avgFrame, frameMapStringified),
+            '{};{};{};{};{};{}'.format(self.project_name, hardwareStats, finishTime, avgFrame, frameMapStringified,
+                                       renderSettings),
             unreal.Map(str, str)
         )
 
@@ -180,6 +179,19 @@ def getProjectName(path):
         return ''
 
     return splitFile[0]
+
+
+def getRenderSettings(masterConfig):
+    outputTypes = []
+    renderTypes = []
+    aaSettings = None
+    consoleSettings = None
+    highResSettings = None
+    outputSettings = None
+
+    return RenderSettings(output_types=outputTypes, render_types=renderTypes, aa_settings=aaSettings,
+                          console_settings=consoleSettings, high_res_settings=highResSettings,
+                          output_settings=outputSettings)
 
 
 def getRes(intPoint):

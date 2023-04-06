@@ -1,5 +1,5 @@
-class AASettings:
-    def __int__(
+class AASettings(object):
+    def __init__(
             self,
             spatialSampleCount=0,
             temporalSampleCount=0,
@@ -45,8 +45,8 @@ class AASettings:
         return self.__dict__
 
 
-class ConsoleSettings:
-    def __int__(
+class ConsoleSettings(object):
+    def __init__(
             self,
             consoleVariables=None,
             startConsoleCommands=None,
@@ -79,8 +79,8 @@ class ConsoleSettings:
         return self.__dict__
 
 
-class HighResSettings:
-    def __int__(
+class HighResSettings(object):
+    def __init__(
             self,
             tileCount=0,
             textureSharpnessBias=0.0,
@@ -114,8 +114,8 @@ class HighResSettings:
         return self.__dict__
 
 
-class OutputSettings:
-    def __int__(
+class OutputSettings(object):
+    def __init__(
             self,
             outputDirectory='',
             fileNameFormat='',
@@ -196,18 +196,20 @@ class OutputSettings:
 class RenderSettings(object):
     def __init__(
             self,
-            output_type='',
-            enabled_render_types=None,
+            output_types=None,
+            render_types=None,
             aa_settings=None,
             console_settings=None,
             high_res_settings=None,
             output_settings=None
     ):
-        if not enabled_render_types:
-            enabled_render_types = []
+        if not output_types:
+            output_types = []
+        if not render_types:
+            render_types = []
 
-        self.output_type = output_type
-        self.enabled_render_types = enabled_render_types
+        self.output_types = output_types
+        self.render_types = render_types
         self.aa_settings = aa_settings
         self.console_settings = console_settings
         self.high_res_settings = high_res_settings
@@ -215,16 +217,16 @@ class RenderSettings(object):
 
     @classmethod
     def from_dict(cls, data):
-        output_type = (data["output_type"] or '') if data else ''
-        enabled_render_types = (data["enabled_render_types"] or '') if data else ''
+        output_types = (data["output_types"] or []) if data else []
+        render_types = (data["render_types"] or []) if data else []
         aa_settings = (AASettings.from_dict(data.get('aa_settings'))) if data else None
         console_settings = (ConsoleSettings.from_dict(data.get('console_settings'))) if data else None
         high_res_settings = (HighResSettings.from_dict(data.get('high_res_settings'))) if data else None
         output_settings = (OutputSettings.from_dict(data.get('output_settings'))) if data else None
 
         return cls(
-            output_type=output_type,
-            enabled_render_types=enabled_render_types,
+            output_types=output_types,
+            render_types=render_types,
             aa_settings=aa_settings,
             console_settings=console_settings,
             high_res_settings=high_res_settings,
@@ -233,8 +235,8 @@ class RenderSettings(object):
 
     def copy(self):
         return RenderSettings(
-            output_type=self.output_type,
-            enabled_render_types=self.enabled_render_types,
+            output_types=self.output_types,
+            render_types=self.render_types,
             aa_settings=self.aa_settings,
             console_settings=self.console_settings,
             high_res_settings=self.high_res_settings,
@@ -244,12 +246,12 @@ class RenderSettings(object):
     def to_dict(self):
         copy = self.copy()
         if self.aa_settings:
-            copy.render_request = self.aa_settings.to_dict()
+            copy.aa_settings = self.aa_settings.to_dict()
         if self.console_settings:
-            copy.render_request = self.console_settings.to_dict()
+            copy.console_settings = self.console_settings.to_dict()
         if self.high_res_settings:
-            copy.render_request = self.high_res_settings.to_dict()
+            copy.high_res_settings = self.high_res_settings.to_dict()
         if self.output_settings:
-            copy.render_request = self.output_settings.to_dict()
+            copy.output_settings = self.output_settings.to_dict()
 
         return copy.__dict__

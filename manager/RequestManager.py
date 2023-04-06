@@ -12,6 +12,7 @@ from flask import render_template
 
 from util import RenderRequest, RenderArchive
 from util.RenderArchive import HardwareStats
+from util.RenderSettings import RenderSettings
 
 load_dotenv()
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -108,7 +109,7 @@ def archive_request(uuid):
 
     args = content.split(";")
     renderRequest = RenderRequest.RenderRequest.from_db(uuid)
-    if (not renderRequest) or len(args) != 5:
+    if (not renderRequest) or len(args) != 6:
         return {}
 
     print(args)
@@ -159,6 +160,7 @@ def buildArchive(uuid, renderRequest, metadata):
     renderArchive.finish_time = metadata[2]
     renderArchive.avg_frame = int(metadata[3])
     renderArchive.frame_map = metadata[4].split(",")
+    renderArchive.render_settings = RenderSettings.from_dict(eval(metadata[5]))
 
     renderArchive.total_time = str(
         datetime.strptime(renderArchive.finish_time, "%m/%d/%Y, %H:%M:%S") - datetime.strptime(
