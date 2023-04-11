@@ -62,11 +62,21 @@ def archive_page():
     return render_template('archive.html', requests=jsons)
 
 
+@app.route('/archive/<uuid>')
+def archive_entry(uuid):
+    rr = RenderArchive.RenderArchive.from_db(uuid)
+
+    return render_template('archive_entry.html', entry=rr, uuid=uuid)
+
+
 @app.route("/set")
 @app.route("/set/<theme>")
 def set_theme(theme="lightmode-index_page"):
     args = theme.split("-")
-    res = make_response(redirect(url_for(args[1])))
+    if len(args) == 3:
+        res = make_response(redirect(url_for(args[1], uuid=args[2])))
+    else:
+        res = make_response(redirect(url_for(args[1])))
     res.set_cookie("theme", args[0])
     return res
 
@@ -103,6 +113,23 @@ def create_request():
     return req.to_dict()
 
 
+@app.put('/api/put/<uuid>')
+def update_request(uuid):
+    content = request.data.decode('utf-8')
+    progress, time_estimate, status = content.split(';')
+
+    rr = RenderRequest.RenderRequest.from_db(uuid)
+    if not rr:
+        return {}
+
+    rr.update(
+        progress=int(float(progress)),
+        time_estimate=time_estimate,
+        status=status
+    )
+    return rr.to_dict()
+
+
 @app.put('/api/archive/post/<uuid>')
 def archive_request(uuid):
     content = request.data.decode('utf-8')
@@ -123,23 +150,6 @@ def archive_request(uuid):
 @app.delete('/api/archive/delete/<uuid>')
 def delete_archive(uuid):
     RenderArchive.remove_db(uuid)
-
-
-@app.put('/api/put/<uuid>')
-def update_request(uuid):
-    content = request.data.decode('utf-8')
-    progress, time_estimate, status = content.split(';')
-
-    rr = RenderRequest.RenderRequest.from_db(uuid)
-    if not rr:
-        return {}
-
-    rr.update(
-        progress=int(float(progress)),
-        time_estimate=time_estimate,
-        status=status
-    )
-    return rr.to_dict()
 
 
 def new_request_trigger(req):

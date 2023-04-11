@@ -52,7 +52,7 @@ function createArchiveTable(list){
 
 
 function navigateToPage(element) {
-    console.log(element)
+    window.location.replace(`http://127.0.0.1:5000/archive/${element.uuid}`)
 }
 
 async function deleteArchive(element) {
