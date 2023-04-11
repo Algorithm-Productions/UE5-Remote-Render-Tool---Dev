@@ -77,7 +77,7 @@ def get_all_requests():
     if not rrequests:
         return {"results": []}
 
-    jsons = [rrequest.to_dict() for rrequest in rrequests]
+    jsons = [rrequest.to_dict() if rrequest else {} for rrequest in rrequests]
 
     return {"results": jsons}
 
@@ -103,7 +103,7 @@ def create_request():
     return req.to_dict()
 
 
-@app.put('/api/archive/<uuid>')
+@app.put('/api/archive/post/<uuid>')
 def archive_request(uuid):
     content = request.data.decode('utf-8')
 
@@ -118,6 +118,11 @@ def archive_request(uuid):
     renderArchive.write_json()
 
     return renderArchive.to_dict()
+
+
+@app.delete('/api/archive/delete/<uuid>')
+def delete_archive(uuid):
+    RenderArchive.remove_db(uuid)
 
 
 @app.put('/api/put/<uuid>')

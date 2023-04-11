@@ -121,6 +121,9 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
         time.sleep(1)
 
+        unreal.log("CONFIG DUMP")
+        unreal.log(self.jobConfig.get_all_settings())
+
         progress = 100
         time_estimate = 'N/A'
         status = RenderRequest.RenderStatus.finished
@@ -140,7 +143,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         renderSettings = str(getRenderSettings(self.jobConfig).to_dict())
 
         self.send_http_request(
-            "{}/archive/{}".format(Client.SERVER_API_URL, self.job_id),
+            "{}/archive/post/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
             '{};{};{};{};{};{}'.format(self.project_name, hardwareStats, finishTime, avgFrame, frameMapStringified,
                                        renderSettings),
@@ -181,13 +184,54 @@ def getProjectName(path):
     return splitFile[0]
 
 
-def getOutputTypes(configs):
-    pass
+def checkRenderType(setting):
+    if type(setting) == unreal.MoviePipelineDeferredPassBase:
+        return "Deferred Rendering (Base)"
+    elif type(setting) == unreal.MoviePipelineDeferredPass_PathTracer:
+        return "Path Tracer"
+    elif type(setting) == unreal.MoviePipelineDeferredPass_DetailLighting:
+        return "Deferred Rendering (Detail Lighting)"
+    elif type(setting) == unreal.MoviePipelineDeferredPass_LightingOnly:
+        return "Deferred Rendering (Lighting Only)"
+    elif type(setting) == unreal.MoviePipelineDeferredPass_ReflectionsOnly:
+        return "Deferred Rendering (Reflections Only)"
+    elif type(setting) == unreal.MoviePipelineDeferredPass_Unlit:
+        return "Deferred Rendering (Unlit)"
+    elif type(setting) == unreal.MoviePipelinePanoramicPass:
+        return "Panoramic Rendering"
+    else:
+        return ''
+
+
+def checkOutputType(setting):
+    if type(setting) == unreal.MoviePipelineImageSequenceOutput_BMP:
+        return "BMP"
+    elif type(setting) == unreal.MoviePipelineImageSequenceOutput_EXR:
+        return "EXR"
+    elif type(setting) == unreal.MoviePipelineImageSequenceOutput_JPG:
+        return "JPG"
+    elif type(setting) == unreal.MoviePipelineImageSequenceOutput_PNG:
+        return "PNG"
+    else:
+        return ''
+
+
+def getOutputAndRenderTypes(configs):
+    outputTypes = []
+    renderTypes = []
+    for setting in configs:
+        output = checkOutputType(setting)
+        render = checkRenderType(setting)
+        if output != '':
+            outputTypes.append(output)
+        if render != '':
+            renderTypes.append(render)
+
+    return outputTypes, renderTypes
 
 
 def getRenderSettings(masterConfig):
-    outputTypes = []
-    renderTypes = []
+    outputTypes, renderTypes = getOutputAndRenderTypes(masterConfig.get_all_settings())
     aaSettings = AASettings.from_unreal(masterConfig.find_setting_by_class(unreal.MoviePipelineAntiAliasingSetting))
     consoleSettings = ConsoleSettings.from_unreal(
         masterConfig.find_setting_by_class(unreal.MoviePipelineConsoleVariableSetting))

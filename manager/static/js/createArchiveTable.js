@@ -13,8 +13,11 @@ function createArchiveTable(list){
         theader.innerHTML = metaCols[i];
         tr.appendChild(theader);
     }
-    const lastTHeader = document.createElement("th");
-    tr.appendChild(lastTHeader);
+    const infoTHead = document.createElement("th");
+    tr.appendChild(infoTHead);
+    const deleteTHead = document.createElement("th");
+    tr.appendChild(deleteTHead);
+
 
     for (let i = 0; i < list.length; i++) {
         const trow = table.insertRow(-1);
@@ -29,11 +32,17 @@ function createArchiveTable(list){
             cell.innerHTML = list[i][metaCols[j]];
         }
 
-        const btn = document.createElement("button")
-        btn.innerText = `🔗`
-        btn.className = 'copyBtn'
-        btn.addEventListener('click', () => openModal(list[i]), false)
-        trow.appendChild(btn)
+        const infoBtn = document.createElement("button")
+        infoBtn.innerText = `ℹ`
+        infoBtn.className = 'copyBtn'
+        infoBtn.addEventListener('click', () => navigateToPage(list[i]), false)
+        trow.appendChild(infoBtn)
+
+        const deleteBtn = document.createElement("button")
+        deleteBtn.innerText = `☓`
+        deleteBtn.className = 'copyBtn'
+        deleteBtn.addEventListener('click', () => deleteArchive(list[i]), false)
+        trow.appendChild(deleteBtn)
     }
 
     const el = document.getElementById("table");
@@ -41,8 +50,25 @@ function createArchiveTable(list){
     el.appendChild(table);
 }
 
-function openModal(item) {
-    console.log(item)
+
+function navigateToPage(element) {
+    console.log(element)
+}
+
+async function deleteArchive(element) {
+    console.log(element)
+
+    const response = await fetch(`http://127.0.0.1:5000/api/archive/delete/${element.uuid}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+
+    const resData = 'resource deleted...';
+
+    location.reload()
+    return resData;
 }
 
 

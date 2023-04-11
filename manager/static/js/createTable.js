@@ -9,6 +9,8 @@ function createTable(list){
 
         tr.appendChild(theader);
     }
+    const deleteTHead = document.createElement("th");
+    tr.appendChild(deleteTHead);
 
     for (let i = 0; i < list.length; i++) {
         const trow = table.insertRow(-1);
@@ -61,6 +63,11 @@ function createTable(list){
             }
 
         }
+        const deleteBtn = document.createElement("button")
+        deleteBtn.innerText = `☓`
+        deleteBtn.className = 'copyBtn'
+        deleteBtn.addEventListener('click', () => deleteEntry(list[i]), false)
+        trow.appendChild(deleteBtn)
     }
 
     const el = document.getElementById("table");
@@ -71,6 +78,22 @@ function createTable(list){
 
 function handleClick(path) {
     navigator.clipboard.writeText(path).catch(e => console.error(e.message))
+}
+
+async function deleteEntry(element) {
+    console.log(element)
+
+    const response = await fetch(`http://127.0.0.1:5000/api/delete/${element.uuid}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+
+    const resData = 'resource deleted...';
+
+    location.reload()
+    return resData;
 }
 
 
