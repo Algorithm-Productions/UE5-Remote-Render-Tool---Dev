@@ -156,12 +156,12 @@ def delete_archive(uuid):
 
 
 @app.put('/api/notification/post/')
-def archive_request():
+def render_notification():
     content = request.data.decode('utf-8')
 
     args = content.split(";")
     renderRequest = RenderRequest.RenderRequest.from_db(args[0])
-    if (not renderRequest) or len(args) != 6:
+    if (not renderRequest) or len(args) != 5:
         return {}
 
     print(args)
@@ -173,7 +173,7 @@ def archive_request():
 
 
 @app.delete('/api/notification/delete/<uuid>')
-def delete_archive(uuid):
+def delete_notification(uuid):
     RenderNotification.remove_db(uuid)
 
 

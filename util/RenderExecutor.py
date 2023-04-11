@@ -9,6 +9,7 @@ import unreal
 from util import Client
 from util import RenderRequest
 from util.RenderArchive import HardwareStats
+from util.RenderNotification import NotificationType
 from util.RenderSettings import RenderSettings, AASettings, ConsoleSettings, HighResSettings, OutputSettings
 
 
@@ -31,6 +32,11 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             "on_http_response_received"
         )
 
+        ERROR_CALLBACK = unreal.OnMoviePipelineExecutorErrored()
+        ERROR_CALLBACK.add_callable(self.error_implementation)
+
+        self.on_executor_errored_delegate(ERROR_CALLBACK)
+
     def parse_argument(self):
         (cmd_tokens, cmd_switches, cmd_parameters) = unreal.SystemLibrary. \
             parse_command_line(unreal.SystemLibrary.get_command_line())
@@ -42,6 +48,15 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.project_name = getProjectName(cmd_parameters["ProjectPath"])
 
     def add_job(self):
+        self.send_http_request(
+            "{}/notification/post/".format(Client.SERVER_API_URL),
+            "PUT",
+            '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                    "Job {} Began Rendering!".format(self.job_id),
+                                    "Job {} Began Rendering!".format(self.job_id), NotificationType.INFO),
+            unreal.Map(str, str)
+        )
+
         job = self.queue.allocate_new_job(unreal.MoviePipelineExecutorJob)
         job.map = unreal.SoftObjectPath(self.level_path)
         job.sequence = unreal.SoftObjectPath(self.sequence_path)
@@ -121,6 +136,25 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
         time.sleep(1)
 
+        if is_errored:
+            self.send_http_request(
+                "{}/notification/post/".format(Client.SERVER_API_URL),
+                "PUT",
+                '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                        "Job {} Errored!".format(self.job_id),
+                                        "...", NotificationType.ERROR),
+                unreal.Map(str, str)
+            )
+        else:
+            self.send_http_request(
+                "{}/notification/post/".format(Client.SERVER_API_URL),
+                "PUT",
+                '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                        "Job {} Finished Rendering!".format(self.job_id),
+                                        "Job {} Finished Rendering!".format(self.job_id), NotificationType.INFO),
+                unreal.Map(str, str)
+            )
+
         unreal.log("CONFIG DUMP")
         unreal.log(self.jobConfig.get_all_settings())
 
@@ -149,6 +183,19 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                                        renderSettings),
             unreal.Map(str, str)
         )
+
+    @unreal.ufunction(ret=None, params=[unreal.MoviePipeline, bool, unreal.Text])
+    def error_implementation(self, executor, pipeline, fatal, error_reason):
+        self.send_http_request(
+            "{}/notification/post/".format(Client.SERVER_API_URL),
+            "PUT",
+            '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                    "Job {} Errored!".format(self.job_id),
+                                    "...", NotificationType.ERROR),
+            unreal.Map(str, str)
+        )
+
+        return "NO"
 
     @unreal.ufunction(ret=None, params=[unreal.MoviePipelineOutputData])
     def on_pipeline_finished(self, results):
