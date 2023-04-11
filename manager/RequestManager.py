@@ -3,6 +3,7 @@ import logging
 import time
 import os
 from datetime import datetime
+import uuid as genUUID
 
 from dotenv import load_dotenv
 
@@ -10,7 +11,8 @@ from flask import Flask, send_from_directory, make_response, redirect, url_for
 from flask import request
 from flask import render_template
 
-from util import RenderRequest, RenderArchive
+from util import RenderRequest, RenderArchive, RenderNotification
+from util.RenderNotification import NotificationType
 from util.RenderArchive import HardwareStats
 from util.RenderSettings import RenderSettings
 
@@ -153,6 +155,28 @@ def delete_archive(uuid):
     RenderArchive.remove_db(uuid)
 
 
+@app.put('/api/notification/post/')
+def archive_request():
+    content = request.data.decode('utf-8')
+
+    args = content.split(";")
+    renderRequest = RenderRequest.RenderRequest.from_db(args[0])
+    if (not renderRequest) or len(args) != 6:
+        return {}
+
+    print(args)
+
+    renderNotification = buildNotification(args[0], args)
+    renderNotification.write_json()
+
+    return renderNotification.to_dict()
+
+
+@app.delete('/api/notification/delete/<uuid>')
+def delete_archive(uuid):
+    RenderNotification.remove_db(uuid)
+
+
 def new_request_trigger(req):
     if req.worker:
         req.update(status=RenderRequest.RenderStatus.ready_to_start)
@@ -183,6 +207,12 @@ def buildArchive(uuid, renderRequest, metadata):
             renderRequest.time_created, "%m/%d/%Y, %H:%M:%S"))
 
     return renderArchive
+
+
+def buildNotification(jobUUID, metadata):
+    return RenderNotification.RenderNotification(uuid=str(genUUID.uuid4())[:5], jobUUID=jobUUID, timestamp=metadata[1],
+                                                 message=metadata[3], log=metadata[3],
+                                                 notificationType=NotificationType.from_string(metadata[4]))
 
 
 if __name__ == '__main__':
