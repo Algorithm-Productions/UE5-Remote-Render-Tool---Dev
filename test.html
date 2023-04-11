@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+<div class="row">
+    <div class="col">
+        <h5> Console Settings </h5>
+        <p><strong>Console Variables:</strong> {{ entry.render_settings.console_settings.consoleVariables }}</p>
+        <p><strong>Start Console Commands:</strong> {{ entry.render_settings.console_settings.startConsoleCommands }}
+        </p>
+        <p><strong>End Console Commands:</strong> {{ entry.render_settings.console_settings.endConsoleCommands }}</p>
+    </div>
+    <div class="col">
+        <h5> High Res Settings </h5>
+        <p><strong>Tile Count:</strong> {{ entry.render_settings.high_res_settings.tileCount }}</p>
+        <p><strong>Texture Sharpness Bias:</strong> {{ entry.render_settings.high_res_settings.textureSharpnessBias }}
+        </p>
+        <p><strong>Overlap Ratio:</strong> {{ entry.render_settings.high_res_settings.overlapRatio }}</p>
+        <p><strong>Override SubSurface
+            Scattering:</strong> {{ entry.render_settings.high_res_settings.overrideSubSurfaceScattering }}</p>
+        <p><strong>Burley Sample Count:</strong> {{ entry.render_settings.high_res_settings.burleySampleCount }}</p>
+    </div>
+</div>
+</body>
+</html>

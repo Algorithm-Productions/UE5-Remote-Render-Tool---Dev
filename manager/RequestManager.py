@@ -65,8 +65,9 @@ def archive_page():
 @app.route('/archive/<uuid>')
 def archive_entry(uuid):
     rr = RenderArchive.RenderArchive.from_db(uuid)
+    print(rr)
 
-    return render_template('archive_entry.html', entry=rr, uuid=uuid)
+    return render_template('archive_entry.html', entry=rr.to_dict(), uuid=uuid)
 
 
 @app.route("/set")
