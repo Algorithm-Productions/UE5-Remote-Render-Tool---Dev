@@ -20,179 +20,202 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 </head>
 <body>
-    <div class="container-fluid headerBlock">
-        <div class="row">
-            <div class="col">
+<div class="container-fluid headerBlock">
+    <div class="row">
+        <div class="col">
+            {% if request.cookies.get("theme") == "darkmode" %}
+                <img src="../static/imgs/logo-darkmode.png">
+            {% else %}
+                <img src="../static/imgs/logo.png">
+            {% endif %}
+        </div>
+        <div class="col switchBlock">
+            <label class="switch">
                 {% if request.cookies.get("theme") == "darkmode" %}
-                    <img src="../static/imgs/logo-darkmode.png">
+                    <input type="checkbox" checked onclick="toggleMode('archive_entry')">
                 {% else %}
-                    <img src="../static/imgs/logo.png">
+                    <input type="checkbox" onclick="toggleMode('archive_entry')">
                 {% endif %}
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row mainTitleBlock">
+        <h1> Render Archive for {{ entry.render_request.name }} </h1>
+    </div>
+
+    <div class="row infoContainer center">
+        <div class="col-3 sideMenu">
+            <a onclick="handleSwitch(`generalInformation`)"><h3 id="generalInformationSelect" class="selected">General
+                Information</h3></a>
+            <a onclick="handleSwitch(`renderStatistics`)"><h3 id="renderStatisticsSelect">Render Statistics</h3></a>
+            <a onclick="handleSwitch(`hardwareInfo`)"><h3 id="hardwareInfoSelect">Hardware Info</h3></a>
+            <a onclick="handleSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
+            <a onclick="handleSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
+            <a onclick="handleSwitch(`consoleSettings`)"><h3 id="consoleSettingsSelect">Console Settings</h3></a>
+            <a onclick="handleSwitch(`highResSettings`)"><h3 id="highResSettingsSelect">High-Res Settings</h3></a>
+        </div>
+
+        <div id="generalInformation" class="col infoPanel">
+            <div class="row">
+                <div class="col">
+                    <p><strong>UUID:</strong> {{ entry.uuid }}</p>
+                    <p><strong>Job Name:</strong> {{ entry.render_request.name }}</p>
+                    <p><strong>Project Name:</strong> {{ entry.project_name }}</p>
+                    <p><strong>Level:</strong> {{ entry.render_request.level_path }}</p>
+                    <p><strong>Sequence:</strong> {{ entry.render_request.sequence_path }}</p>
+                    <p><strong>Output Path:</strong> {{ entry.render_request.output_path }}</p>
+                </div>
+                <div class="col">
+                    <p><strong>Time Created:</strong> {{ entry.render_request.time_created }}</p>
+                    <p><strong>Submitter:</strong> {{ entry.render_request.owner }}</p>
+                    <p><strong>Worker:</strong> {{ entry.render_request.worker }}</p>
+                    <p><strong>Output Types:</strong> {{ entry.render_settings.output_types }}</p>
+                    <p><strong>Render Passers:</strong> {{ entry.render_settings.render_types }}</p>
+                </div>
             </div>
-            <div class="col switchBlock">
-                <label class="switch">
-                    {% if request.cookies.get("theme") == "darkmode" %}
-                        <input type="checkbox" checked onclick="toggleMode('archive_entry')">
-                    {% else %}
-                        <input type="checkbox" onclick="toggleMode('archive_entry')">
+        </div>
+
+        <div id="renderStatistics" hidden class="col infoPanel">
+            <div class="row">
+                <div class="col">
+                    <p><strong>Total Time:</strong> {{ entry.total_time }}</p>
+                    <p><strong>Time Finished:</strong> {{ entry.finish_time }}</p>
+                    <p><strong>Avg. Frame Time:</strong> {{ entry.avg_frame }}</p>
+                </div>
+                <div class="col">
+                    <h1> INCOMING GRAPH </h1>
+                </div>
+            </div>
+        </div>
+
+        <div id="hardwareInfo" hidden class="col infoPanel">
+            <div class="row">
+                <div class="col">
+                    <p><strong>CPU:</strong> {{ entry.hardware_stats.cpu }}</p>
+                    <p><strong>GPU:</strong> {{ entry.hardware_stats.gpu }}</p>
+                    <p><strong>RAM:</strong> {{ entry.hardware_stats.ram }}</p>
+                    <p><strong>VRAM:</strong> {{ entry.hardware_stats.vram }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="outputSettings" hidden class="col infoPanel">
+            <div class="row">
+                <div class="col">
+                    <p><strong>Resolution:</strong> {{ entry.render_settings.output_settings.outputResolutionX }}
+                        x {{ entry.render_settings.output_settings.outputResolutionY }}</p>
+                    <p><strong>Use Custom Frame
+                        Rate:</strong> {{ entry.render_settings.output_settings.useCustomFrameRate }}</p>
+                    {% if entry.render_settings.output_settings.useCustomFrameRate %}
+                        <p><strong>Output Frame
+                            Rate:</strong> {{ entry.render_settings.output_settings.outputFrameRate }}</p>
                     {% endif %}
-                    <span class="slider round"></span>
-                </label>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid">
-        <div class="row mainTitleBlock">
-            <h1> Render Archive for {{ entry.render_request.name }} </h1>
-        </div>
-
-        <div class="row infoContainer center">
-            <div class="col-3 sideMenu">
-                <a onclick="handleSwitch(`generalInformation`)"><h3 id="generalInformationSelect">General Information</h3></a>
-                <a onclick="handleSwitch(`renderStatistics`)"><h3 id="renderStatisticsSelect">Render Statistics</h3></a>
-                <a onclick="handleSwitch(`hardwareInfo`)"><h3 id="hardwareInfoSelect">Hardware Info</h3></a>
-                <a onclick="handleSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
-                <a onclick="handleSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
-                <a onclick="handleSwitch(`consoleSettings`)"><h3 id="consoleSettingsSelect">Console Settings</h3></a>
-                <a onclick="handleSwitch(`highResSettings`)"><h3 id="highResSettingsSelect">High-Res Settings</h3></a>
-            </div>
-
-            <div id="generalInformation" class="col infoPanel">
-                <div class="row">
-                    <div class="col">
-                        <p><strong>UUID:</strong> {{ entry.uuid }}</p>
-                        <p><strong>Job Name:</strong> {{ entry.render_request.name }}</p>
-                        <p><strong>Project Name:</strong> {{ entry.project_name }}</p>
-                        <p><strong>Level:</strong> {{ entry.render_request.level_path }}</p>
-                        <p><strong>Sequence:</strong> {{ entry.render_request.sequence_path }}</p>
-                        <p><strong>Output Path:</strong> {{ entry.render_request.output_path }}</p>
-                    </div>
-                    <div class="col">
-                        <p><strong>Time Created:</strong> {{ entry.render_request.time_created }}</p>
-                        <p><strong>Submitter:</strong> {{ entry.render_request.owner }}</p>
-                        <p><strong>Worker:</strong> {{ entry.render_request.worker }}</p>
-                        <p><strong>Output Types:</strong> {{ entry.render_settings.output_types }}</p>
-                        <p><strong>Render Passers:</strong> {{ entry.render_settings.render_types }}</p>
-                    </div>
+                    <p><strong>Override Existing
+                        Output:</strong> {{ entry.render_settings.output_settings.overrideExistingOutput }}
+                    </p>
+                    <p><strong>Zero Pad Frame
+                        Numbers:</strong> {{ entry.render_settings.output_settings.zeroPadFrameNumbers }}</p>
+                    <p><strong>Frame Number
+                        Offset:</strong> {{ entry.render_settings.output_settings.frameNumberOffset }}</p>
+                    <p><strong>Handle Frame Count:</strong> {{ entry.render_settings.output_settings.handleFrameCount }}
+                    </p>
                 </div>
-            </div>
-
-            <div id="renderStatistics" hidden class="col infoPanel">
-                <div class="row">
-                    <div class="col">
-                        <p><strong>Total Time:</strong> {{ entry.total_time }}</p>
-                        <p><strong>Time Finished:</strong> {{ entry.finish_time }}</p>
-                        <p><strong>Avg. Frame Time:</strong> {{ entry.avg_frame }}</p>
-                    </div>
-                    <div class="col">
-                        <h1> INCOMING GRAPH </h1>
-                    </div>
-                </div>
-            </div>
-
-            <div id="hardwareInfo" hidden class="col infoPanel">
-                <div class="row">
-                    <div class="col">
-                        <p><strong>CPU:</strong> {{ entry.hardware_stats.cpu }}</p>
-                        <p><strong>GPU:</strong> {{ entry.hardware_stats.gpu }}</p>
-                        <p><strong>RAM:</strong> {{ entry.hardware_stats.ram }}</p>
-                        <p><strong>VRAM:</strong> {{ entry.hardware_stats.vram }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="outputSettings" hidden class="col infoPanel">
-                <div class="row">
-                    <div class="col">
-                        <p><strong>Resolution:</strong> {{ entry.render_settings.output_settings.outputResolutionX }}
-                            x {{ entry.render_settings.output_settings.outputResolutionY }}</p>
-                        <p><strong>Use Custom Frame Rate:</strong> {{ entry.render_settings.output_settings.useCustomFrameRate }}</p>
-                        {% if entry.render_settings.output_settings.useCustomFrameRate %}
-                            <p><strong>Output Frame Rate:</strong> {{ entry.render_settings.output_settings.outputFrameRate }}</p>
-                        {% endif %}
-                        <p><strong>Override Existing Output:</strong> {{ entry.render_settings.output_settings.overrideExistingOutput }}
+                <div class="col">
+                    <p><strong>Output Frame Step:</strong> {{ entry.render_settings.output_settings.outputFrameStep }}
+                    </p>
+                    <p><strong>Use Custom Playback
+                        Range:</strong> {{ entry.render_settings.output_settings.useCustomPlaybackRange }}</p>
+                    {% if entry.render_settings.output_settings.useCustomPlaybackRange %}
+                        <p><strong>Custom Start
+                            Frame:</strong> {{ entry.render_settings.output_settings.customStartFrame }}</p>
+                        <p><strong>Custom End Frame:</strong> {{ entry.render_settings.output_settings.customEndFrame }}
                         </p>
-                        <p><strong>Zero Pad Frame Numbers:</strong> {{ entry.render_settings.output_settings.zeroPadFrameNumbers }}</p>
-                        <p><strong>Frame Number Offset:</strong> {{ entry.render_settings.output_settings.frameNumberOffset }}</p>
-                        <p><strong>Handle Frame Count:</strong> {{ entry.render_settings.output_settings.handleFrameCount }}</p>
-                    </div>
-                    <div class="col">
-                        <p><strong>Output Frame Step:</strong> {{ entry.render_settings.output_settings.outputFrameStep }}</p>
-                        <p><strong>Use Custom Playback
-                            Range:</strong> {{ entry.render_settings.output_settings.useCustomPlaybackRange }}</p>
-                        {% if entry.render_settings.output_settings.useCustomPlaybackRange %}
-                            <p><strong>Custom Start Frame:</strong> {{ entry.render_settings.output_settings.customStartFrame }}</p>
-                            <p><strong>Custom End Frame:</strong> {{ entry.render_settings.output_settings.customEndFrame }}</p>
-                        {% endif %}
-                        <p><strong>Auto Versioning:</strong> {{ entry.render_settings.output_settings.autoVersion }}</p>
-                        {% if not entry.render_settings.output_settings.autoVersion %}
-                            <p><strong>Version Number:</strong> {{ entry.render_settings.output_settings.versionNumber }}</p>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <div id="aaSettings" hidden class="col infoPanel">
-                <div class="row">
-                    <div class="col">
-                        <p><strong>Spatial Sample Count:</strong> {{ entry.render_settings.aa_settings.spatialSampleCount }}</p>
-                        <p><strong>Temporal Sample Count:</strong> {{ entry.render_settings.aa_settings.temporalSampleCount }}</p>
-                        <p><strong>Override Anti-Aliasing:</strong> {{ entry.render_settings.aa_settings.overrideAA }}</p>
-                        <p><strong>Anti-Aliasing Method:</strong> {{ entry.render_settings.aa_settings.aaMethod }}</p>
-                    </div>
-                    <div class="col">
-                        <p><strong>Use Camera Cut For Warm Up:</strong> {{ entry.render_settings.aa_settings.useCameraCutForWarmUp }}
+                    {% endif %}
+                    <p><strong>Auto Versioning:</strong> {{ entry.render_settings.output_settings.autoVersion }}</p>
+                    {% if not entry.render_settings.output_settings.autoVersion %}
+                        <p><strong>Version Number:</strong> {{ entry.render_settings.output_settings.versionNumber }}
                         </p>
-                        <p><strong>Use Render Warm Up Frame:</strong> {{ entry.render_settings.aa_settings.renderWarmUpFrames }}</p>
-                        <p><strong>Render Warm Up Frame Count:</strong> {{ entry.render_settings.aa_settings.renderWarmUpCount }}</p>
-                        <p><strong>Engine Warm Up Frame Count:</strong> {{ entry.render_settings.aa_settings.engineWarmUpCount }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="consoleSettings" hidden class="col infoPanel">
-                <div class="row">
-                    <div class="col">
-                        <p><strong>Console Variables:</strong> {{ entry.render_settings.console_settings.consoleVariables }}</p>
-                        <p><strong>Start Console Commands:</strong> {{ entry.render_settings.console_settings.startConsoleCommands }}
-                        </p>
-                        <p><strong>End Console Commands:</strong> {{ entry.render_settings.console_settings.endConsoleCommands }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="highResSettings" hidden class="col infoPanel">
-                <div class="row">
-                    <div class="col">
-                        <p><strong>Tile Count:</strong> {{ entry.render_settings.high_res_settings.tileCount }}</p>
-                        <p><strong>Texture Sharpness Bias:</strong> {{ entry.render_settings.high_res_settings.textureSharpnessBias }}
-                        </p>
-                        <p><strong>Overlap Ratio:</strong> {{ entry.render_settings.high_res_settings.overlapRatio }}</p>
-                        <p><strong>Override SubSurface
-                            Scattering:</strong> {{ entry.render_settings.high_res_settings.overrideSubSurfaceScattering }}</p>
-                        <p><strong>Burley Sample Count:</strong> {{ entry.render_settings.high_res_settings.burleySampleCount }}</p>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
+        <div id="aaSettings" hidden class="col infoPanel">
+            <div class="row">
+                <div class="col">
+                    <p><strong>Spatial Sample Count:</strong> {{ entry.render_settings.aa_settings.spatialSampleCount }}
+                    </p>
+                    <p><strong>Temporal Sample
+                        Count:</strong> {{ entry.render_settings.aa_settings.temporalSampleCount }}</p>
+                    <p><strong>Override Anti-Aliasing:</strong> {{ entry.render_settings.aa_settings.overrideAA }}</p>
+                    <p><strong>Anti-Aliasing Method:</strong> {{ entry.render_settings.aa_settings.aaMethod }}</p>
+                </div>
+                <div class="col">
+                    <p><strong>Use Camera Cut For Warm
+                        Up:</strong> {{ entry.render_settings.aa_settings.useCameraCutForWarmUp }}
+                    </p>
+                    <p><strong>Use Render Warm Up
+                        Frame:</strong> {{ entry.render_settings.aa_settings.renderWarmUpFrames }}</p>
+                    <p><strong>Render Warm Up Frame
+                        Count:</strong> {{ entry.render_settings.aa_settings.renderWarmUpCount }}</p>
+                    <p><strong>Engine Warm Up Frame
+                        Count:</strong> {{ entry.render_settings.aa_settings.engineWarmUpCount }}</p>
+                </div>
+            </div>
+        </div>
 
-        <div class="row buttonBlock">
-            <div class="col" align="center">
-                <div class="buttonCover">
-                    <a href="/archive"> Back </a>
+        <div id="consoleSettings" hidden class="col infoPanel">
+            <div class="row">
+                <div class="col">
+                    <p><strong>Console Variables:</strong> {{ entry.render_settings.console_settings.consoleVariables }}
+                    </p>
+                    <p><strong>Start Console
+                        Commands:</strong> {{ entry.render_settings.console_settings.startConsoleCommands }}
+                    </p>
+                    <p><strong>End Console
+                        Commands:</strong> {{ entry.render_settings.console_settings.endConsoleCommands }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="highResSettings" hidden class="col infoPanel">
+            <div class="row">
+                <div class="col">
+                    <p><strong>Tile Count:</strong> {{ entry.render_settings.high_res_settings.tileCount }}</p>
+                    <p><strong>Texture Sharpness
+                        Bias:</strong> {{ entry.render_settings.high_res_settings.textureSharpnessBias }}
+                    </p>
+                    <p><strong>Overlap Ratio:</strong> {{ entry.render_settings.high_res_settings.overlapRatio }}</p>
+                    <p><strong>Override SubSurface
+                        Scattering:</strong> {{ entry.render_settings.high_res_settings.overrideSubSurfaceScattering }}
+                    </p>
+                    <p><strong>Burley Sample
+                        Count:</strong> {{ entry.render_settings.high_res_settings.burleySampleCount }}</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="container-fluid footer">
-        <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
-    </div>
 
-    <script src= {{ url_for('static', filename="js/toggleMode.js") }}></script>
-    <script src= {{ url_for('static', filename="js/handleSwitch.js") }}></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <div class="row buttonBlock">
+        <div class="col" align="center">
+            <div class="buttonCover">
+                <a href="/archive"> Back </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid footer">
+    <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
+</div>
+
+<script src= {{ url_for('static', filename="js/toggleMode.js") }}></script>
+<script src= {{ url_for('static', filename="js/handleSwitch.js") }}></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

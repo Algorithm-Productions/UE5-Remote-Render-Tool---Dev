@@ -1,6 +1,6 @@
 .infoContainer {
-    background-color: #cdd2ce;
-    color: #000000;
+    background-color: #322D31;
+    color: #ffffff;
     border-radius: 10px;
     width: 80%;
     margin: auto auto 3%;
@@ -8,14 +8,14 @@
 }
 
 .sideMenu {
-    background-color: #68736a;
+    background-color: #978c95;
     border-top-left-radius: inherit;
     border-bottom-left-radius: inherit;
     padding: 1%;
 }
 
 .sideMenu h3 {
-    background-color: #cdd2ce;
+    background-color: #322D31;
     margin-bottom: 5%;
     padding: 2%;
     font-weight: normal;
