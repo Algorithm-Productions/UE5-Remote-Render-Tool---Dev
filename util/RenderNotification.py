@@ -17,9 +17,9 @@ DATABASE = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER") + os.getenv("NOT
 
 
 class NotificationType(object):
-    ERROR = "ERROR",
-    WARNING = "WARN",
-    INFO = "INFO",
+    ERROR = "ERROR"
+    WARNING = "WARN"
+    INFO = "INFO"
     CRITICAL = "CRITICAL"
 
     @classmethod
@@ -48,6 +48,19 @@ class NotificationType(object):
         else:
             return ''
 
+    @classmethod
+    def getNumVal(cls, notificationType):
+        if notificationType == NotificationType.ERROR:
+            return 3
+        elif notificationType == NotificationType.WARNING:
+            return 2
+        elif notificationType == NotificationType.INFO:
+            return 1
+        elif notificationType == NotificationType.CRITICAL:
+            return 4
+        else:
+            return 0
+
 
 class RenderNotification(object):
     def __init__(
@@ -67,6 +80,20 @@ class RenderNotification(object):
         self.notificationType = notificationType or NotificationType.INFO
         self.cleared = False
 
+    def __eq__(self, other):
+        return self.notificationType == other.notificationType and self.timestamp == other.timestamp
+
+    def __lt__(self, other):
+        if self.notificationType == other.notificationType:
+            return datetime.strptime(self.timestamp, "%m/%d/%Y, %H:%M:%S") > datetime.strptime(other.timestamp,
+                                                                                               "%m/%d/%Y, %H:%M:%S")
+        else:
+            return NotificationType.getNumVal(self.notificationType) < NotificationType.getNumVal(
+                other.notificationType)
+
+    def __str__(self):
+        return self.to_dict().__str__()
+
     @classmethod
     def from_db(cls, uuid):
         request_file = os.path.join(DATABASE, '{}.json'.format(uuid))
@@ -85,7 +112,7 @@ class RenderNotification(object):
         timestamp = data.get('timestamp') or ''
         message = data.get('message') or ''
         log = data.get('log') or ''
-        notificationType = data.get('notificationType') or None
+        notificationType = NotificationType.from_string(data.get('notificationType')) or None
 
         return cls(
             uuid=uuid,

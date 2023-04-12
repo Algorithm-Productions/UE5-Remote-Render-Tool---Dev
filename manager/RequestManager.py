@@ -38,7 +38,8 @@ def favicon():
 
 @app.route('/')
 def index_page():
-    return render_template('landing.html')
+    notifications = getNotificationsToDisplay()
+    return render_template('landing.html', notifications=notifications)
 
 
 @app.route('/queue/')
@@ -62,15 +63,12 @@ def archive_page():
 
     jsons = [rrequest.to_dict() for rrequest in rrequests]
 
-    print(jsons)
-
     return render_template('archive.html', requests=jsons)
 
 
 @app.route('/archive/<uuid>')
 def archive_entry(uuid):
     rr = RenderArchive.RenderArchive.from_db(uuid)
-    print(rr)
 
     return render_template('archive_entry.html', entry=rr.to_dict(), uuid=uuid)
 
@@ -78,7 +76,6 @@ def archive_entry(uuid):
 @app.route('/notification/<uuid>')
 def notification_entry(uuid):
     rn = RenderNotification.RenderNotification.from_db(uuid)
-    print(rn)
 
     return render_template('notification_entry.html', entry=rn.to_dict(), uuid=uuid)
 
@@ -164,8 +161,6 @@ def archive_request(uuid):
     if (not renderRequest) or len(args) != 6:
         return {}
 
-    print(args)
-
     renderArchive = buildArchive(uuid, renderRequest, args)
     renderArchive.write_json()
 
@@ -246,6 +241,33 @@ def buildNotification(jobUUID, metadata):
     return RenderNotification.RenderNotification(uuid=str(genUUID.uuid4())[:5], jobUUID=jobUUID, timestamp=metadata[1],
                                                  message=metadata[2], log=metadata[3],
                                                  notificationType=NotificationType.from_string(metadata[4]))
+
+
+def getNotificationsToDisplay():
+    allNotifications = RenderNotification.read_all()
+    objList = []
+
+    for notification in allNotifications:
+        deleted = checkAgeAndClear(notification)
+        if notification.notificationType != NotificationType.INFO and (not deleted):
+            objList.append(notification)
+
+    objList.sort()
+    returnList = [notification.to_dict() for notification in objList]
+
+    return returnList
+
+
+def checkAgeAndClear(notification):
+    curDate = datetime.now()
+    notificationDate = datetime.strptime(notification.timestamp, "%m/%d/%Y, %H:%M:%S")
+
+    diff = curDate - notificationDate
+    if diff.days >= 7:
+        notification.remove()
+        return True
+    else:
+        return False
 
 
 if __name__ == '__main__':
