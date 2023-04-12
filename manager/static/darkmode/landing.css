@@ -21,11 +21,18 @@
 	transition: all 0.3s ease-in-out;
 }
 
-.notificationBlock .notificationCover h1 {
+.notificationBlock .notificationCover:hover {
+    -webkit-transform: translateY(-5px);
+    transform: translateY(-5px);
+}
+
+.notificationBlock .notificationCover a {
     font-weight: 1000;
     margin-top: 0.5%;
     margin-bottom: 0.5%;
     font-size: 25px;
     color: #dcdfdc;
     font-style: italic;
+    text-decoration: none;
+    margin-right: 1.5rem;
 }

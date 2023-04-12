@@ -63,10 +63,10 @@
             <div class="row notificationBlock">
                 <div class="col" align="center">
                     <div class="notificationCover">
-                        <h1> {{ notifications[0].message }}
-                            <button onclick='clearNotification({{ notifications[0]|tojson|safe }})' class='copyBtn'> ☓
-                            </button>
-                        </h1>
+                        <a href='/notification/{{ notifications[0].uuid }}'>
+                                {{ notifications[0].message }}
+                        </a>
+                        <button onclick='clearNotification({{ notifications[0]|tojson|safe }})' class='copyBtn'> ☓ </button>
                     </div>
                 </div>
             </div>

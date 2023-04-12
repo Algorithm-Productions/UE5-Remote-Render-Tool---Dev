@@ -13,3 +13,12 @@ async function clearNotification(notification) {
     location.reload()
     return resData;
 }
+
+async function specialClearNotification(notification) {
+    const restData = await clearNotification(notification)
+    window.location.replace(`http://127.0.0.1:5000/`)
+}
+
+function navigateToNotificationPage(element) {
+    window.location.replace(`http://127.0.0.1:5000/notification/${element.uuid}`)
+}

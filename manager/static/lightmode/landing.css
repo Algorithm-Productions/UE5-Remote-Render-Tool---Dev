@@ -8,8 +8,8 @@
 }
 
 .notificationBlock .notificationCover {
-    border: 3px solid #373737;
-    background-color: #C5C6D0;
+    border: 3px solid #c8c8c8;
+    background-color: #3a392f;
     border-radius: 15px;
     width: 50%;
     height: 150%;
@@ -21,11 +21,18 @@
 	transition: all 0.3s ease-in-out;
 }
 
-.notificationBlock .notificationCover h1 {
+.notificationBlock .notificationCover:hover {
+    -webkit-transform: translateY(-5px);
+    transform: translateY(-5px);
+}
+
+.notificationBlock .notificationCover a {
     font-weight: 1000;
     margin-top: 0.5%;
     margin-bottom: 0.5%;
     font-size: 25px;
-    color: #232023;
+    color: #dcdfdc;
     font-style: italic;
+    text-decoration: none;
+    margin-right: 1.5rem;
 }
