@@ -41,7 +41,7 @@ class ManagerFlaskApp(Flask):
         try:
             super().run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
         finally:
-            if debug:
+            if not debug:
                 RenderNotification.RenderNotification(uuid=str(genUUID.uuid4())[:5], jobUUID='',
                                                       timestamp=datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                                       message='App Manager at {} is Shutting Down!'.format(

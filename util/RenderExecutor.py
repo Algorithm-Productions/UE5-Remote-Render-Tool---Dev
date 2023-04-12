@@ -184,7 +184,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             unreal.Map(str, str)
         )
 
-    @unreal.ufunction(ret=None, params=[unreal.MoviePipeline, bool, unreal.Text])
+    @unreal.ufunction(ret=None, params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])
     def error_implementation(self, executor, pipeline, fatal, error_reason):
         self.send_http_request(
             "{}/notification/post/".format(Client.SERVER_API_URL),
