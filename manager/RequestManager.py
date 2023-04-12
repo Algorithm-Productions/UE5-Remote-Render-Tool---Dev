@@ -75,6 +75,14 @@ def archive_entry(uuid):
     return render_template('archive_entry.html', entry=rr.to_dict(), uuid=uuid)
 
 
+@app.route('/notification/<uuid>')
+def notification_entry(uuid):
+    rn = RenderNotification.RenderNotification.from_db(uuid)
+    print(rn)
+
+    return render_template('notification_entry.html', entry=rn.to_dict(), uuid=uuid)
+
+
 @app.route("/set")
 @app.route("/set/<theme>")
 def set_theme(theme="lightmode-index_page"):

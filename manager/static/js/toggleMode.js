@@ -5,7 +5,7 @@ function toggleMode(page, args='') {
     else
         currMode = "lightmode"
 
-    if (page === "archive_entry")
+    if (page === "archive_entry" || page === "notification_entry")
         location.href = "/set/" + currMode + "-" + page + "-" + location.href.split("/")[4]
     else
         location.href = "/set/" + currMode + "-" + page

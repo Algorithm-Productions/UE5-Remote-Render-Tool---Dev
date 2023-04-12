@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Render Tracker - Landing</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='imgs/favicon.png') }}">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    {% if request.cookies.get("theme") %}
+        <link rel="stylesheet" href="/static/{{ request.cookies.get("theme") }}/entry.css">
+        <link rel="stylesheet" href="/static/{{ request.cookies.get("theme") }}/global.css">
+    {% else %}
+        <link rel="stylesheet" type="text/css" href= {{ url_for('static', filename="lightmode/entry.css") }}>
+        <link rel="stylesheet" type="text/css" href= {{ url_for('static', filename="lightmode/global.css") }}>
+    {% endif %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid headerBlock">
+        <div class="row">
+            <div class="col">
+                {% if request.cookies.get("theme") == "darkmode" %}
+                    <img src="../static/imgs/logo-darkmode.png">
+                {% else %}
+                    <img src="../static/imgs/logo.png">
+                {% endif %}
+            </div>
+            <div class="col switchBlock">
+                <label class="switch">
+                    {% if request.cookies.get("theme") == "darkmode" %}
+                        <input type="checkbox" checked onclick="toggleMode('notification_entry')">
+                    {% else %}
+                        <input type="checkbox" onclick="toggleMode('notification_entry')">
+                    {% endif %}
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row mainTitleBlock">
+            <h1> Notification Details for {{ entry.uuid }} </h1>
+        </div>
+
+        <div class="row infoContainer center">
+            <div id="generalInformation" class="col infoPanel">
+                <div class="row">
+                    <div class="col">
+                        <p><strong>UUID:</strong> {{ entry.uuid }}</p>
+                        <p><strong>Job UUID:</strong> {{ entry.jobUUID }}</p>
+                        <p><strong>Timestamp:</strong> {{ entry.timestamp }}</p>
+                        <p><strong>Message:</strong> {{ entry.message }}</p>
+                        <p><strong>Type:</strong> {{ entry.notificationType }}</p>
+                    </div>
+                    <div class="col">
+                        <p><strong>Log</strong>:</strong> {{ entry.log }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row buttonBlock">
+            <div class="col" align="center">
+                <div class="buttonCover">
+                    <a href="/"> Back </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid footer">
+        <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
+    </div>
+
+    <script src= {{ url_for('static', filename="js/toggleMode.js") }}></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
