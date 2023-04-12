@@ -158,7 +158,6 @@ def remove_all():
 
 
 def write_db(d):
-    print(d)
     uuid = d['uuid']
     LOGGER.info('writing to %s', uuid)
     with open(os.path.join(DATABASE, '{}.json'.format(uuid)), 'w') as fp:
