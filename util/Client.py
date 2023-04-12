@@ -66,3 +66,16 @@ def update_request(uuid, params):
         return
 
     return RenderRequest.RenderRequest.from_dict(response.json())
+
+
+def send_notification(uuid, args):
+    try:
+        response = requests.put(
+            SERVER_API_URL + '/notification/post/{}'.format(uuid),
+            '{};{};{};{};{}'.format(args[0], args[1], args[2], args[3], args[4])
+        )
+    except requests.exceptions.ConnectionError:
+        LOGGER.error('failed to connect to server %s', SERVER_API_URL)
+        return
+
+    return RenderRequest.RenderRequest.from_dict(response.json())

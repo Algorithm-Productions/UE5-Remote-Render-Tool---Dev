@@ -65,6 +65,7 @@ class RenderNotification(object):
         self.message = message or ''
         self.log = log or ''
         self.notificationType = notificationType or NotificationType.INFO
+        self.cleared = False
 
     @classmethod
     def from_db(cls, uuid):
@@ -94,6 +95,9 @@ class RenderNotification(object):
             log=log,
             notificationType=notificationType
         )
+
+    def clear(self):
+        self.cleared = True
 
     def to_dict(self):
         return self.__dict__
@@ -127,6 +131,7 @@ def remove_all():
 
 
 def write_db(d):
+    print(d)
     uuid = d['uuid']
     LOGGER.info('writing to %s', uuid)
     with open(os.path.join(DATABASE, '{}.json'.format(uuid)), 'w') as fp:

@@ -1,5 +1,7 @@
+import atexit
 import json
 import logging
+import platform
 import time
 import os
 from datetime import datetime
@@ -25,6 +27,8 @@ DEFAULT_WORKER = os.getenv("DEFAULT_WORKER")
 
 app = Flask(__name__)
 FLASK_EXE = os.getenv("FLASK_EXE")
+
+MANAGER_NAME = platform.node()
 
 
 @app.route('/favicon.ico')
@@ -103,7 +107,14 @@ def get_request(uuid):
 
 @app.delete('/api/delete/<uuid>')
 def delete_request(uuid):
-    RenderRequest.remove_db(uuid)
+    buildNotification(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                             'Deleting Request {} from DB'.format(uuid),
+                             'Deleting Request {} from DB'.format(uuid), "WARN"]).write_json()
+    renderRequest = RenderRequest.RenderRequest.from_db(uuid)
+
+    renderRequest.remove()
+
+    return renderRequest.to_dict()
 
 
 @app.post('/api/post')
@@ -112,6 +123,10 @@ def create_request():
     req = RenderRequest.RenderRequest.from_dict(data)
     req.write_json()
     new_request_trigger(req)
+
+    buildNotification(req.uuid, [req.uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                 'Creating Request {} on DB'.format(req.uuid),
+                                 'Creating Request {} on DB'.format(req.uuid), "INFO"]).write_json()
 
     return req.to_dict()
 
@@ -147,12 +162,23 @@ def archive_request(uuid):
     renderArchive = buildArchive(uuid, renderRequest, args)
     renderArchive.write_json()
 
+    buildNotification(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                             'Archiving Request {}'.format(uuid),
+                             'Archiving Request {}'.format(uuid), "INFO"]).write_json()
+
     return renderArchive.to_dict()
 
 
 @app.delete('/api/archive/delete/<uuid>')
 def delete_archive(uuid):
-    RenderArchive.remove_db(uuid)
+    buildNotification(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                             'Deleting Archive {} from DB'.format(uuid),
+                             'Deleting Archive {} from DB'.format(uuid), "WARN"]).write_json()
+
+    renderArchive = RenderArchive.RenderArchive.from_db(uuid)
+    renderArchive.remove()
+
+    return renderArchive.to_dict()
 
 
 @app.put('/api/notification/post/')
@@ -160,11 +186,8 @@ def render_notification():
     content = request.data.decode('utf-8')
 
     args = content.split(";")
-    renderRequest = RenderRequest.RenderRequest.from_db(args[0])
-    if (not renderRequest) or len(args) != 5:
+    if len(args) != 5:
         return {}
-
-    print(args)
 
     renderNotification = buildNotification(args[0], args)
     renderNotification.write_json()
@@ -174,7 +197,10 @@ def render_notification():
 
 @app.delete('/api/notification/delete/<uuid>')
 def delete_notification(uuid):
-    RenderNotification.remove_db(uuid)
+    renderNotification = RenderNotification.RenderNotification.from_db(uuid)
+    renderNotification.remove()
+
+    return renderNotification.to_dict()
 
 
 def new_request_trigger(req):
@@ -211,13 +237,12 @@ def buildArchive(uuid, renderRequest, metadata):
 
 def buildNotification(jobUUID, metadata):
     return RenderNotification.RenderNotification(uuid=str(genUUID.uuid4())[:5], jobUUID=jobUUID, timestamp=metadata[1],
-                                                 message=metadata[3], log=metadata[3],
+                                                 message=metadata[2], log=metadata[3],
                                                  notificationType=NotificationType.from_string(metadata[4]))
 
 
 if __name__ == '__main__':
     import os
-
     env = os.environ.copy()
     env['PYTHONPATH'] += os.pathsep + MODULE_PATH
 
