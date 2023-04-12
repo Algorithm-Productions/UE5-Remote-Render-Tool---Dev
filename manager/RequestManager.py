@@ -1,5 +1,3 @@
-import atexit
-import json
 import logging
 import platform
 import time
@@ -14,6 +12,7 @@ from flask import request
 from flask import render_template
 
 from util import RenderRequest, RenderArchive, RenderNotification
+from util.ManagerFlaskApp import ManagerFlaskApp
 from util.RenderNotification import NotificationType
 from util.RenderArchive import HardwareStats
 from util.RenderSettings import RenderSettings
@@ -25,7 +24,7 @@ HTML_FOLDER = os.path.join(MODULE_PATH, 'html')
 LOGGER = logging.getLogger(__name__)
 DEFAULT_WORKER = os.getenv("DEFAULT_WORKER")
 
-app = Flask(__name__)
+app = ManagerFlaskApp(__name__)
 FLASK_EXE = os.getenv("FLASK_EXE")
 
 MANAGER_NAME = platform.node()
@@ -243,6 +242,7 @@ def buildNotification(jobUUID, metadata):
 
 if __name__ == '__main__':
     import os
+
     env = os.environ.copy()
     env['PYTHONPATH'] += os.pathsep + MODULE_PATH
 
