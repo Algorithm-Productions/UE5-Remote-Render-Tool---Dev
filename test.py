@@ -1,16 +1,46 @@
-def getProjectName(path):
-    if not path:
-        return ''
-
-    splitPath = path.split("\\")
-    if len(splitPath) == 0:
-        return ''
-
-    splitFile = splitPath[-1].split(".")
-    if len(splitFile) == 0:
-        return ''
-
-    return splitFile[0]
+import datetime
+import os
+import time
 
 
-print(getProjectName(r'D:\Projects\DingleStorageProject\DingleStorageProject.uproject'))
+def getFrameTimes(path, firstTime):
+    files = os.listdir(path)
+    returnList = []
+    prevDate = firstTime
+
+    for filename in files:
+        file = os.path.join(path, filename)
+        if os.path.isfile(file):
+            currDate = datetime.datetime.fromtimestamp(os.path.getmtime(file))
+            delta = currDate - prevDate
+            prevDate = currDate
+            returnList.append(delta.total_seconds())
+
+    return returnList
+
+
+def getFrameTimesV2(dates):
+    returnList = []
+
+    for idx, date in enumerate(dates):
+        if idx == 0:
+            continue
+        returnList.append((dates[idx] - dates[idx - 1]).total_seconds())
+
+    return returnList
+
+
+def genTimes(n=100):
+    timeList = []
+    for i in range(n):
+        timeList.append(datetime.datetime.now())
+        time.sleep(2)
+        print(i)
+
+    print(timeList)
+    return timeList
+
+
+firstDate = datetime.datetime.now()
+time.sleep(2)
+print(getFrameTimes("D:/Renders/Testing", firstDate))

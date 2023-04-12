@@ -227,7 +227,8 @@ def buildArchive(uuid, renderRequest, metadata):
     renderArchive.hardware_stats = HardwareStats.from_dict(eval(metadata[1]))
     renderArchive.finish_time = metadata[2]
     renderArchive.avg_frame = int(metadata[3])
-    renderArchive.frame_map = metadata[4].split(",")
+    renderArchive.frame_map = metadata[4].strip('][').split(', ')
+    print(metadata[4])
     renderArchive.render_settings = RenderSettings.from_dict(eval(metadata[5]))
 
     renderArchive.total_time = str(

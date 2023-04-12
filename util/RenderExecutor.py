@@ -1,3 +1,4 @@
+import os
 import time
 from datetime import datetime
 import GPUtil
@@ -19,6 +20,8 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
     job_id = unreal.uproperty(unreal.Text)
     project_name = unreal.uproperty(unreal.Text)
     jobConfig = unreal.uproperty(unreal.MoviePipelineMasterConfig)
+    firstFrameTime = unreal.uproperty(unreal.Text)
+    outputFolder = unreal.uproperty(unreal.Text)
 
     def _post_init(self):
         self.pipeline = None
@@ -26,16 +29,13 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.job_id = ""
         self.project_name = ""
         self.jobConfig = None
+        self.outputFolder = ""
+        self.firstFrameTime = ""
 
         self.http_response_recieved_delegate.add_function_unique(
             self,
             "on_http_response_received"
         )
-
-        ERROR_CALLBACK = unreal.OnMoviePipelineExecutorErrored()
-        ERROR_CALLBACK.add_callable(self.error_implementation)
-
-        self.on_executor_errored_delegate(ERROR_CALLBACK)
 
     def parse_argument(self):
         (cmd_tokens, cmd_switches, cmd_parameters) = unreal.SystemLibrary. \
@@ -46,6 +46,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.sequence_path = cmd_parameters['LevelSequence']
         self.config_path = cmd_parameters['MoviePipelineConfig']
         self.project_name = getProjectName(cmd_parameters["ProjectPath"])
+        self.outputFolder = cmd_parameters['OutputPath']
 
     def add_job(self):
         self.send_http_request(
@@ -110,6 +111,9 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         days, hours, minutes, seconds, _ = time_estimate.to_tuple()
         time_estimate = '{}h:{}m:{}s'.format(hours, minutes, seconds)
 
+        if self.firstFrameTime == "":
+            self.firstFrameTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
+
         self.send_http_request(
             "{}/put/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
@@ -155,9 +159,6 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                 unreal.Map(str, str)
             )
 
-        unreal.log("CONFIG DUMP")
-        unreal.log(self.jobConfig.get_all_settings())
-
         progress = 100
         time_estimate = 'N/A'
         status = RenderRequest.RenderStatus.finished
@@ -173,18 +174,21 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                                       GPUtil.getGPUs()[0].memoryTotal).to_dict()
         finishTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         avgFrame = 0
-        frameMapStringified = ",".join(["1", "2", "3", "4", "5"])
         renderSettings = str(getRenderSettings(self.jobConfig).to_dict())
+        frameTimesArray = getFrameTimes(unreal.TextLibrary.conv_text_to_string(self.outputFolder),
+                                        datetime.strptime(unreal.TextLibrary.conv_text_to_string(self.firstFrameTime),
+                                                          "%m/%d/%Y, %H:%M:%S"))
 
         self.send_http_request(
             "{}/archive/post/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
-            '{};{};{};{};{};{}'.format(self.project_name, hardwareStats, finishTime, avgFrame, frameMapStringified,
+            '{};{};{};{};{};{}'.format(self.project_name, hardwareStats, finishTime, avgFrame, frameTimesArray,
                                        renderSettings),
             unreal.Map(str, str)
         )
 
-    @unreal.ufunction(ret=None, params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])
+    @unreal.ufunction(ret=None,
+                      params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])
     def error_implementation(self, executor, pipeline, fatal, error_reason):
         self.send_http_request(
             "{}/notification/post/".format(Client.SERVER_API_URL),
@@ -289,3 +293,19 @@ def getRenderSettings(masterConfig):
     return RenderSettings(output_types=outputTypes, render_types=renderTypes, aa_settings=aaSettings,
                           console_settings=consoleSettings, high_res_settings=highResSettings,
                           output_settings=outputSettings)
+
+
+def getFrameTimes(path, firstTime):
+    files = os.listdir(path)
+    returnList = []
+    prevDate = firstTime
+
+    for filename in files:
+        file = os.path.join(path, filename)
+        if os.path.isfile(file):
+            currDate = datetime.fromtimestamp(os.path.getmtime(file))
+            delta = currDate - prevDate
+            prevDate = currDate
+            returnList.append(delta.total_seconds())
+
+    return returnList
