@@ -36,7 +36,7 @@ class ManagerFlaskApp(Flask):
                                     timestamp=datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                     message='App Manager at {} is Starting!'.format(MANAGER_NAME),
                                     log='App Manager at {} is Starting!'.format(MANAGER_NAME),
-                                    logType="INFO").write_json()
+                                    logType="INFO").save_self()
 
         try:
             super().run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
@@ -47,4 +47,4 @@ class ManagerFlaskApp(Flask):
                                     message='App Manager at {} is Shutting Down!'.format(
                                         MANAGER_NAME),
                                     log='App Manager at {} is Shutting Down!'.format(MANAGER_NAME),
-                                    logType="CRITICAL").write_json()
+                                    logType="CRITICAL").save_self()

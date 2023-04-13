@@ -83,7 +83,7 @@ def logs_page():
 
 @app.route('/logs/<uuid>')
 def logs_entry(uuid):
-    rn = RenderLog.RenderLog.from_db(uuid)
+    rn = RenderLog.RenderLog.read(uuid)
 
     return render_template('logs_entry.html', entry=rn.to_dict(), uuid=uuid)
 
@@ -122,7 +122,7 @@ def create_request():
 
     buildLog(req.uuid, [req.uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                         'Creating Request {} on DB'.format(req.uuid),
-                        'Creating Request {} on DB'.format(req.uuid), "INFO"]).write_json()
+                        'Creating Request {} on DB'.format(req.uuid), "INFO"]).save_self()
 
     return req.to_dict()
 
@@ -168,7 +168,7 @@ def delete_all_requests():
 
     buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                   'Deleting All Requests from DB',
-                  'Deleting All Requests from DB', "CRITICAL"]).write_json()
+                  'Deleting All Requests from DB', "CRITICAL"]).save_self()
 
     return {"results": [res.to_dict for res in responses]}
 
@@ -180,7 +180,7 @@ def delete_request(uuid):
 
     buildLog(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                     'Deleting Request {} from DB'.format(uuid),
-                    'Deleting Request {} from DB'.format(uuid), "WARN"]).write_json()
+                    'Deleting Request {} from DB'.format(uuid), "WARN"]).save_self()
 
     return res.to_dict()
 
@@ -203,7 +203,7 @@ def create_archive():
 
     buildLog(args[0], [args[0], datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                        'Archiving Request {}'.format(args[0]),
-                       'Archiving Request {}'.format(args[0]), "INFO"]).write_json()
+                       'Archiving Request {}'.format(args[0]), "INFO"]).save_self()
 
     return renderArchive.to_dict()
 
@@ -237,7 +237,7 @@ def delete_all_archives():
 
     buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                   'Deleting All Archives from DB',
-                  'Deleting All Archives from DB', "CRITICAL"]).write_json()
+                  'Deleting All Archives from DB', "CRITICAL"]).save_self()
 
     return {"results": [res.to_dict for res in responses]}
 
@@ -249,7 +249,7 @@ def delete_archive(uuid):
 
     buildLog(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                     'Deleting Archive {} from DB'.format(uuid),
-                    'Deleting Archive {} from DB'.format(uuid), "WARN"]).write_json()
+                    'Deleting Archive {} from DB'.format(uuid), "WARN"]).save_self()
 
     return res.to_dict()
 
@@ -267,7 +267,7 @@ def create_log():
         return {}
 
     renderLog = buildLog(args[0], args)
-    renderLog.write_json()
+    renderLog.save_self()
 
     return renderLog.to_dict()
 
@@ -285,7 +285,7 @@ def get_all_logs():
 
 @app.get('/api/logs/get/<uuid>')
 def get_log(uuid):
-    res = RenderLog.RenderLog.from_db(uuid)
+    res = RenderLog.RenderLog.read(uuid)
     return res.to_dict()
 
 
@@ -296,19 +296,19 @@ def update_log(uuid):
 
 @app.delete('/api/logs/delete')
 def delete_all_logs():
-    responses = RenderLog.read_all()
-    RenderLog.remove_all()
+    responses = RenderLog.RenderLog.read_all()
+    RenderLog.RenderLog.remove_all()
 
     buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                   'Deleting All Logs from DB',
-                  'Deleting All Logs from DB', "CRITICAL"]).write_json()
+                  'Deleting All Logs from DB', "CRITICAL"]).save_self()
 
     return {"results": [res.to_dict for res in responses]}
 
 
 @app.delete('/api/logs/delete/<uuid>')
 def delete_log(uuid):
-    res = RenderLog.RenderLog.from_db(uuid)
+    res = RenderLog.RenderLog.read(uuid)
     res.remove()
 
     return res.to_dict()
@@ -357,7 +357,7 @@ def buildLog(jobUUID, metadata):
 
 
 def getLogsToDisplay():
-    allLogs = RenderLog.read_all()
+    allLogs = RenderLog.RenderLog.read_all()
     objList = []
 
     for log in allLogs:
