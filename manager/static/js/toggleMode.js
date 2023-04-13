@@ -1,9 +1,9 @@
 function toggleMode(page, args='') {
     let currMode = getCookie("theme")
-    if (currMode === "lightmode")
-        currMode = "darkmode"
-    else
+    if (currMode === "darkmode")
         currMode = "lightmode"
+    else
+        currMode = "darkmode"
 
     if (page === "archive_entry" || page === "notification_entry")
         location.href = "/set/" + currMode + "-" + page + "-" + location.href.split("/")[4]

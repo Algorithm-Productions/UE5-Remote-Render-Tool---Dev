@@ -2,7 +2,7 @@ import logging
 import platform
 import time
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import uuid as genUUID
 
 from dotenv import load_dotenv
@@ -88,7 +88,10 @@ def set_theme(theme="lightmode-index_page"):
         res = make_response(redirect(url_for(args[1], uuid=args[2])))
     else:
         res = make_response(redirect(url_for(args[1])))
-    res.set_cookie("theme", args[0])
+
+    expiration = (datetime.now() + timedelta(days=30))
+
+    res.set_cookie("theme", args[0], expires=expiration)
     return res
 
 
