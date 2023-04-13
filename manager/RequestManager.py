@@ -29,6 +29,10 @@ FLASK_EXE = os.getenv("FLASK_EXE")
 
 MANAGER_NAME = platform.node()
 
+API_EXT = os.getenv("API_EXT")
+ARCHIVE_API_EXT = os.getenv("ARCHIVE_API_EXT")
+LOG_API_EXT = os.getenv("LOG_API_EXT")
+
 
 # Route Section
 
@@ -113,7 +117,7 @@ def favicon():
 # Start of Queue API Section
 
 
-@app.post('/api/post')
+@app.post('{}/post'.format(API_EXT))
 def create_request():
     data = request.get_json(force=True)
     req = RenderRequest.RenderRequest.from_dict(data)
@@ -127,7 +131,7 @@ def create_request():
     return req.to_dict()
 
 
-@app.get('/api/get')
+@app.get('{}/get'.format(API_EXT))
 def get_all_requests():
     reqs = RenderRequest.RenderRequest.read_all()
     if not reqs:
@@ -138,13 +142,13 @@ def get_all_requests():
     return {"results": jsons}
 
 
-@app.get('/api/get/<uuid>')
+@app.get('{}/get/<uuid>'.format(API_EXT))
 def get_request(uuid):
     res = RenderRequest.RenderRequest.read(uuid)
     return res.to_dict()
 
 
-@app.put('/api/put/<uuid>')
+@app.put('{}/put/<uuid>'.format(API_EXT))
 def update_request(uuid):
     content = request.data.decode('utf-8')
     progress, time_estimate, status = content.split(';')
@@ -161,7 +165,7 @@ def update_request(uuid):
     return rr.to_dict()
 
 
-@app.delete('/api/delete/')
+@app.delete('{}/delete/'.format(API_EXT))
 def delete_all_requests():
     responses = RenderRequest.RenderRequest.read_all()
     RenderRequest.RenderRequest.remove_all()
@@ -173,7 +177,7 @@ def delete_all_requests():
     return {"results": [res.to_dict for res in responses]}
 
 
-@app.delete('/api/delete/<uuid>')
+@app.delete('{}/delete/<uuid>'.format(API_EXT))
 def delete_request(uuid):
     res = RenderRequest.RenderRequest.read(uuid)
     res.remove()
@@ -189,7 +193,7 @@ def delete_request(uuid):
 # Start of Archive API Section
 
 
-@app.post('/api/archives/post')
+@app.post('{}{}/post'.format(API_EXT, ARCHIVE_API_EXT))
 def create_archive():
     content = request.data.decode('utf-8')
 
@@ -208,7 +212,7 @@ def create_archive():
     return renderArchive.to_dict()
 
 
-@app.get('/api/archives/get')
+@app.get('{}{}/get'.format(API_EXT, ARCHIVE_API_EXT))
 def get_all_archives():
     reqs = RenderArchive.RenderArchive.read_all()
     if not reqs:
@@ -219,18 +223,18 @@ def get_all_archives():
     return {"results": jsons}
 
 
-@app.get('/api/archives/get/<uuid>')
+@app.get('{}{}/get/<uuid>'.format(API_EXT, ARCHIVE_API_EXT))
 def get_archive(uuid):
     res = RenderArchive.RenderArchive.read(uuid)
     return res.to_dict()
 
 
-@app.put('/api/archives/<uuid>')
+@app.put('{}{}/<uuid>'.format(API_EXT, ARCHIVE_API_EXT))
 def update_archive(uuid):
     pass
 
 
-@app.delete('/api/archives/delete')
+@app.delete('{}{}/delete'.format(API_EXT, ARCHIVE_API_EXT))
 def delete_all_archives():
     responses = RenderArchive.RenderArchive.read_all()
     RenderArchive.RenderArchive.remove_all()
@@ -242,7 +246,7 @@ def delete_all_archives():
     return {"results": [res.to_dict for res in responses]}
 
 
-@app.delete('/api/archives/delete/<uuid>')
+@app.delete('{}{}/delete/<uuid>'.format(API_EXT, ARCHIVE_API_EXT))
 def delete_archive(uuid):
     res = RenderArchive.RenderArchive.read(uuid)
     res.remove()
@@ -258,7 +262,7 @@ def delete_archive(uuid):
 # Start of Logs API Section
 
 
-@app.post('/api/logs/post')
+@app.post('{}{}/post'.format(API_EXT, LOG_API_EXT))
 def create_log():
     content = request.data.decode('utf-8')
 
@@ -272,7 +276,7 @@ def create_log():
     return renderLog.to_dict()
 
 
-@app.get('/api/logs/get')
+@app.get('{}{}/get'.format(API_EXT, LOG_API_EXT))
 def get_all_logs():
     reqs = RenderArchive.RenderArchive.read_all()
     if not reqs:
@@ -283,18 +287,18 @@ def get_all_logs():
     return {"results": jsons}
 
 
-@app.get('/api/logs/get/<uuid>')
+@app.get('{}{}/get/<uuid>'.format(API_EXT, LOG_API_EXT))
 def get_log(uuid):
     res = RenderLog.RenderLog.read(uuid)
     return res.to_dict()
 
 
-@app.put('/api/logs/put/<uuid>')
+@app.put('{}{}/put/<uuid>'.format(API_EXT, LOG_API_EXT))
 def update_log(uuid):
     pass
 
 
-@app.delete('/api/logs/delete')
+@app.delete('{}{}/delete'.format(API_EXT, LOG_API_EXT))
 def delete_all_logs():
     responses = RenderLog.RenderLog.read_all()
     RenderLog.RenderLog.remove_all()
@@ -306,7 +310,7 @@ def delete_all_logs():
     return {"results": [res.to_dict for res in responses]}
 
 
-@app.delete('/api/logs/delete/<uuid>')
+@app.delete('{}{}/delete/<uuid>'.format(API_EXT, LOG_API_EXT))
 def delete_log(uuid):
     res = RenderLog.RenderLog.read(uuid)
     res.remove()

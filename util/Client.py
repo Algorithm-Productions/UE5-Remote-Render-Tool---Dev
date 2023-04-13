@@ -13,6 +13,9 @@ load_dotenv(os.path.join(MODULE_PATH, '../.env'))
 SERVER_URL = os.getenv("SERVER_URL")
 SERVER_API_URL = SERVER_URL + os.getenv("API_EXT")
 
+ARCHIVE_API_EXT = os.getenv("ARCHIVE_API_EXT")
+LOG_API_EXT = os.getenv("LOG_API_EXT")
+
 
 # Start of Abstract Methods Section
 
@@ -127,34 +130,34 @@ def delete_request(uuid):
 
 
 def create_archive(data):
-    response = create(data, '/archives')
+    response = create(data, ARCHIVE_API_EXT)
     return RenderArchive.RenderArchive.from_dict(response.json()) if (response and response.json()) else None
 
 
 def get_all_archives():
-    response = get_all('/archives')
+    response = get_all(ARCHIVE_API_EXT)
     return [(RenderArchive.RenderArchive.from_dict(res) if res else None) for res in
             response] if response else []
 
 
 def get_archive(uuid):
-    response = get('/archives')
+    response = get(uuid, ARCHIVE_API_EXT)
     return RenderArchive.RenderArchive.from_dict(response.json()) if (response and response.json()) else None
 
 
 def update_archive(uuid, params):
-    response = update(uuid, params, '/archives')
+    response = update(uuid, params, ARCHIVE_API_EXT)
     return RenderArchive.RenderArchive.from_dict(response.json()) if (response and response.json()) else None
 
 
 def delete_all_archives():
-    response = delete_all('/archives')
+    response = delete_all(ARCHIVE_API_EXT)
     return [(RenderArchive.RenderArchive.from_dict(res) if res else None) for res in
             response] if response else []
 
 
 def delete_archive(uuid):
-    response = delete(uuid, '/archives')
+    response = delete(uuid, ARCHIVE_API_EXT)
     return RenderRequest.RenderRequest.from_dict(response.json()) if (response and response.json()) else None
 
 
@@ -163,34 +166,34 @@ def delete_archive(uuid):
 
 
 def create_log(data):
-    response = create(data, '/logs')
+    response = create(data, LOG_API_EXT)
     return RenderLog.RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
 
 def get_all_logs():
-    response = get_all('/logs')
+    response = get_all(LOG_API_EXT)
     return [(RenderLog.RenderLog.from_dict(res.json()) if (res and res.json()) else None) for res in
             response] if response else []
 
 
 def get_log(uuid):
-    response = get(uuid, '/logs')
+    response = get(uuid, LOG_API_EXT)
     return RenderLog.RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
 
 def update_log(uuid, params):
-    response = update(uuid, params, '/logs')
+    response = update(uuid, params, LOG_API_EXT)
     return RenderLog.RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
 
 def delete_all_logs():
-    response = delete_all('/logs')
+    response = delete_all(LOG_API_EXT)
     return [(RenderLog.RenderLog.from_dict(res) if res else None) for res in
             response] if response else []
 
 
 def delete_log(uuid):
-    response = delete(uuid, '/logs')
+    response = delete(uuid, LOG_API_EXT)
     return RenderLog.RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
 # End of Logs Methods Section
