@@ -1,4 +1,5 @@
 import os
+import statistics
 import time
 from datetime import datetime
 import GPUtil
@@ -173,11 +174,11 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                                       get_size(psutil.virtual_memory().total),
                                       GPUtil.getGPUs()[0].memoryTotal).to_dict()
         finishTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        avgFrame = 0
         renderSettings = str(getRenderSettings(self.jobConfig).to_dict())
         frameTimesArray = getFrameTimes(unreal.TextLibrary.conv_text_to_string(self.outputFolder),
                                         datetime.strptime(unreal.TextLibrary.conv_text_to_string(self.firstFrameTime),
                                                           "%m/%d/%Y, %H:%M:%S"))
+        avgFrame = statistics.mean([float(val) for val in frameTimesArray])
 
         self.send_http_request(
             "{}/archive/post/{}".format(Client.SERVER_API_URL, self.job_id),
