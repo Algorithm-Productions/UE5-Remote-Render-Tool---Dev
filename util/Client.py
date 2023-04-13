@@ -3,7 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from . import RenderRequest
+from . import RenderRequest, RenderNotification, RenderArchive
 
 LOGGER = logging.getLogger(__name__)
 
@@ -14,68 +14,183 @@ SERVER_URL = os.getenv("SERVER_URL")
 SERVER_API_URL = SERVER_URL + os.getenv("API_EXT")
 
 
-def get_all_requests():
+# Start of Abstract Methods Section
+
+
+def create(data, specialPath=''):
     try:
-        response = requests.get(SERVER_API_URL + '/get')
+        response = requests.post(SERVER_API_URL + specialPath + '/post', json=data)
     except requests.exceptions.ConnectionError:
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
 
-    results = response.json()['results']
-    return [RenderRequest.RenderRequest.from_dict(result) for result in results]
+    return response
 
 
-def get_request(uuid):
+def get_all(specialPath=''):
     try:
-        response = requests.get(SERVER_API_URL + '/get/{}'.format(uuid))
+        response = requests.get(SERVER_API_URL + specialPath + '/get')
     except requests.exceptions.ConnectionError:
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
 
-    return RenderRequest.RenderRequest.from_dict(response.json())
+    if (not response) or (not response.json()) or (not response.json()['results']):
+        return []
+
+    return response.json()['results']
 
 
-def add_request(data):
+def get(uuid, specialPath=''):
     try:
-        response = requests.post(SERVER_API_URL + '/post', json=data)
+        response = requests.get(SERVER_API_URL + specialPath + '/get/{}'.format(uuid))
     except requests.exceptions.ConnectionError:
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
 
-    return RenderRequest.RenderRequest.from_dict(response.json())
+    return response
 
 
-def remove_request(uuid):
-    try:
-        response = requests.delete(SERVER_API_URL + '/delete/{}'.format(uuid))
-    except requests.exceptions.ConnectionError:
-        LOGGER.error('failed to connect to server %s', SERVER_API_URL)
-        return
-
-    return RenderRequest.RenderRequest.from_dict(response.json())
-
-
-def update_request(uuid, params):
+def update(uuid, params, specialPath=''):
     try:
         response = requests.put(
-            SERVER_API_URL + '/put/{}'.format(uuid),
+            SERVER_API_URL + specialPath + '/put/{}'.format(uuid),
             params
         )
     except requests.exceptions.ConnectionError:
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
 
-    return RenderRequest.RenderRequest.from_dict(response.json())
+    return response
 
 
-def send_notification(uuid, args):
+def delete_all(specialPath=''):
     try:
-        response = requests.put(
-            SERVER_API_URL + '/logs/post/{}'.format(uuid),
-            '{};{};{};{};{}'.format(args[0], args[1], args[2], args[3], args[4])
-        )
+        response = requests.delete(SERVER_API_URL + specialPath + '/delete')
     except requests.exceptions.ConnectionError:
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
 
-    return RenderRequest.RenderRequest.from_dict(response.json())
+    if (not response) or (not response.json()) or (not response.json()['results']):
+        return []
+
+    return response.json()['results']
+
+
+def delete(uuid, specialPath=''):
+    try:
+        response = requests.delete(SERVER_API_URL + specialPath + '/delete/{}'.format(uuid))
+    except requests.exceptions.ConnectionError:
+        LOGGER.error('failed to connect to server %s', SERVER_API_URL)
+        return
+
+    return response
+
+
+# End of Abstract Methods Section
+# Start of Queue Methods Section
+
+
+def create_request(data):
+    response = create(data)
+    return RenderRequest.RenderRequest.from_dict(response.json()) if (response and response.json()) else None
+
+
+def get_all_requests():
+    response = get_all()
+    return [(RenderRequest.RenderRequest.from_dict(res) if res else None) for res in
+            response] if response else []
+
+
+def get_request(uuid):
+    response = get(uuid)
+    return RenderRequest.RenderRequest.from_dict(response.json()) if (response and response.json()) else None
+
+
+def update_request(uuid, params):
+    response = update(uuid, params)
+    return RenderRequest.RenderRequest.from_dict(response.json()) if (response and response.json()) else None
+
+
+def delete_all_requests():
+    response = delete_all()
+    return [(RenderRequest.RenderRequest.from_dict(res.json()) if (res and res.json()) else None) for res in
+            response] if response else []
+
+
+def delete_request(uuid):
+    response = delete(uuid)
+    return RenderRequest.RenderRequest.from_dict(response.json()) if (response and response.json()) else None
+
+
+# End of Queue Methods Section
+# Start of Archives Methods Section
+
+
+def create_archive(data):
+    response = create(data, '/archives')
+    return RenderArchive.RenderArchive.from_dict(response.json()) if (response and response.json()) else None
+
+
+def get_all_archives():
+    response = get_all('/archives')
+    return [(RenderArchive.RenderArchive.from_dict(res) if res else None) for res in
+            response] if response else []
+
+
+def get_archive(uuid):
+    response = get('/archives')
+    return RenderArchive.RenderArchive.from_dict(response.json()) if (response and response.json()) else None
+
+
+def update_archive(uuid, params):
+    response = update(uuid, params, '/archives')
+    return RenderArchive.RenderArchive.from_dict(response.json()) if (response and response.json()) else None
+
+
+def delete_all_archives():
+    response = delete_all('/archives')
+    return [(RenderArchive.RenderArchive.from_dict(res) if res else None) for res in
+            response] if response else []
+
+
+def delete_archive(uuid):
+    response = delete(uuid, '/archives')
+    return RenderRequest.RenderRequest.from_dict(response.json()) if (response and response.json()) else None
+
+
+# End of Archives Methods Section
+# Start of Logs Methods Section
+
+
+def create_log(data):
+    response = create(data, '/logs')
+    return RenderNotification.RenderNotification.from_dict(response.json()) if (response and response.json()) else None
+
+
+def get_all_logs():
+    response = get_all('/logs')
+    return [(RenderNotification.RenderNotification.from_dict(res.json()) if (res and res.json()) else None) for res in
+            response] if response else []
+
+
+def get_log(uuid):
+    response = get(uuid, '/logs')
+    return RenderNotification.RenderNotification.from_dict(response.json()) if (response and response.json()) else None
+
+
+def update_log(uuid, params):
+    response = update(uuid, params, '/logs')
+    return RenderNotification.RenderNotification.from_dict(response.json()) if (response and response.json()) else None
+
+
+def delete_all_logs():
+    response = delete_all('/logs')
+    return [(RenderNotification.RenderNotification.from_dict(res) if res else None) for res in
+            response] if response else []
+
+
+def delete_log(uuid):
+    response = delete(uuid, '/logs')
+    return RenderNotification.RenderNotification.from_dict(response.json()) if (response and response.json()) else None
+
+# End of Logs Methods Section

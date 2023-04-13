@@ -30,11 +30,7 @@ FLASK_EXE = os.getenv("FLASK_EXE")
 MANAGER_NAME = platform.node()
 
 
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.png', mimetype='image/vnd.microsoft.icon')
-
+# Route Section
 
 @app.route('/')
 def index_page():
@@ -107,33 +103,14 @@ def set_theme(theme="lightmode-index_page"):
     return res
 
 
-@app.get('/api/get')
-def get_all_requests():
-    rrequests = RenderRequest.read_all()
-    if not rrequests:
-        return {"results": []}
-
-    jsons = [rrequest.to_dict() if rrequest else {} for rrequest in rrequests]
-
-    return {"results": jsons}
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.png', mimetype='image/vnd.microsoft.icon')
 
 
-@app.get('/api/get/<uuid>')
-def get_request(uuid):
-    rr = RenderRequest.RenderRequest.from_db(uuid)
-    return rr.to_dict()
-
-
-@app.delete('/api/delete/<uuid>')
-def delete_request(uuid):
-    buildNotification(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                             'Deleting Request {} from DB'.format(uuid),
-                             'Deleting Request {} from DB'.format(uuid), "WARN"]).write_json()
-    renderRequest = RenderRequest.RenderRequest.from_db(uuid)
-
-    renderRequest.remove()
-
-    return renderRequest.to_dict()
+# End of Routes Section
+# Start of Queue API Section
 
 
 @app.post('/api/post')
@@ -148,6 +125,23 @@ def create_request():
                                  'Creating Request {} on DB'.format(req.uuid), "INFO"]).write_json()
 
     return req.to_dict()
+
+
+@app.get('/api/get')
+def get_all_requests():
+    reqs = RenderRequest.read_all()
+    if not reqs:
+        return {"results": []}
+
+    jsons = [req.to_dict() if req else {} for req in reqs]
+
+    return {"results": jsons}
+
+
+@app.get('/api/get/<uuid>')
+def get_request(uuid):
+    res = RenderRequest.RenderRequest.from_db(uuid)
+    return res.to_dict()
 
 
 @app.put('/api/put/<uuid>')
@@ -167,8 +161,37 @@ def update_request(uuid):
     return rr.to_dict()
 
 
-@app.put('/api/archive/post/<uuid>')
-def archive_request(uuid):
+@app.delete('/api/delete/')
+def delete_all_requests():
+    responses = RenderRequest.read_all()
+    RenderRequest.remove_all()
+
+    buildNotification('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                           'Deleting All Requests from DB',
+                           'Deleting All Requests from DB', "CRITICAL"]).write_json()
+
+    return {"results": [res.to_dict for res in responses]}
+
+
+@app.delete('/api/delete/<uuid>')
+def delete_request(uuid):
+    res = RenderRequest.RenderRequest.from_db(uuid)
+    res.remove()
+
+    buildNotification(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                             'Deleting Request {} from DB'.format(uuid),
+                             'Deleting Request {} from DB'.format(uuid), "WARN"]).write_json()
+
+    return res.to_dict()
+
+
+# End of Queue API Section
+# Start of Archive API Section
+
+
+@app.post('/api/archives/post')
+def create_archive():
+    uuid = ''
     content = request.data.decode('utf-8')
 
     args = content.split(";")
@@ -186,20 +209,58 @@ def archive_request(uuid):
     return renderArchive.to_dict()
 
 
-@app.delete('/api/archive/delete/<uuid>')
+@app.get('/api/archives/')
+def get_all_archives():
+    reqs = RenderArchive.read_all()
+    if not reqs:
+        return {"results": []}
+
+    jsons = [req.to_dict() if req else {} for req in reqs]
+
+    return {"results": jsons}
+
+
+@app.get('/api/archives/<uuid>')
+def get_archive(uuid):
+    res = RenderArchive.RenderArchive.from_db(uuid)
+    return res.to_dict()
+
+
+@app.put('/api/archives/<uuid>')
+def update_archive(uuid):
+    pass
+
+
+@app.delete('/api/archives/delete')
+def delete_all_archives():
+    responses = RenderArchive.read_all()
+    RenderArchive.remove_all()
+
+    buildNotification('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                           'Deleting All Archives from DB',
+                           'Deleting All Archives from DB', "CRITICAL"]).write_json()
+
+    return {"results": [res.to_dict for res in responses]}
+
+
+@app.delete('/api/archives/delete/<uuid>')
 def delete_archive(uuid):
+    res = RenderArchive.RenderArchive.from_db(uuid)
+    res.remove()
+
     buildNotification(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                              'Deleting Archive {} from DB'.format(uuid),
                              'Deleting Archive {} from DB'.format(uuid), "WARN"]).write_json()
 
-    renderArchive = RenderArchive.RenderArchive.from_db(uuid)
-    renderArchive.remove()
-
-    return renderArchive.to_dict()
+    return res.to_dict()
 
 
-@app.put('/api/logs/post/')
-def render_notification():
+# End of Archive API Section
+# Start of Logs API Section
+
+
+@app.post('/api/logs/post')
+def create_log():
     content = request.data.decode('utf-8')
 
     args = content.split(";")
@@ -212,12 +273,50 @@ def render_notification():
     return renderNotification.to_dict()
 
 
-@app.delete('/api/logs/delete/<uuid>')
-def delete_notification(uuid):
-    renderNotification = RenderNotification.RenderNotification.from_db(uuid)
-    renderNotification.remove()
+@app.get('/api/logs/get')
+def get_all_logs():
+    reqs = RenderArchive.read_all()
+    if not reqs:
+        return {"results": []}
 
-    return renderNotification.to_dict()
+    jsons = [req.to_dict() if req else {} for req in reqs]
+
+    return {"results": jsons}
+
+
+@app.get('/api/logs/get/<uuid>')
+def get_log(uuid):
+    res = RenderNotification.RenderNotification.from_db(uuid)
+    return res.to_dict()
+
+
+@app.put('/api/logs/put/<uuid>')
+def update_log(uuid):
+    pass
+
+
+@app.delete('/api/logs/delete')
+def delete_all_logs():
+    responses = RenderNotification.read_all()
+    RenderNotification.remove_all()
+
+    buildNotification('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                           'Deleting All Logs from DB',
+                           'Deleting All Logs from DB', "CRITICAL"]).write_json()
+
+    return {"results": [res.to_dict for res in responses]}
+
+
+@app.delete('/api/logs/delete/<uuid>')
+def delete_log(uuid):
+    res = RenderNotification.RenderNotification.from_db(uuid)
+    res.remove()
+
+    return res.to_dict()
+
+
+# End of Logs API Section
+# Start of Helper Methods Section
 
 
 def new_request_trigger(req):
@@ -284,6 +383,10 @@ def checkAgeAndClear(notification):
         return True
     else:
         return False
+
+
+# End of Helper Methods Section
+# Start of Main
 
 
 if __name__ == '__main__':
