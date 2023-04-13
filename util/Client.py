@@ -3,7 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from . import RenderRequest, RenderLog, RenderArchive
+from .datatypes import RenderArchive, RenderRequest, RenderLog
 
 LOGGER = logging.getLogger(__name__)
 

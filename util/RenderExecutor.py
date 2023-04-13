@@ -9,10 +9,10 @@ import platform
 import unreal
 
 from util import Client
-from util import RenderRequest
-from util.RenderArchive import HardwareStats
-from util.RenderLog import LogType
-from util.RenderSettings import RenderSettings, AASettings, ConsoleSettings, HighResSettings, OutputSettings
+from util.datatypes import RenderRequest, RenderStatus
+from util.datatypes.RenderArchive import HardwareStats
+from util.datatypes.RenderLog import LogType
+from util.datatypes.RenderSettings import RenderSettings, AASettings, ConsoleSettings, HighResSettings, OutputSettings
 
 
 @unreal.uclass()
@@ -100,7 +100,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         if not self.pipeline:
             return
 
-        status = RenderRequest.RenderStatus.in_progress
+        status = RenderStatus.RenderStatus.in_progress
         progress = 100 * unreal.MoviePipelineLibrary. \
             get_completion_percentage(self.pipeline)
         time_estimate = unreal.MoviePipelineLibrary. \
@@ -162,7 +162,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
         progress = 100
         time_estimate = 'N/A'
-        status = RenderRequest.RenderStatus.finished
+        status = RenderStatus.RenderStatus.finished
         self.send_http_request(
             "{}/put/{}".format(Client.SERVER_API_URL, self.job_id),
             "PUT",
@@ -170,9 +170,9 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             unreal.Map(str, str)
         )
 
-        hardwareStats = HardwareStats(platform.node(), platform.processor(), GPUtil.getGPUs()[0].name,
-                                      get_size(psutil.virtual_memory().total),
-                                      GPUtil.getGPUs()[0].memoryTotal).to_dict()
+        hardwareStats = HardwareStats.HardwareStats(platform.node(), platform.processor(), GPUtil.getGPUs()[0].name,
+                                                    get_size(psutil.virtual_memory().total),
+                                                    GPUtil.getGPUs()[0].memoryTotal).to_dict()
         finishTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         renderSettings = str(getRenderSettings(self.jobConfig).to_dict())
         frameTimesArray = getFrameTimes(unreal.TextLibrary.conv_text_to_string(self.outputFolder),
@@ -284,12 +284,12 @@ def getOutputAndRenderTypes(configs):
 
 def getRenderSettings(masterConfig):
     outputTypes, renderTypes = getOutputAndRenderTypes(masterConfig.get_all_settings())
-    aaSettings = AASettings.from_unreal(masterConfig.find_setting_by_class(unreal.MoviePipelineAntiAliasingSetting))
-    consoleSettings = ConsoleSettings.from_unreal(
+    aaSettings = AASettings.AASettings.from_unreal(masterConfig.find_setting_by_class(unreal.MoviePipelineAntiAliasingSetting))
+    consoleSettings = ConsoleSettings.ConsoleSettings.from_unreal(
         masterConfig.find_setting_by_class(unreal.MoviePipelineConsoleVariableSetting))
-    highResSettings = HighResSettings.from_unreal(
+    highResSettings = HighResSettings.HighResSettings.from_unreal(
         masterConfig.find_setting_by_class(unreal.MoviePipelineHighResSetting))
-    outputSettings = OutputSettings.from_unreal(masterConfig.find_setting_by_class(unreal.MoviePipelineOutputSetting))
+    outputSettings = OutputSettings.OutputSettings.from_unreal(masterConfig.find_setting_by_class(unreal.MoviePipelineOutputSetting))
 
     return RenderSettings(output_types=outputTypes, render_types=renderTypes, aa_settings=aaSettings,
                           console_settings=consoleSettings, high_res_settings=highResSettings,

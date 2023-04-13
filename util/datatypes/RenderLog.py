@@ -1,15 +1,15 @@
 import os
 from datetime import datetime
 
-from util.StorableEntity import StorableEntity
+from util.datatypes.abstracts.StorableEntity import StorableEntity
 from dotenv import load_dotenv
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.dirname(MODULE_PATH)
 
-load_dotenv(os.path.join(MODULE_PATH, '../.env'))
+load_dotenv(os.path.join(MODULE_PATH, '../../.env'))
 
-DATABASE = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER") + os.getenv("LOG_FOLDER"))
+DATABASE = os.path.join(ROOT_PATH, "../" + os.getenv("DATABASE_FOLDER") + os.getenv("LOG_FOLDER"))
 
 
 class LogType(object):

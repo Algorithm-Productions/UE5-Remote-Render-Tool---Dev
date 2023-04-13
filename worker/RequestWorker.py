@@ -8,7 +8,7 @@ import platform
 from dotenv import load_dotenv
 
 from util import Client
-from util import RenderRequest
+from util.datatypes import RenderRequest
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()

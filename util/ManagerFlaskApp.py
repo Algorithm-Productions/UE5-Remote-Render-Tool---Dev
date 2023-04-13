@@ -5,7 +5,7 @@ import uuid as genUUID
 
 from flask import Flask
 
-from util import RenderLog
+from util.datatypes import RenderLog
 
 MANAGER_NAME = platform.node()
 

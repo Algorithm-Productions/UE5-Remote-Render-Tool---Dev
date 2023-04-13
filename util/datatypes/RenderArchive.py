@@ -1,51 +1,15 @@
 import os
 from dotenv import load_dotenv
 
-from util.RenderRequest import RenderRequest
-from util.RenderSettings import RenderSettings
-from util.StorableEntity import StorableEntity
+from util.datatypes import HardwareStats, RenderSettings, RenderRequest
+from util.datatypes.abstracts.StorableEntity import StorableEntity
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.dirname(MODULE_PATH)
 
-load_dotenv(os.path.join(MODULE_PATH, '../.env'))
+load_dotenv(os.path.join(MODULE_PATH, '../../.env'))
 
-DATABASE = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER") + os.getenv("ARCHIVE_FOLDER"))
-
-
-class HardwareStats(object):
-    def __init__(
-            self,
-            name='',
-            cpu='',
-            gpu='',
-            ram='',
-            vram=''
-    ):
-        self.name = name
-        self.cpu = cpu
-        self.gpu = gpu
-        self.ram = ram
-        self.vram = vram
-
-    @classmethod
-    def from_dict(cls, data):
-        name = (data.get('name') or '') if data else ''
-        cpu = (data.get('cpu') or '') if data else ''
-        gpu = (data.get('gpu') or '') if data else ''
-        ram = (data.get('ram') or '') if data else ''
-        vram = (data.get('vram') or '') if data else ''
-
-        return cls(
-            name=name,
-            cpu=cpu,
-            gpu=gpu,
-            ram=ram,
-            vram=vram
-        )
-
-    def to_dict(self):
-        return self.__dict__
+DATABASE = os.path.join(ROOT_PATH, "../" + os.getenv("DATABASE_FOLDER") + os.getenv("ARCHIVE_FOLDER"))
 
 
 class RenderArchive(StorableEntity):
@@ -85,9 +49,9 @@ class RenderArchive(StorableEntity):
         avg_frame = data.get('avg_frame') or ''
         frame_map = data.get('frame_map') or ''
 
-        render_request = RenderRequest.from_dict(data.get('render_request'))
-        hardware_stats = HardwareStats.from_dict(data.get('hardware_stats'))
-        render_settings = RenderSettings.from_dict(data.get('render_settings'))
+        render_request = RenderRequest.RenderRequest.from_dict(data.get('render_request'))
+        hardware_stats = HardwareStats.HardwareStats.from_dict(data.get('hardware_stats'))
+        render_settings = RenderSettings.RenderSettings.from_dict(data.get('render_settings'))
 
         return cls(
             uuid=uuid,

@@ -4,24 +4,15 @@ import socket
 
 from dotenv import load_dotenv
 
-from util.StorableEntity import StorableEntity
+from util.datatypes import RenderStatus
+from util.datatypes.abstracts.StorableEntity import StorableEntity
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.dirname(MODULE_PATH)
 
-load_dotenv(os.path.join(MODULE_PATH, '../.env'))
+load_dotenv(os.path.join(MODULE_PATH, '../../.env'))
 
-DATABASE = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER"))
-
-
-class RenderStatus(object):
-    unassigned = 'Un-Assigned'
-    ready_to_start = 'Ready to Start'
-    in_progress = 'In Progress'
-    finished = 'Finished'
-    errored = 'Errored'
-    cancelled = 'Cancelled'
-    paused = 'Paused'
+DATABASE = os.path.join(ROOT_PATH, "../" + os.getenv("DATABASE_FOLDER"))
 
 
 class RenderRequest(StorableEntity):
@@ -61,7 +52,7 @@ class RenderRequest(StorableEntity):
         self.priority = priority or 0
         self.category = category
         self.tags = [] if tags is None else tags
-        self.status = status or RenderStatus.unassigned
+        self.status = status or RenderStatus.RenderStatus.unassigned
         self.project_path = project_path
         self.level_path = level_path
         self.sequence_path = sequence_path

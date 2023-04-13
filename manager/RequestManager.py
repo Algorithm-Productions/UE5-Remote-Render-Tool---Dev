@@ -11,11 +11,11 @@ from flask import send_from_directory, make_response, redirect, url_for
 from flask import request
 from flask import render_template
 
-from util import RenderRequest, RenderArchive, RenderLog
+from util.datatypes import RenderArchive, RenderRequest, RenderLog
 from util.ManagerFlaskApp import ManagerFlaskApp
-from util.RenderLog import LogType
-from util.RenderArchive import HardwareStats
-from util.RenderSettings import RenderSettings
+from util.datatypes.RenderLog import LogType
+from util.datatypes.RenderArchive import HardwareStats
+from util.datatypes.RenderSettings import RenderSettings
 
 load_dotenv()
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
