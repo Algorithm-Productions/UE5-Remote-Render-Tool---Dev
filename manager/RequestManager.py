@@ -73,7 +73,19 @@ def archive_entry(uuid):
     return render_template('archive_entry.html', entry=rr.to_dict(), uuid=uuid)
 
 
-@app.route('/notification/<uuid>')
+@app.route('/logs/')
+def logs_page():
+    rrequests = RenderNotification.read_all()
+    if not rrequests:
+        return render_template('error.html', errorText="No logs", title="Application Logs",
+                               page_passer="logs_page")
+
+    jsons = [rrequest.to_dict() for rrequest in rrequests]
+
+    return render_template('logs.html', requests=jsons)
+
+
+@app.route('/log/<uuid>')
 def notification_entry(uuid):
     rn = RenderNotification.RenderNotification.from_db(uuid)
 
