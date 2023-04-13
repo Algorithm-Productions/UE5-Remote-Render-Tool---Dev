@@ -3,12 +3,10 @@
 <head>
     <title>Render Tracker - Landing</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='imgs/favicon.png') }}">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
     {% if request.cookies.get("theme") %}
         <link rel="stylesheet" href="/static/{{ request.cookies.get("theme") }}/landing.css">
         <link rel="stylesheet" href="/static/{{ request.cookies.get("theme") }}/global.css">
@@ -63,10 +61,10 @@
             <div class="row notificationBlock">
                 <div class="col" align="center">
                     <div class="notificationCover">
-                        <a href='/notification/{{ notifications[0].uuid }}'>
-                                {{ notifications[0].message }}
+                        <a href='/logs/{{ notifications[0]["uuid"] }}?return='>
+                                {{ notifications[0]["message"] }}
                         </a>
-                        <button onclick='clearNotification({{ notifications[0]|tojson|safe }})' class='copyBtn'> ☓ </button>
+                        <button onclick='deleteEntry("logs", {{ notifications[0]["uuid"]|tojson|safe }})' class='copyBtn'> ☓ </button>
                     </div>
                 </div>
             </div>
@@ -78,8 +76,8 @@
         <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
     </div>
 
-    <script src= {{ url_for('static', filename="js/toggleMode.js") }}></script>
-    <script src= {{ url_for('static', filename="js/createArchiveTable.js") }}></script>
+    <script src= {{ url_for('static', filename="js/generalUtils.js") }}></script>
+    <script src= {{ url_for('static', filename="js/logsUtils.js") }}></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

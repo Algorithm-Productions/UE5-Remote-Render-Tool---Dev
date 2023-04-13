@@ -50,14 +50,14 @@
 
         <div class="row infoContainer center">
             <div class="col-3 sideMenu">
-                <a onclick="handleSwitch(`generalInformation`)"><h3 id="generalInformationSelect" class="selected">General
+                <a onclick="handleTabSwitch(`generalInformation`)"><h3 id="generalInformationSelect" class="selected">General
                     Information</h3></a>
-                <a onclick="handleSwitch(`renderStatistics`)"><h3 id="renderStatisticsSelect">Render Statistics</h3></a>
-                <a onclick="handleSwitch(`hardwareInfo`)"><h3 id="hardwareInfoSelect">Hardware Info</h3></a>
-                <a onclick="handleSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
-                <a onclick="handleSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
-                <a onclick="handleSwitch(`consoleSettings`)"><h3 id="consoleSettingsSelect">Console Settings</h3></a>
-                <a onclick="handleSwitch(`highResSettings`)"><h3 id="highResSettingsSelect">High-Res Settings</h3></a>
+                <a onclick="handleTabSwitch(`renderStatistics`)"><h3 id="renderStatisticsSelect">Render Statistics</h3></a>
+                <a onclick="handleTabSwitch(`hardwareInfo`)"><h3 id="hardwareInfoSelect">Hardware Info</h3></a>
+                <a onclick="handleTabSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
+                <a onclick="handleTabSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
+                <a onclick="handleTabSwitch(`consoleSettings`)"><h3 id="consoleSettingsSelect">Console Settings</h3></a>
+                <a onclick="handleTabSwitch(`highResSettings`)"><h3 id="highResSettingsSelect">High-Res Settings</h3></a>
             </div>
 
             <div id="generalInformation" class="col infoPanel">
@@ -215,9 +215,8 @@
         <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
     </div>
 
-    <script src= {{ url_for('static', filename="js/toggleMode.js") }}></script>
-    <script src= {{ url_for('static', filename="js/handleSwitch.js") }}></script>
-    <script src= {{ url_for('static', filename="js/createChart.js") }}></script>
+    <script src= {{ url_for('static', filename="js/generalUtils.js") }}></script>
+    <script src= {{ url_for('static', filename="js/archiveUtils.js") }}></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>

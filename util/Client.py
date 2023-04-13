@@ -71,7 +71,7 @@ def update_request(uuid, params):
 def send_notification(uuid, args):
     try:
         response = requests.put(
-            SERVER_API_URL + '/notification/post/{}'.format(uuid),
+            SERVER_API_URL + '/logs/post/{}'.format(uuid),
             '{};{};{};{};{}'.format(args[0], args[1], args[2], args[3], args[4])
         )
     except requests.exceptions.ConnectionError:

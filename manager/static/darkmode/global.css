@@ -8,7 +8,6 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    font-family: 'GT Pressura Typeface Normal';
     background-color: #000000;
     color: #cdd2ce;
 }
@@ -24,7 +23,6 @@ body {
 .footer {
     margin-top: auto;
     border-top: 1.5px solid #c8c8c8;
-    font-family: 'GT Pressura Typeface Normal';
     color: #cdd2ce;
 }
 
@@ -36,7 +34,6 @@ body {
 .mainTitleBlock {
     padding-bottom: 2.5%;
     text-align: center;
-    font-family: 'GT Pressura Typeface Normal';
 }
 
 .mainTitleBlock h1 {
@@ -47,7 +44,6 @@ body {
 
 .buttonBlock {
     padding-bottom: 7.5%;
-    font-family: 'GT Pressura Typeface Normal';
     margin-left: 0;
     margin-right: 0;
 }

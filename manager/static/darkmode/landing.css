@@ -1,12 +1,3 @@
-@font-face {
-    font-family: "GT Pressura Typeface Normal";
-    src: url("../fonts/gt-pressura-mono-regular.ttf");
-}
-
-.notificationBlock {
-    font-family: 'GT Pressura Typeface Normal';
-}
-
 .notificationBlock .notificationCover {
     border: 3px solid #c8c8c8;
     background-color: #3a392f;

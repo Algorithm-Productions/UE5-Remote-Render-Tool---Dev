@@ -67,9 +67,8 @@
         <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
     </div>
 
-    <script src= {{ url_for('static', filename="js/openModal.js") }}></script>
-    <script src= {{ url_for('static', filename="js/toggleMode.js") }}></script>
-    <script src = {{url_for('static', filename="js/createArchiveTable.js")}}></script>
+    <script src= {{ url_for('static', filename="js/generalUtils.js") }}></script>
+    <script src = {{url_for('static', filename="js/archiveUtils.js")}}></script>
     <script>
         createArchiveTable( {{requests|tojson|safe}} );
     </script>

@@ -85,11 +85,11 @@ def logs_page():
     return render_template('logs.html', requests=jsons)
 
 
-@app.route('/log/<uuid>')
-def notification_entry(uuid):
+@app.route('/logs/<uuid>')
+def logs_entry(uuid):
     rn = RenderNotification.RenderNotification.from_db(uuid)
 
-    return render_template('notification_entry.html', entry=rn.to_dict(), uuid=uuid)
+    return render_template('logs_entry.html', entry=rn.to_dict(), uuid=uuid)
 
 
 @app.route("/set")
@@ -198,7 +198,7 @@ def delete_archive(uuid):
     return renderArchive.to_dict()
 
 
-@app.put('/api/notification/post/')
+@app.put('/api/logs/post/')
 def render_notification():
     content = request.data.decode('utf-8')
 
@@ -212,7 +212,7 @@ def render_notification():
     return renderNotification.to_dict()
 
 
-@app.delete('/api/notification/delete/<uuid>')
+@app.delete('/api/logs/delete/<uuid>')
 def delete_notification(uuid):
     renderNotification = RenderNotification.RenderNotification.from_db(uuid)
     renderNotification.remove()

@@ -1,13 +1,7 @@
-@font-face {
-    font-family: "GT Pressura Typeface Normal";
-    src: url("../fonts/gt-pressura-mono-regular.ttf");
-}
-
 table {
     border-collapse: collapse;
     border: 0px;
     border-radius:6px;
-    font-family: 'GT Pressura Typeface Normal';
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
@@ -26,7 +20,7 @@ th, td {
 }
 
 td {
-    color: #cdd2ce
+    color: #cdd2ce;
 }
 
 tr {
@@ -59,7 +53,7 @@ tr:last-of-type {
 }
 
 .copyBtn {
-    margin: 12px 15px;
+    margin: 5px 15px;
     font-size: 25px;
 	box-shadow: 0 10px 29px 0 rgba(68, 88, 144, 0.1);
 	transition: all 0.3s ease-in-out;

@@ -51,7 +51,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
     def add_job(self):
         self.send_http_request(
-            "{}/notification/post/".format(Client.SERVER_API_URL),
+            "{}/logs/post/".format(Client.SERVER_API_URL),
             "PUT",
             '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                     "Job {} Began Rendering!".format(self.job_id),
@@ -143,7 +143,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
         if is_errored:
             self.send_http_request(
-                "{}/notification/post/".format(Client.SERVER_API_URL),
+                "{}/logs/post/".format(Client.SERVER_API_URL),
                 "PUT",
                 '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                         "Job {} Errored!".format(self.job_id),
@@ -152,7 +152,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             )
         else:
             self.send_http_request(
-                "{}/notification/post/".format(Client.SERVER_API_URL),
+                "{}/logs/post/".format(Client.SERVER_API_URL),
                 "PUT",
                 '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                         "Job {} Finished Rendering!".format(self.job_id),
@@ -192,7 +192,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                       params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])
     def error_implementation(self, executor, pipeline, fatal, error_reason):
         self.send_http_request(
-            "{}/notification/post/".format(Client.SERVER_API_URL),
+            "{}/logs/post/".format(Client.SERVER_API_URL),
             "PUT",
             '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                     "Job {} Errored!".format(self.job_id),
