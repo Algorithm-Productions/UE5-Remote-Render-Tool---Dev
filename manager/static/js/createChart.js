@@ -1,4 +1,8 @@
 function createChart(data) {
+    const color = (getCookie("theme") === "darkmode") ? '#000' : '#F5F5F5'
+    const ticksColor = (getCookie("theme") === "darkmode") ? '#000' : '#fff'
+
+
     const convertedData = data.map((item) => parseFloat(item))
     const maxVal = Math.max(...convertedData)
     const axisGrade = Math.round(maxVal + (0.15*maxVal))
@@ -11,7 +15,7 @@ function createChart(data) {
             datasets: [{
                 label: "Frame Render Time",
                 data: convertedData,
-                backgroundColor: '#000',
+                backgroundColor: color,
             }],
         },
         options: {
@@ -21,10 +25,24 @@ function createChart(data) {
                     {
                         display: true,
                         ticks: {
-                            suggestedMax: axisGrade
-                        }
+                            suggestedMax: axisGrade,
+                        },
+                        grid: {
+                            tickColor: ticksColor,
+                        },
+                        gridLines: {
+                            color: ticksColor,
+                        },
+                    },
+                ],
+                xAxes: [
+                    {
+                        display: true,
+                        gridLines: {
+                            color: ticksColor,
+                        },
                     }
-                ]
+                ],
             },
         },
     });

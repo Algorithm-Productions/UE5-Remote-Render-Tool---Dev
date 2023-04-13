@@ -7,7 +7,7 @@ import uuid as genUUID
 
 from dotenv import load_dotenv
 
-from flask import Flask, send_from_directory, make_response, redirect, url_for
+from flask import send_from_directory, make_response, redirect, url_for
 from flask import request
 from flask import render_template
 
