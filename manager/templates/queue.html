@@ -61,7 +61,7 @@
             </div>
             <div class="col rightPadding" align="center">
                 <div class="buttonCover">
-                    <a href=""> Archive Renders </a>
+                    <a href="#" onclick='clearCompleted({{requests|tojson|safe}})'> Clear Completed </a>
                 </div>
             </div>
         </div>
@@ -72,6 +72,7 @@
     </div>
 
     <script src= {{ url_for('static', filename="js/toggleMode.js") }}></script>
+    <script src= {{ url_for('static', filename="js/clearCompleted.js") }}></script>
     <script src= {{ url_for('static', filename="js/updateProgress.js") }}></script>
     <script src= {{ url_for('static', filename="js/createTable.js") }}></script>
     <script>
