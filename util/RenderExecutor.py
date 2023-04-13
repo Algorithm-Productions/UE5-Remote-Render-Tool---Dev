@@ -50,14 +50,14 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.outputFolder = cmd_parameters['OutputPath']
 
     def add_job(self):
-        # self.send_http_request(
-        #     "{}/logs/post/".format(Client.SERVER_API_URL),
-        #     "PUT",
-        #     '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-        #                             "Job {} Began Rendering!".format(self.job_id),
-        #                             "Job {} Began Rendering!".format(self.job_id), NotificationType.INFO),
-        #     unreal.Map(str, str)
-        # )
+        self.send_http_request(
+            "{}/logs/post".format(Client.SERVER_API_URL),
+            "POST",
+            '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                    "Job {} Began Rendering!".format(self.job_id),
+                                    "Job {} Began Rendering!".format(self.job_id), NotificationType.INFO),
+            {"Content-Type": "application/json"}
+        )
 
         job = self.queue.allocate_new_job(unreal.MoviePipelineExecutorJob)
         job.map = unreal.SoftObjectPath(self.level_path)
@@ -141,24 +141,24 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
         time.sleep(1)
 
-        # if is_errored:
-        #     self.send_http_request(
-        #         "{}/logs/post/".format(Client.SERVER_API_URL),
-        #         "PUT",
-        #         '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-        #                                 "Job {} Errored!".format(self.job_id),
-        #                                 "...", NotificationType.ERROR),
-        #         unreal.Map(str, str)
-        #     )
-        # else:
-        #     self.send_http_request(
-        #         "{}/logs/post/".format(Client.SERVER_API_URL),
-        #         "PUT",
-        #         '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-        #                                 "Job {} Finished Rendering!".format(self.job_id),
-        #                                 "Job {} Finished Rendering!".format(self.job_id), NotificationType.INFO),
-        #         unreal.Map(str, str)
-        #     )
+        if is_errored:
+            self.send_http_request(
+                "{}/logs/post".format(Client.SERVER_API_URL),
+                "POST",
+                '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                        "Job {} Errored!".format(self.job_id),
+                                        "...", NotificationType.ERROR),
+                {"Content-Type": "application/json"}
+            )
+        else:
+            self.send_http_request(
+                "{}/logs/post".format(Client.SERVER_API_URL),
+                "POST",
+                '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                        "Job {} Finished Rendering!".format(self.job_id),
+                                        "Job {} Finished Rendering!".format(self.job_id), NotificationType.INFO),
+                {"Content-Type": "application/json"}
+            )
 
         progress = 100
         time_estimate = 'N/A'
@@ -180,27 +180,27 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                                                           "%m/%d/%Y, %H:%M:%S"))
         avgFrame = statistics.mean([float(val) for val in frameTimesArray])
 
-        # self.send_http_request(
-        #     "{}/archive/post/{}".format(Client.SERVER_API_URL, self.job_id),
-        #     "PUT",
-        #     '{};{};{};{};{};{}'.format(self.project_name, hardwareStats, finishTime, avgFrame, frameTimesArray,
-        #                                renderSettings),
-        #     unreal.Map(str, str)
-        # )
+        self.send_http_request(
+            "{}/archives/post".format(Client.SERVER_API_URL),
+            "POST",
+            '{};{};{};{};{};{};{}'.format(self.job_id, self.project_name, hardwareStats, finishTime, avgFrame,
+                                          frameTimesArray, renderSettings),
+            {"Content-Type": "application/json"}
+        )
 
-    # @unreal.ufunction(ret=None,
-    #                   params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])
-    # def error_implementation(self, executor, pipeline, fatal, error_reason):
-    #     self.send_http_request(
-    #         "{}/logs/post/".format(Client.SERVER_API_URL),
-    #         "PUT",
-    #         '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-    #                                 "Job {} Errored!".format(self.job_id),
-    #                                 "...", NotificationType.ERROR),
-    #         unreal.Map(str, str)
-    #     )
-    #
-    #     return "NO"
+    @unreal.ufunction(ret=None,
+                      params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])
+    def error_implementation(self, executor, pipeline, fatal, error_reason):
+        self.send_http_request(
+            "{}/logs/post".format(Client.SERVER_API_URL),
+            "POST",
+            '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                    "Job {} Errored!".format(self.job_id),
+                                    "...", NotificationType.ERROR),
+            {"Content-Type": "application/json"}
+        )
+
+        return "NO"
 
     @unreal.ufunction(ret=None, params=[unreal.MoviePipelineOutputData])
     def on_pipeline_finished(self, results):

@@ -54,20 +54,21 @@ def render(uuid, project_path, level_path, sequence_path, config_path, output_pa
     return proc.communicate()
 
 
-# def sendExit():
-#     Client.send_notification('', ['', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-#                                   'Worker {} Disconnecting from Farm'.format(WORKER_NAME),
-#                                   'Worker {} Disconnection from Farm'.format(WORKER_NAME),
-#                                   "WARN"])
+def sendExit():
+    Client.create_log('{};{};{};{};{}'.format('', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                              'Worker {} Disconnecting to Farm'.format(WORKER_NAME),
+                                              'Worker {} Disconnecting to Farm'.format(WORKER_NAME),
+                                              "WARN"))
 
 
 if __name__ == '__main__':
-    #atexit.register(sendExit)
+    atexit.register(sendExit)
     LOGGER.info('Starting render worker %s', WORKER_NAME)
-    # Client.send_notification('', ['', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-    #                               'Worker {} Connecting to Farm'.format(WORKER_NAME),
-    #                               'Worker {} Connecting to Farm'.format(WORKER_NAME),
-    #                               "INFO"])
+    Client.create_log('{};{};{};{};{}'.format('', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                              'Worker {} Connecting to Farm'.format(WORKER_NAME),
+                                              'Worker {} Connecting to Farm'.format(WORKER_NAME),
+                                              "INFO"))
+
     while True:
         reqs = Client.get_all_requests()
         uuids = [req.uuid for req in reqs

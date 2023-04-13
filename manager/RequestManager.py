@@ -191,25 +191,24 @@ def delete_request(uuid):
 
 @app.post('/api/archives/post')
 def create_archive():
-    uuid = ''
     content = request.data.decode('utf-8')
 
     args = content.split(";")
-    renderRequest = RenderRequest.RenderRequest.from_db(uuid)
-    if (not renderRequest) or len(args) != 6:
+    renderRequest = RenderRequest.RenderRequest.from_db(args[0])
+    if (not renderRequest) or len(args) != 7:
         return {}
 
-    renderArchive = buildArchive(uuid, renderRequest, args)
+    renderArchive = buildArchive(args[0], renderRequest, args)
     renderArchive.write_json()
 
-    buildNotification(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                             'Archiving Request {}'.format(uuid),
-                             'Archiving Request {}'.format(uuid), "INFO"]).write_json()
+    buildNotification(args[0], [args[0], datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                'Archiving Request {}'.format(args[0]),
+                                'Archiving Request {}'.format(args[0]), "INFO"]).write_json()
 
     return renderArchive.to_dict()
 
 
-@app.get('/api/archives/')
+@app.get('/api/archives/get')
 def get_all_archives():
     reqs = RenderArchive.read_all()
     if not reqs:
@@ -220,7 +219,7 @@ def get_all_archives():
     return {"results": jsons}
 
 
-@app.get('/api/archives/<uuid>')
+@app.get('/api/archives/get/<uuid>')
 def get_archive(uuid):
     res = RenderArchive.RenderArchive.from_db(uuid)
     return res.to_dict()
@@ -337,13 +336,12 @@ def assign_request(req, worker):
 
 def buildArchive(uuid, renderRequest, metadata):
     renderArchive = RenderArchive.RenderArchive(uuid=uuid, render_request=renderRequest)
-    renderArchive.project_name = metadata[0]
-    renderArchive.hardware_stats = HardwareStats.from_dict(eval(metadata[1]))
-    renderArchive.finish_time = metadata[2]
-    renderArchive.avg_frame = float(metadata[3])
-    renderArchive.frame_map = metadata[4].strip('][').split(', ')
-    print(metadata[4])
-    renderArchive.render_settings = RenderSettings.from_dict(eval(metadata[5]))
+    renderArchive.project_name = metadata[1]
+    renderArchive.hardware_stats = HardwareStats.from_dict(eval(metadata[2]))
+    renderArchive.finish_time = metadata[3]
+    renderArchive.avg_frame = float(metadata[4])
+    renderArchive.frame_map = metadata[5].strip('][').split(', ')
+    renderArchive.render_settings = RenderSettings.from_dict(eval(metadata[6]))
 
     renderArchive.total_time = str(
         datetime.strptime(renderArchive.finish_time, "%m/%d/%Y, %H:%M:%S") - datetime.strptime(
