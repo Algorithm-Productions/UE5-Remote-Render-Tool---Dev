@@ -57,14 +57,14 @@
             </div>
         </div>
 
-        {% if notifications|length != 0 %}
+        {% if logs|length != 0 %}
             <div class="row notificationBlock">
                 <div class="col" align="center">
                     <div class="notificationCover">
-                        <a href='/logs/{{ notifications[0]["uuid"] }}?return='>
-                                {{ notifications[0]["message"] }}
+                        <a href='/logs/{{ logs[0]["uuid"] }}?return='>
+                                {{ logs[0]["message"] }}
                         </a>
-                        <button onclick='deleteEntry("logs", {{ notifications[0]["uuid"]|tojson|safe }})' class='copyBtn'> ☓ </button>
+                        <button onclick='deleteEntry("logs", {{ logs[0]["uuid"]|tojson|safe }})' class='copyBtn'> ☓ </button>
                     </div>
                 </div>
             </div>

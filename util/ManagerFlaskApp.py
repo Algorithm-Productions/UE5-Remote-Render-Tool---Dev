@@ -5,7 +5,7 @@ import uuid as genUUID
 
 from flask import Flask
 
-from util import RenderNotification
+from util import RenderLog
 
 MANAGER_NAME = platform.node()
 
@@ -13,7 +13,7 @@ MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.dirname(MODULE_PATH)
 DATABASE = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER"))
 ARCHIVE = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER") + os.getenv("ARCHIVE_FOLDER"))
-NOTIFICATIONS = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER") + os.getenv("NOTIFICATION_FOLDER"))
+LOGS = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER") + os.getenv("LOG_FOLDER"))
 
 
 def genFolders():
@@ -21,8 +21,8 @@ def genFolders():
         os.mkdir(DATABASE)
     if not os.path.exists(ARCHIVE):
         os.mkdir(ARCHIVE)
-    if not os.path.exists(NOTIFICATIONS):
-        os.mkdir(NOTIFICATIONS)
+    if not os.path.exists(LOGS):
+        os.mkdir(LOGS)
 
 
 class ManagerFlaskApp(Flask):
@@ -32,19 +32,19 @@ class ManagerFlaskApp(Flask):
 
         if not debug:
             with self.app_context():
-                RenderNotification.RenderNotification(uuid=str(genUUID.uuid4())[:5], jobUUID='',
-                                                      timestamp=datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                                                      message='App Manager at {} is Starting!'.format(MANAGER_NAME),
-                                                      log='App Manager at {} is Starting!'.format(MANAGER_NAME),
-                                                      notificationType="INFO").write_json()
+                RenderLog.RenderLog(uuid=str(genUUID.uuid4())[:5], jobUUID='',
+                                    timestamp=datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                    message='App Manager at {} is Starting!'.format(MANAGER_NAME),
+                                    log='App Manager at {} is Starting!'.format(MANAGER_NAME),
+                                    logType="INFO").write_json()
 
         try:
             super().run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
         finally:
             if not debug:
-                RenderNotification.RenderNotification(uuid=str(genUUID.uuid4())[:5], jobUUID='',
-                                                      timestamp=datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                                                      message='App Manager at {} is Shutting Down!'.format(
-                                                          MANAGER_NAME),
-                                                      log='App Manager at {} is Shutting Down!'.format(MANAGER_NAME),
-                                                      notificationType="CRITICAL").write_json()
+                RenderLog.RenderLog(uuid=str(genUUID.uuid4())[:5], jobUUID='',
+                                    timestamp=datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                                    message='App Manager at {} is Shutting Down!'.format(
+                                        MANAGER_NAME),
+                                    log='App Manager at {} is Shutting Down!'.format(MANAGER_NAME),
+                                    logType="CRITICAL").write_json()

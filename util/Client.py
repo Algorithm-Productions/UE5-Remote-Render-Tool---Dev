@@ -3,7 +3,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from . import RenderRequest, RenderNotification, RenderArchive
+from . import RenderRequest, RenderLog, RenderArchive
 
 LOGGER = logging.getLogger(__name__)
 
@@ -164,33 +164,33 @@ def delete_archive(uuid):
 
 def create_log(data):
     response = create(data, '/logs')
-    return RenderNotification.RenderNotification.from_dict(response.json()) if (response and response.json()) else None
+    return RenderLog.RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
 
 def get_all_logs():
     response = get_all('/logs')
-    return [(RenderNotification.RenderNotification.from_dict(res.json()) if (res and res.json()) else None) for res in
+    return [(RenderLog.RenderLog.from_dict(res.json()) if (res and res.json()) else None) for res in
             response] if response else []
 
 
 def get_log(uuid):
     response = get(uuid, '/logs')
-    return RenderNotification.RenderNotification.from_dict(response.json()) if (response and response.json()) else None
+    return RenderLog.RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
 
 def update_log(uuid, params):
     response = update(uuid, params, '/logs')
-    return RenderNotification.RenderNotification.from_dict(response.json()) if (response and response.json()) else None
+    return RenderLog.RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
 
 def delete_all_logs():
     response = delete_all('/logs')
-    return [(RenderNotification.RenderNotification.from_dict(res) if res else None) for res in
+    return [(RenderLog.RenderLog.from_dict(res) if res else None) for res in
             response] if response else []
 
 
 def delete_log(uuid):
     response = delete(uuid, '/logs')
-    return RenderNotification.RenderNotification.from_dict(response.json()) if (response and response.json()) else None
+    return RenderLog.RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
 # End of Logs Methods Section

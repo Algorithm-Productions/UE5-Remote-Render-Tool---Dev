@@ -1,12 +1,10 @@
-import logging
-import socket
-import uuid as genUUID
 import os
-import json
 from datetime import datetime, timedelta
+import socket
+
 from dotenv import load_dotenv
 
-LOGGER = logging.getLogger(__name__)
+from util.StorableEntity import StorableEntity
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.dirname(MODULE_PATH)
@@ -26,7 +24,9 @@ class RenderStatus(object):
     paused = 'Paused'
 
 
-class RenderRequest(object):
+class RenderRequest(StorableEntity):
+    DATABASE = DATABASE
+
     def __init__(
             self,
             uuid='',
@@ -53,7 +53,7 @@ class RenderRequest(object):
             estimated_finish='',
             progress=0
     ):
-        self.uuid = uuid or str(genUUID.uuid4())[:4]
+        super().__init__(uuid)
         self.name = name
         self.owner = owner or socket.gethostname()
         self.worker = worker
@@ -78,17 +78,6 @@ class RenderRequest(object):
         self.progress = progress
         self.estimated_finish = estimated_finish or ''
         self.calcFinish(estimated_finish)
-
-    @classmethod
-    def from_db(cls, uuid):
-        request_file = os.path.join(DATABASE, '{}.json'.format(uuid))
-        with open(request_file, 'r') as fp:
-            try:
-                request_dict = json.load(fp)
-            except Exception as e:
-                LOGGER.error('Failed to load request object from db: %s', e)
-                return None
-        return cls.from_dict(request_dict)
 
     @classmethod
     def from_dict(cls, data):
@@ -142,30 +131,10 @@ class RenderRequest(object):
             progress=progress
         )
 
-    def to_dict(self):
-        return self.__dict__
-
-    def write_json(self):
-        write_db(self.__dict__)
-
-    def remove(self):
-        remove_db(self.uuid)
-
-    def update(self, progress=None, status=None, time_estimate=None, estimated_finish=None):
-        if progress:
-            self.progress = progress
-        if status:
-            self.status = status
-        if time_estimate:
-            self.time_estimate = time_estimate
-            self.calcFinish(self.estimated_finish, True)
-
-        write_db(self.__dict__)
-
     def assign(self, worker):
         self.worker = worker
 
-        write_db(self.__dict__)
+        self.__class__.write_db(self.__dict__)
 
     def calcFinish(self, defaultVal, ignoreDefault=False):
         if self.time_estimate == 'N/A':
@@ -176,34 +145,7 @@ class RenderRequest(object):
             start = datetime.now()
             end = datetime.strptime(self.time_estimate, '%Hh:%Mm:%Ss')
             delta = timedelta(hours=end.hour, minutes=end.minute, seconds=end.second, microseconds=end.microsecond)
-            self.estimated_finish = ((not ignoreDefault) and defaultVal) or ((start + delta).strftime("%m/%d/%Y, %H:%M:%S"))
+            self.estimated_finish = ((not ignoreDefault) and defaultVal) or (
+                (start + delta).strftime("%m/%d/%Y, %H:%M:%S"))
         else:
             self.estimated_finish = ((not ignoreDefault) and defaultVal) or ''
-
-
-def read_all():
-    reqs = list()
-    files = os.listdir(DATABASE)
-    uuids = [os.path.splitext(os.path.basename(f))[0] for f in files if f.endswith('.json')]
-    for uuid in uuids:
-        req = RenderRequest.from_db(uuid)
-        reqs.append(req)
-
-    return reqs
-
-
-def remove_db(uuid):
-    os.remove(os.path.join(DATABASE, '{}.json'.format(uuid)))
-
-
-def remove_all():
-    files = os.path.join(DATABASE, '*.json')
-    for file in files:
-        os.remove(file)
-
-
-def write_db(d):
-    uuid = d['uuid']
-    LOGGER.info('writing to %s', uuid)
-    with open(os.path.join(DATABASE, '{}.json'.format(uuid)), 'w') as fp:
-        json.dump(d, fp, indent=4)

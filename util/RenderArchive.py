@@ -1,12 +1,9 @@
-import logging
 import os
-import json
 from dotenv import load_dotenv
 
 from util.RenderRequest import RenderRequest
 from util.RenderSettings import RenderSettings
-
-LOGGER = logging.getLogger(__name__)
+from util.StorableEntity import StorableEntity
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 ROOT_PATH = os.path.dirname(MODULE_PATH)
@@ -51,7 +48,9 @@ class HardwareStats(object):
         return self.__dict__
 
 
-class RenderArchive(object):
+class RenderArchive(StorableEntity):
+    DATABASE = DATABASE
+
     def __init__(
             self,
             uuid='',
@@ -67,7 +66,7 @@ class RenderArchive(object):
         if not frame_map:
             frame_map = []
 
-        self.uuid = uuid or render_request.uuid
+        super().__init__((uuid or render_request.uuid))
         self.project_name = project_name
         self.render_request = render_request
         self.hardware_stats = hardware_stats
@@ -76,17 +75,6 @@ class RenderArchive(object):
         self.avg_frame = avg_frame
         self.frame_map = frame_map
         self.render_settings = render_settings
-
-    @classmethod
-    def from_db(cls, uuid):
-        request_file = os.path.join(DATABASE, '{}.json'.format(uuid))
-        with open(request_file, 'r') as fp:
-            try:
-                request_dict = json.load(fp)
-            except Exception as e:
-                LOGGER.error('Failed to load request object from db: %s', e)
-                return None
-        return cls.from_dict(request_dict)
 
     @classmethod
     def from_dict(cls, data):
@@ -135,37 +123,3 @@ class RenderArchive(object):
         if self.render_settings:
             copy.render_settings = self.render_settings.to_dict()
         return copy.__dict__
-
-    def write_json(self):
-        write_db(self.to_dict())
-
-    def remove(self):
-        remove_db(self.uuid)
-
-
-def read_all():
-    reqs = list()
-    files = os.listdir(DATABASE)
-    uuids = [os.path.splitext(os.path.basename(f))[0] for f in files if f.endswith('.json')]
-    for uuid in uuids:
-        req = RenderArchive.from_db(uuid)
-        reqs.append(req)
-
-    return reqs
-
-
-def remove_db(uuid):
-    os.remove(os.path.join(DATABASE, '{}.json'.format(uuid)))
-
-
-def remove_all():
-    files = os.path.join(DATABASE, '*.json')
-    for file in files:
-        os.remove(file)
-
-
-def write_db(d):
-    uuid = d['uuid']
-    LOGGER.info('writing to %s', uuid)
-    with open(os.path.join(DATABASE, '{}.json'.format(uuid)), 'w') as fp:
-        json.dump(d, fp, indent=4)

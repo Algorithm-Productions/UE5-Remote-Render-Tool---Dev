@@ -55,7 +55,7 @@ def render(uuid, project_path, level_path, sequence_path, config_path, output_pa
 
 
 def sendExit():
-    Client.create_log('{};{};{};{};{}'.format('', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+    Client.create_log('{};{};{};{};{}'.format("", datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                               'Worker {} Disconnecting to Farm'.format(WORKER_NAME),
                                               'Worker {} Disconnecting to Farm'.format(WORKER_NAME),
                                               "WARN"))
@@ -64,7 +64,7 @@ def sendExit():
 if __name__ == '__main__':
     atexit.register(sendExit)
     LOGGER.info('Starting render worker %s', WORKER_NAME)
-    Client.create_log('{};{};{};{};{}'.format('', datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+    Client.create_log('{};{};{};{};{}'.format("", datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                               'Worker {} Connecting to Farm'.format(WORKER_NAME),
                                               'Worker {} Connecting to Farm'.format(WORKER_NAME),
                                               "INFO"))
@@ -78,7 +78,7 @@ if __name__ == '__main__':
         for uuid in uuids:
             LOGGER.info('rendering job %s', uuid)
 
-            req = RenderRequest.RenderRequest.from_db(uuid)
+            req = RenderRequest.RenderRequest.read(uuid)
             output = render(
                 uuid,
                 req.project_path,

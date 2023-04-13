@@ -11,9 +11,9 @@ from flask import send_from_directory, make_response, redirect, url_for
 from flask import request
 from flask import render_template
 
-from util import RenderRequest, RenderArchive, RenderNotification
+from util import RenderRequest, RenderArchive, RenderLog
 from util.ManagerFlaskApp import ManagerFlaskApp
-from util.RenderNotification import NotificationType
+from util.RenderLog import LogType
 from util.RenderArchive import HardwareStats
 from util.RenderSettings import RenderSettings
 
@@ -34,13 +34,13 @@ MANAGER_NAME = platform.node()
 
 @app.route('/')
 def index_page():
-    notifications = getNotificationsToDisplay()
-    return render_template('landing.html', notifications=notifications)
+    logs = getLogsToDisplay()
+    return render_template('landing.html', logs=logs)
 
 
 @app.route('/queue/')
 def queue_page():
-    rrequests = RenderRequest.read_all()
+    rrequests = RenderRequest.RenderRequest.read_all()
     if not rrequests:
         return render_template('error.html', errorText="No Ongoing Renders", title="Render Queue",
                                page_passer="queue_page")
@@ -52,7 +52,7 @@ def queue_page():
 
 @app.route('/archive/')
 def archive_page():
-    rrequests = RenderArchive.read_all()
+    rrequests = RenderArchive.RenderArchive.read_all()
     if not rrequests:
         return render_template('error.html', errorText="No Archived Renders", title="Render Archive",
                                page_passer="archive_page")
@@ -64,14 +64,14 @@ def archive_page():
 
 @app.route('/archive/<uuid>')
 def archive_entry(uuid):
-    rr = RenderArchive.RenderArchive.from_db(uuid)
+    rr = RenderArchive.RenderArchive.read(uuid)
 
     return render_template('archive_entry.html', entry=rr.to_dict(), uuid=uuid)
 
 
 @app.route('/logs/')
 def logs_page():
-    rrequests = RenderNotification.read_all()
+    rrequests = RenderLog.read_all()
     if not rrequests:
         return render_template('error.html', errorText="No logs", title="Application Logs",
                                page_passer="logs_page")
@@ -83,7 +83,7 @@ def logs_page():
 
 @app.route('/logs/<uuid>')
 def logs_entry(uuid):
-    rn = RenderNotification.RenderNotification.from_db(uuid)
+    rn = RenderLog.RenderLog.from_db(uuid)
 
     return render_template('logs_entry.html', entry=rn.to_dict(), uuid=uuid)
 
@@ -117,19 +117,19 @@ def favicon():
 def create_request():
     data = request.get_json(force=True)
     req = RenderRequest.RenderRequest.from_dict(data)
-    req.write_json()
+    req.save_self()
     new_request_trigger(req)
 
-    buildNotification(req.uuid, [req.uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                                 'Creating Request {} on DB'.format(req.uuid),
-                                 'Creating Request {} on DB'.format(req.uuid), "INFO"]).write_json()
+    buildLog(req.uuid, [req.uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                        'Creating Request {} on DB'.format(req.uuid),
+                        'Creating Request {} on DB'.format(req.uuid), "INFO"]).write_json()
 
     return req.to_dict()
 
 
 @app.get('/api/get')
 def get_all_requests():
-    reqs = RenderRequest.read_all()
+    reqs = RenderRequest.RenderRequest.read_all()
     if not reqs:
         return {"results": []}
 
@@ -140,7 +140,7 @@ def get_all_requests():
 
 @app.get('/api/get/<uuid>')
 def get_request(uuid):
-    res = RenderRequest.RenderRequest.from_db(uuid)
+    res = RenderRequest.RenderRequest.read(uuid)
     return res.to_dict()
 
 
@@ -149,38 +149,38 @@ def update_request(uuid):
     content = request.data.decode('utf-8')
     progress, time_estimate, status = content.split(';')
 
-    rr = RenderRequest.RenderRequest.from_db(uuid)
+    rr = RenderRequest.RenderRequest.read(uuid)
     if not rr:
         return {}
 
-    rr.update(
-        progress=int(float(progress)),
-        time_estimate=time_estimate,
-        status=status
-    )
+    rr.update({
+        "progress": int(float(progress)),
+        "time_estimate": time_estimate,
+        "status": status
+    })
     return rr.to_dict()
 
 
 @app.delete('/api/delete/')
 def delete_all_requests():
-    responses = RenderRequest.read_all()
-    RenderRequest.remove_all()
+    responses = RenderRequest.RenderRequest.read_all()
+    RenderRequest.RenderRequest.remove_all()
 
-    buildNotification('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                           'Deleting All Requests from DB',
-                           'Deleting All Requests from DB', "CRITICAL"]).write_json()
+    buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                  'Deleting All Requests from DB',
+                  'Deleting All Requests from DB', "CRITICAL"]).write_json()
 
     return {"results": [res.to_dict for res in responses]}
 
 
 @app.delete('/api/delete/<uuid>')
 def delete_request(uuid):
-    res = RenderRequest.RenderRequest.from_db(uuid)
+    res = RenderRequest.RenderRequest.read(uuid)
     res.remove()
 
-    buildNotification(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                             'Deleting Request {} from DB'.format(uuid),
-                             'Deleting Request {} from DB'.format(uuid), "WARN"]).write_json()
+    buildLog(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                    'Deleting Request {} from DB'.format(uuid),
+                    'Deleting Request {} from DB'.format(uuid), "WARN"]).write_json()
 
     return res.to_dict()
 
@@ -194,23 +194,23 @@ def create_archive():
     content = request.data.decode('utf-8')
 
     args = content.split(";")
-    renderRequest = RenderRequest.RenderRequest.from_db(args[0])
+    renderRequest = RenderRequest.RenderRequest.read(args[0])
     if (not renderRequest) or len(args) != 7:
         return {}
 
     renderArchive = buildArchive(args[0], renderRequest, args)
-    renderArchive.write_json()
+    renderArchive.save_self()
 
-    buildNotification(args[0], [args[0], datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                                'Archiving Request {}'.format(args[0]),
-                                'Archiving Request {}'.format(args[0]), "INFO"]).write_json()
+    buildLog(args[0], [args[0], datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                       'Archiving Request {}'.format(args[0]),
+                       'Archiving Request {}'.format(args[0]), "INFO"]).write_json()
 
     return renderArchive.to_dict()
 
 
 @app.get('/api/archives/get')
 def get_all_archives():
-    reqs = RenderArchive.read_all()
+    reqs = RenderArchive.RenderArchive.read_all()
     if not reqs:
         return {"results": []}
 
@@ -221,7 +221,7 @@ def get_all_archives():
 
 @app.get('/api/archives/get/<uuid>')
 def get_archive(uuid):
-    res = RenderArchive.RenderArchive.from_db(uuid)
+    res = RenderArchive.RenderArchive.read(uuid)
     return res.to_dict()
 
 
@@ -232,24 +232,24 @@ def update_archive(uuid):
 
 @app.delete('/api/archives/delete')
 def delete_all_archives():
-    responses = RenderArchive.read_all()
-    RenderArchive.remove_all()
+    responses = RenderArchive.RenderArchive.read_all()
+    RenderArchive.RenderArchive.remove_all()
 
-    buildNotification('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                           'Deleting All Archives from DB',
-                           'Deleting All Archives from DB', "CRITICAL"]).write_json()
+    buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                  'Deleting All Archives from DB',
+                  'Deleting All Archives from DB', "CRITICAL"]).write_json()
 
     return {"results": [res.to_dict for res in responses]}
 
 
 @app.delete('/api/archives/delete/<uuid>')
 def delete_archive(uuid):
-    res = RenderArchive.RenderArchive.from_db(uuid)
+    res = RenderArchive.RenderArchive.read(uuid)
     res.remove()
 
-    buildNotification(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                             'Deleting Archive {} from DB'.format(uuid),
-                             'Deleting Archive {} from DB'.format(uuid), "WARN"]).write_json()
+    buildLog(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                    'Deleting Archive {} from DB'.format(uuid),
+                    'Deleting Archive {} from DB'.format(uuid), "WARN"]).write_json()
 
     return res.to_dict()
 
@@ -266,15 +266,15 @@ def create_log():
     if len(args) != 5:
         return {}
 
-    renderNotification = buildNotification(args[0], args)
-    renderNotification.write_json()
+    renderLog = buildLog(args[0], args)
+    renderLog.write_json()
 
-    return renderNotification.to_dict()
+    return renderLog.to_dict()
 
 
 @app.get('/api/logs/get')
 def get_all_logs():
-    reqs = RenderArchive.read_all()
+    reqs = RenderArchive.RenderArchive.read_all()
     if not reqs:
         return {"results": []}
 
@@ -285,7 +285,7 @@ def get_all_logs():
 
 @app.get('/api/logs/get/<uuid>')
 def get_log(uuid):
-    res = RenderNotification.RenderNotification.from_db(uuid)
+    res = RenderLog.RenderLog.from_db(uuid)
     return res.to_dict()
 
 
@@ -296,19 +296,19 @@ def update_log(uuid):
 
 @app.delete('/api/logs/delete')
 def delete_all_logs():
-    responses = RenderNotification.read_all()
-    RenderNotification.remove_all()
+    responses = RenderLog.read_all()
+    RenderLog.remove_all()
 
-    buildNotification('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
-                           'Deleting All Logs from DB',
-                           'Deleting All Logs from DB', "CRITICAL"]).write_json()
+    buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                  'Deleting All Logs from DB',
+                  'Deleting All Logs from DB', "CRITICAL"]).write_json()
 
     return {"results": [res.to_dict for res in responses]}
 
 
 @app.delete('/api/logs/delete/<uuid>')
 def delete_log(uuid):
-    res = RenderNotification.RenderNotification.from_db(uuid)
+    res = RenderLog.RenderLog.from_db(uuid)
     res.remove()
 
     return res.to_dict()
@@ -320,7 +320,7 @@ def delete_log(uuid):
 
 def new_request_trigger(req):
     if req.worker:
-        req.update(status=RenderRequest.RenderStatus.ready_to_start)
+        req.update({"status": RenderRequest.RenderStatus.ready_to_start})
         return
 
     assign_request(req, DEFAULT_WORKER)
@@ -331,7 +331,7 @@ def new_request_trigger(req):
 
 def assign_request(req, worker):
     req.assign(worker)
-    req.update(status=RenderRequest.RenderStatus.ready_to_start)
+    req.update({"status": RenderRequest.RenderStatus.ready_to_start})
 
 
 def buildArchive(uuid, renderRequest, metadata):
@@ -350,34 +350,34 @@ def buildArchive(uuid, renderRequest, metadata):
     return renderArchive
 
 
-def buildNotification(jobUUID, metadata):
-    return RenderNotification.RenderNotification(uuid=str(genUUID.uuid4())[:5], jobUUID=jobUUID, timestamp=metadata[1],
-                                                 message=metadata[2], log=metadata[3],
-                                                 notificationType=NotificationType.from_string(metadata[4]))
+def buildLog(jobUUID, metadata):
+    return RenderLog.RenderLog(uuid=str(genUUID.uuid4())[:5], jobUUID=jobUUID, timestamp=metadata[1],
+                               message=metadata[2], log=metadata[3],
+                               logType=LogType.from_string(metadata[4]))
 
 
-def getNotificationsToDisplay():
-    allNotifications = RenderNotification.read_all()
+def getLogsToDisplay():
+    allLogs = RenderLog.read_all()
     objList = []
 
-    for notification in allNotifications:
-        deleted = checkAgeAndClear(notification)
-        if notification.notificationType != NotificationType.INFO and (not deleted):
-            objList.append(notification)
+    for log in allLogs:
+        deleted = checkAgeAndClear(log)
+        if log.logType != LogType.INFO and (not deleted):
+            objList.append(log)
 
     objList.sort()
-    returnList = [notification.to_dict() for notification in objList]
+    returnList = [log.to_dict() for log in objList]
 
     return returnList
 
 
-def checkAgeAndClear(notification):
+def checkAgeAndClear(log):
     curDate = datetime.now()
-    notificationDate = datetime.strptime(notification.timestamp, "%m/%d/%Y, %H:%M:%S")
+    logDate = datetime.strptime(log.timestamp, "%m/%d/%Y, %H:%M:%S")
 
-    diff = curDate - notificationDate
+    diff = curDate - logDate
     if diff.days >= 7:
-        notification.remove()
+        log.remove()
         return True
     else:
         return False

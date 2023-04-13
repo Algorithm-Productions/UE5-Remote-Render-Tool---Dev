@@ -11,7 +11,7 @@ import unreal
 from util import Client
 from util import RenderRequest
 from util.RenderArchive import HardwareStats
-from util.RenderNotification import NotificationType
+from util.RenderLog import LogType
 from util.RenderSettings import RenderSettings, AASettings, ConsoleSettings, HighResSettings, OutputSettings
 
 
@@ -55,7 +55,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             "POST",
             '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                     "Job {} Began Rendering!".format(self.job_id),
-                                    "Job {} Began Rendering!".format(self.job_id), NotificationType.INFO),
+                                    "Job {} Began Rendering!".format(self.job_id), LogType.INFO),
             {"Content-Type": "application/json"}
         )
 
@@ -147,7 +147,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                 "POST",
                 '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                         "Job {} Errored!".format(self.job_id),
-                                        "...", NotificationType.ERROR),
+                                        "...", LogType.ERROR),
                 {"Content-Type": "application/json"}
             )
         else:
@@ -156,7 +156,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                 "POST",
                 '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                         "Job {} Finished Rendering!".format(self.job_id),
-                                        "Job {} Finished Rendering!".format(self.job_id), NotificationType.INFO),
+                                        "Job {} Finished Rendering!".format(self.job_id), LogType.INFO),
                 {"Content-Type": "application/json"}
             )
 
@@ -196,7 +196,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             "POST",
             '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                     "Job {} Errored!".format(self.job_id),
-                                    "...", NotificationType.ERROR),
+                                    "...", LogType.ERROR),
             {"Content-Type": "application/json"}
         )
 

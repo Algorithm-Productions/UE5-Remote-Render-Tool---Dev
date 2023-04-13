@@ -10,6 +10,7 @@ body {
     flex-direction: column;
     background-color: #000000;
     color: #cdd2ce;
+    font-family: "GT Pressura Typeface Normal";
 }
 
 .headerBlock {
