@@ -1,7 +1,18 @@
+"""
+    Copyright Algorithm Productions LLC. 2023.
+"""
+
 from util.datatypes.abstracts.UnrealDataType import UnrealDataType
 
 
 class OutputSettings(UnrealDataType):
+    """
+        Python Form of the unreal.MoviePipelineOutputSetting Class.
+
+        :type: UnrealDataType.
+        :author: vitor@bu.edu.
+    """
+
     def __init__(
             self,
             outputDirectory='',
@@ -21,6 +32,43 @@ class OutputSettings(UnrealDataType):
             versionNumber=0,
             autoVersion=False
     ):
+        """
+            Class Constructor.
+            Takes in every Parameter as an Optional, allowing for the creation of Empty Objects.
+
+            :param outputDirectory: Path to the Output Directory for the Render.
+            :type outputDirectory: String.
+            :param fileNameFormat: Format for the Names of the Output Files.
+            :type fileNameFormat: String.
+            :param outputResolutionX: Width Resolution to Render In.
+            :type outputResolutionX: Integer.
+            :param outputResolutionY: Height Resolution to Render In.
+            :type outputResolutionY: Integer.
+            :param useCustomFrameRate: Should the Render use a Custom Frame Rate?
+            :type useCustomFrameRate: Boolean.
+            :param outputFrameRate: Custom Frame Rate for the Render.
+            :type outputFrameRate: Integer.
+            :param overrideExistingOutput: Should the Render Override Existing Files in the Directory?
+            :type overrideExistingOutput: Boolean.
+            :param zeroPadFrameNumbers: Amount of Digits to Pad To in Frame Names.
+            :type zeroPadFrameNumbers: Integer.
+            :param frameNumberOffset: Amount of Numbers to Offset Frame Names by.
+            :type frameNumberOffset: Integer.
+            :param handleFrameCount: Amount of Frames to Extend the Render to on either side.
+            :type handleFrameCount: Integer.
+            :param outputFrameStep: Size of the step between each Rendered Frame.
+            :type outputFrameStep: Integer.
+            :param useCustomPlaybackRange: Should the Render use a Custom Frame Range?
+            :type useCustomPlaybackRange: Boolean.
+            :param customStartFrame: Start Frame for the Custom Range.
+            :type customStartFrame: Integer.
+            :param customEndFrame: End Frame for the Custom Range.
+            :type customEndFrame: Integer.
+            :param versionNumber: Version Number of the Render.
+            :type versionNumber: Float.
+            :param autoVersion: Should UE auto-generate Version Numbers for the Render?
+            :type autoVersion: Boolean.
+        """
         self.outputDirectory = outputDirectory
         self.fileNameFormat = fileNameFormat
         self.outputResolutionX = outputResolutionX
@@ -40,6 +88,9 @@ class OutputSettings(UnrealDataType):
 
     @classmethod
     def from_dict(cls, data):
+        """
+            @inheritDoc - UnrealDataType
+        """
         outputDirectory = (data["outputDirectory"] or '') if data else ''
         fileNameFormat = (data["fileNameFormat"] or '') if data else ''
         outputResolutionX = (data["outputResolutionX"] or 0) if data else 0
@@ -78,6 +129,9 @@ class OutputSettings(UnrealDataType):
 
     @classmethod
     def from_unreal(cls, unrealClass):
+        """
+            @inheritDoc - UnrealDataType
+        """
         return cls(
             outputDirectory=unrealClass.output_directory.path,
             fileNameFormat=unrealClass.file_name_format,

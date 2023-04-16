@@ -324,7 +324,7 @@ def delete_log(uuid):
 
 def new_request_trigger(req):
     if req.worker:
-        req.update({"status": RenderRequest.RenderStatus.ready_to_start})
+        req.update({"status": util.datatypes.enums.RenderStatus.ready_to_start})
         return
 
     assign_request(req, DEFAULT_WORKER)
@@ -335,7 +335,7 @@ def new_request_trigger(req):
 
 def assign_request(req, worker):
     req.assign(worker)
-    req.update({"status": RenderRequest.RenderStatus.ready_to_start})
+    req.update({"status": util.datatypes.enums.RenderStatus.ready_to_start})
 
 
 def buildArchive(uuid, renderRequest, metadata):
@@ -357,7 +357,7 @@ def buildArchive(uuid, renderRequest, metadata):
 def buildLog(jobUUID, metadata):
     return RenderLog.RenderLog(uuid=str(genUUID.uuid4())[:5], jobUUID=jobUUID, timestamp=metadata[1],
                                message=metadata[2], log=metadata[3],
-                               logType=LogType.from_string(metadata[4]))
+                               logType=(metadata[4].upper() if metadata[4].upper() in LogType else ''))
 
 
 def getLogsToDisplay():

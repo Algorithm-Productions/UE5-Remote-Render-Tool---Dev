@@ -1,10 +1,14 @@
+"""
+    Copyright Algorithm Productions LLC. 2023.
+"""
+
 import os
 from datetime import datetime, timedelta
 import socket
 
 from dotenv import load_dotenv
 
-from util.datatypes import RenderStatus
+from util.datatypes.enums import RenderStatus
 from util.datatypes.abstracts.StorableEntity import StorableEntity
 
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -16,6 +20,16 @@ DATABASE = os.path.join(ROOT_PATH, "../" + os.getenv("DATABASE_FOLDER"))
 
 
 class RenderRequest(StorableEntity):
+    """
+        Entity Object Class to represent a Render Request in the System.
+
+        :type: StorableEntity.
+        :author: vitor@bu.edu.
+    """
+
+    """
+        Update to Boilerplate Class Variable using the proper Database Path.
+    """
     DATABASE = DATABASE
 
     def __init__(
@@ -44,6 +58,57 @@ class RenderRequest(StorableEntity):
             estimated_finish='',
             progress=0
     ):
+        """
+            Class Constructor.
+            Takes in every Parameter as an Optional, allowing for the creation of Empty Objects.
+
+            :param uuid: Entity UUID.
+            :type uuid: String.
+            :param name: Name for the Render Request.
+            :type name: String.
+            :param owner: Name of the Machine who submitted the Request.
+            :type owner: String.
+            :param worker: Name of the Machine who rendered the Request.
+            :type worker: String.
+            :param time_created: Timestamp of when the Request was created.
+            :type time_created: Datetime.
+            :param priority: Render priority for the Job [UNIMPLEMENTED].
+            :type priority: Integer.
+            :param category: Job Category the Request falls into [UNIMPLEMENTED].
+            :type category: String.
+            :param tags: Tags to attach to the Request [UNIMPLEMENTED].
+            :type tags: List of Strings.
+            :param status: Current Status of the Request Job.
+            :type status: RenderStatus.
+            :param project_path: Path to the Project the Request refers to.
+            :type project_path: String.
+            :param level_path: In-Project Path to the Level the Request refers to.
+            :type level_path: String.
+            :param sequence_path: In-Project Path to the Sequence the Request refers to.
+            :type sequence_path: String.
+            :param config_path: In-Project Path to the UConfig the Request wants to use.
+            :type config_path: String.
+            :param output_path: Path to the Output Directory the Request wants to use.
+            :type output_path: String.
+            :param width: Width of the Preview Window for the Request [UNIMPLEMENTED].
+            :type width: Integer.
+            :param height: Height of the Preview Window for the Request [UNIMPLEMENTED].
+            :type height: Integer.
+            :param frame_rate: Output Frame Rate the Request wants to use [UNIMPLEMENTED].
+            :type frame_rate: Integer.
+            :param format: Output Format the Request wants to use [UNIMPLEMENTED].
+            :type format: String.
+            :param start_frame: Custom Start Frame the Request wants to use [UNIMPLEMENTED].
+            :type start_frame: Integer.
+            :param end_frame: Custom End Frame the Request wants to use [UNIMPLEMENTED].
+            :type end_frame: Integer.
+            :param time_estimate: Current Time Estimate for the Request Job.
+            :type time_estimate: String.
+            :param estimated_finish: Current Estimated Finish for the Request Job.
+            :type estimated_finish: Datetime.
+            :param progress: Current Progress of the Request Job.
+            :type progress: Integer.
+        """
         super().__init__(uuid)
         self.name = name
         self.owner = owner or socket.gethostname()
@@ -72,6 +137,9 @@ class RenderRequest(StorableEntity):
 
     @classmethod
     def from_dict(cls, data):
+        """
+            @inheritDoc - StorableEntity
+        """
         uuid = data.get('uuid') or ''
         name = data.get('name') or ''
         owner = data.get('owner') or ''
@@ -123,20 +191,34 @@ class RenderRequest(StorableEntity):
         )
 
     def assign(self, worker):
-        self.worker = worker
+        """
+            Helper Method to assign a Worker to a Request.
 
-        self.__class__.write_db(self.__dict__)
+            :param worker: Name of the Worker to Assign to the Request.
+            :type worker: String.
+            :return: None
+        """
+        self.update({"worker": worker})
 
     def calcFinish(self, defaultVal, ignoreDefault=False):
+        """
+            Helper Method to Calculate the current Estimated Finish Time.
+
+            :param defaultVal: Default Value to use in case of an Error.
+            :type defaultVal: String.
+            :param ignoreDefault: Whether or not we should Default to the Default Value.
+            :type ignoreDefault: Boolean.
+            :return: None
+        """
+        value = ((not ignoreDefault) and defaultVal) or ''
         if self.time_estimate == 'N/A':
-            self.estimated_finish = 'N/A'
-            return
+            value = 'N/A'
 
         if self.time_estimate != '':
             start = datetime.now()
             end = datetime.strptime(self.time_estimate, '%Hh:%Mm:%Ss')
             delta = timedelta(hours=end.hour, minutes=end.minute, seconds=end.second, microseconds=end.microsecond)
-            self.estimated_finish = ((not ignoreDefault) and defaultVal) or (
+            value = ((not ignoreDefault) and defaultVal) or (
                 (start + delta).strftime("%m/%d/%Y, %H:%M:%S"))
-        else:
-            self.estimated_finish = ((not ignoreDefault) and defaultVal) or ''
+
+        self.update({"estimated_finish": value})

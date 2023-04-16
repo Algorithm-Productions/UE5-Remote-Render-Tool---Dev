@@ -9,7 +9,7 @@ import platform
 import unreal
 
 from util import Client
-from util.datatypes import RenderRequest, RenderStatus
+from util.datatypes.enums import RenderStatus
 from util.datatypes.RenderArchive import HardwareStats
 from util.datatypes.RenderLog import LogType
 from util.datatypes.RenderSettings import RenderSettings, AASettings, ConsoleSettings, HighResSettings, OutputSettings
