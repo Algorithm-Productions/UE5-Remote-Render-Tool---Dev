@@ -77,3 +77,7 @@ fabric.properties
 database
 .env
 venv
+
+test.py
+test.json
+test.html

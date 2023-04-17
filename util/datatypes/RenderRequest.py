@@ -50,7 +50,8 @@ class RenderRequest(StorableEntity):
             output_path='',
             time_estimate='',
             estimated_finish='',
-            progress=0
+            progress=0,
+            config_override=None
     ):
         """
             Class Constructor.
@@ -90,6 +91,8 @@ class RenderRequest(StorableEntity):
             :type estimated_finish: Datetime.
             :param progress: Current Progress of the Request Job.
             :type progress: Integer.
+            :param config_override: Any Override Settings for the Request Job.
+            :type config_override: RenderSettings.
         """
         super().__init__(uuid)
         self.name = name
@@ -109,6 +112,7 @@ class RenderRequest(StorableEntity):
         self.progress = progress
         self.estimated_finish = estimated_finish or ''
         self.calcFinish(estimated_finish)
+        self.config_override = config_override
 
     @classmethod
     def from_dict(cls, data):
