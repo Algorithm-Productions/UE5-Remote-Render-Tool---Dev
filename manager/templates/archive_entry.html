@@ -55,9 +55,21 @@
                 <a onclick="handleTabSwitch(`renderStatistics`)"><h3 id="renderStatisticsSelect">Render Statistics</h3></a>
                 <a onclick="handleTabSwitch(`hardwareInfo`)"><h3 id="hardwareInfoSelect">Hardware Info</h3></a>
                 <a onclick="handleTabSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
-                <a onclick="handleTabSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
-                <a onclick="handleTabSwitch(`consoleSettings`)"><h3 id="consoleSettingsSelect">Console Settings</h3></a>
-                <a onclick="handleTabSwitch(`highResSettings`)"><h3 id="highResSettingsSelect">High-Res Settings</h3></a>
+                {% if entry.render_settings.aa_settings != None %}
+                    <a onclick="handleTabSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
+                {% else %}
+                    <div id="aaSettingsSelect"></div>
+                {% endif %}
+                {% if entry.render_settings.console_settings != None %}
+                    <a onclick="handleTabSwitch(`consoleSettings`)"><h3 id="consoleSettingsSelect">Console Settings</h3></a>
+                {% else %}
+                    <div id="consoleSettingsSelect"></div>
+                {% endif %}
+                {% if entry.render_settings.high_res_settings != None %}
+                    <a onclick="handleTabSwitch(`highResSettings`)"><h3 id="highResSettingsSelect">High-Res Settings</h3></a>
+                {% else %}
+                    <div id="highResSettingsSelect"></div>
+                {% endif %}
             </div>
 
             <div id="generalInformation" class="col infoPanel">

@@ -284,16 +284,28 @@ def getOutputAndRenderTypes(configs):
 
 def getRenderSettings(masterConfig):
     outputTypes, renderTypes = getOutputAndRenderTypes(masterConfig.get_all_settings())
-    aaSettings = AASettings.AASettings.from_unreal(masterConfig.find_setting_by_class(unreal.MoviePipelineAntiAliasingSetting))
-    consoleSettings = ConsoleSettings.ConsoleSettings.from_unreal(
-        masterConfig.find_setting_by_class(unreal.MoviePipelineConsoleVariableSetting))
-    highResSettings = HighResSettings.HighResSettings.from_unreal(
-        masterConfig.find_setting_by_class(unreal.MoviePipelineHighResSetting))
-    outputSettings = OutputSettings.OutputSettings.from_unreal(masterConfig.find_setting_by_class(unreal.MoviePipelineOutputSetting))
+    outputSettings = OutputSettings.OutputSettings.from_unreal(
+        masterConfig.find_setting_by_class(unreal.MoviePipelineOutputSetting))
 
-    return RenderSettings(output_types=outputTypes, render_types=renderTypes, aa_settings=aaSettings,
-                          console_settings=consoleSettings, high_res_settings=highResSettings,
-                          output_settings=outputSettings)
+    returnVal = RenderSettings(output_types=outputTypes, render_types=renderTypes,
+                               output_settings=outputSettings)
+
+    aaConfig = masterConfig.find_setting_by_class(unreal.MoviePipelineAntiAliasingSetting)
+    consoleConfig = masterConfig.find_setting_by_class(unreal.MoviePipelineConsoleVariableSetting)
+    highResConfig = masterConfig.find_setting_by_class(unreal.MoviePipelineHighResSetting)
+
+    unreal.log(aaConfig)
+    unreal.log(consoleConfig)
+    unreal.log(highResConfig)
+
+    if aaConfig:
+        returnVal.aa_settings = AASettings.AASettings.from_unreal(aaConfig)
+    if consoleConfig:
+        returnVal.console_settings = ConsoleSettings.ConsoleSettings.from_unreal(consoleConfig)
+    if highResConfig:
+        returnVal.high_res_settings = HighResSettings.HighResSettings.from_unreal(highResConfig)
+
+    return returnVal
 
 
 def getFrameTimes(path, firstTime):

@@ -59,10 +59,14 @@ class RenderSettings(StorableProperty):
         """
         output_types = (data["output_types"] or []) if data else []
         render_types = (data["render_types"] or []) if data else []
-        aa_settings = (AASettings.AASettings.from_dict(data.get('aa_settings'))) if data else None
-        console_settings = (ConsoleSettings.ConsoleSettings.from_dict(data.get('console_settings'))) if data else None
-        high_res_settings = (HighResSettings.HighResSettings.from_dict(data.get('high_res_settings'))) if data else None
-        output_settings = (OutputSettings.OutputSettings.from_dict(data.get('output_settings'))) if data else None
+        aa_settings = (AASettings.AASettings.from_dict(data.get('aa_settings')) if data.get(
+            'aa_settings') else None) if data else None
+        console_settings = (ConsoleSettings.ConsoleSettings.from_dict(data.get('console_settings')) if data.get(
+            'console_settings') else None) if data else None
+        high_res_settings = (HighResSettings.HighResSettings.from_dict(data.get('high_res_settings')) if data.get(
+            'high_res_settings') else None) if data else None
+        output_settings = (OutputSettings.OutputSettings.from_dict(data.get('output_settings')) if data.get(
+            'output_settings') else None) if data else None
 
         return cls(
             output_types=output_types,
