@@ -122,10 +122,26 @@ def ping():
     return "Pong"
 
 
-@app.post('{}/register/<worker_name>'.format(API_EXT))
-def register_worker(worker_name):
-    print("Registering Worker: ", worker_name)
-    return {}
+@app.post('{}/worker/post/<worker_name>'.format(API_EXT))
+def add_worker(worker_name):
+    buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                  'Adding {} From App'.format(worker_name),
+                  'Adding {} From App'.format(worker_name), "INFO"]).save_self()
+    return {'response': app.add_worker(worker_name)}
+
+
+@app.get('{}/worker/get'.format(API_EXT))
+def get_workers():
+    print(app.WORKERS)
+    return {'results': app.WORKERS}
+
+
+@app.delete('{}/worker/delete/<worker_name>'.format(API_EXT))
+def remove_worker(worker_name):
+    buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
+                  'Removing {} From App'.format(worker_name),
+                  'Removing {} From App'.format(worker_name), "WARN"]).save_self()
+    return app.remove_worker(worker_name)
 
 
 # End of the General API Section

@@ -16,36 +16,13 @@ SERVER_API_URL = SERVER_URL + os.getenv("API_EXT")
 ARCHIVE_API_EXT = os.getenv("ARCHIVE_API_EXT")
 LOG_API_EXT = os.getenv("LOG_API_EXT")
 
-# Start of the General Methods Section
 
-
-def ping_server(data=None):
-    try:
-        response = requests.post(SERVER_API_URL + '/ping', json=data)
-    except requests.exceptions.ConnectionError:
-        LOGGER.error('failed to connect to server %s', SERVER_API_URL)
-        return
-
-    return response
-
-
-def register_worker(worker_name, data=None):
-    try:
-        response = requests.post(SERVER_API_URL + '/register/'.format(worker_name), json=data)
-    except requests.exceptions.ConnectionError:
-        LOGGER.error('failed to connect to server %s', SERVER_API_URL)
-        return
-
-    return response
-
-
-# End of the General Methods Section
 # Start of Abstract Methods Section
 
 
-def create(data, specialPath=''):
+def create(data, specialPath='', specialSuffix=''):
     try:
-        response = requests.post(SERVER_API_URL + specialPath + '/post', json=data)
+        response = requests.post(SERVER_API_URL + specialPath + '/post' + specialSuffix, json=data)
     except requests.exceptions.ConnectionError:
         LOGGER.error('failed to connect to server %s', SERVER_API_URL)
         return
@@ -113,6 +90,36 @@ def delete(uuid, specialPath=''):
 
 
 # End of Abstract Methods Section
+# Start of the General Methods Section
+
+
+def ping_server(data=None):
+    try:
+        response = requests.post(SERVER_API_URL + '/ping', json=data)
+    except requests.exceptions.ConnectionError:
+        LOGGER.error('failed to connect to server %s', SERVER_API_URL)
+        return
+
+    return response
+
+
+def add_worker(uuid, data=None):
+    response = create(data, '/worker', '/{}'.format(uuid))
+    return response.json() if (response and response.json()) else None
+
+
+def get_workers():
+    response = get_all('/worker')
+    return [(RenderArchive.RenderArchive.from_dict(res) if res else None) for res in
+            response] if response else []
+
+
+def delete_worker(uuid):
+    response = delete(uuid, '/worker')
+    return RenderLog.RenderLog.from_dict(response.json()) if (response and response.json()) else None
+
+
+# End of the General Methods Section
 # Start of Queue Methods Section
 
 

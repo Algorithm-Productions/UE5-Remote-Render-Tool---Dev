@@ -26,6 +26,22 @@ def genFolders():
 
 
 class ManagerFlaskApp(Flask):
+    WORKERS = []
+
+    def add_worker(self, worker):
+        if worker not in self.WORKERS:
+            self.WORKERS.append(worker)
+            return "Added Worker"
+        else:
+            return "Worker Already Active"
+
+    def remove_worker(self, worker):
+        if worker in self.WORKERS:
+            self.WORKERS.remove(worker)
+            return "Removed Worker"
+        else:
+            return "Worker Not Active"
+
     def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
         with self.app_context():
             genFolders()

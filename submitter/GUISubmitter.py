@@ -21,6 +21,13 @@ def connectToServer():
 
 
 @eel.expose
+def getWorkers():
+    res = Client.get_workers()
+    print(res)
+    return res
+
+
+@eel.expose
 def send_request(data):
     data['owner'] = platform.node()
     verified, msg = verifyData(data)

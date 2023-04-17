@@ -56,7 +56,6 @@ class StorableEntity(ABC):
             :return: None.
         """
         uuid = data['uuid']
-        LOGGER.info('writing to %s', uuid)
         with open(os.path.join(cls.DATABASE, '{}.json'.format(uuid)), 'w') as fp:
             json.dump(data, fp, indent=4)
 
