@@ -110,8 +110,7 @@ def add_worker(uuid, data=None):
 
 def get_workers():
     response = get_all('/worker')
-    return [(RenderArchive.RenderArchive.from_dict(res) if res else None) for res in
-            response] if response else []
+    return [(res if res else '') for res in response] if response else []
 
 
 def delete_worker(uuid):

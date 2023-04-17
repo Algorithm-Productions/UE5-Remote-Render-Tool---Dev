@@ -73,7 +73,7 @@
                         </div>
                         <div class="col">
                             <label for="worker">Render Worker</label><br>
-                            <input type="text" id="worker" name="worker"><br>
+                            <select id="worker" name="worker"></select><br>
                             <label for="level_path">Level Path</label><br>
                             <input type="text" id="level_path" name="level_path"><br>
                             <label for="config_path">Config Path</label><br>
@@ -98,7 +98,7 @@
                         </div>
                         <div class="col">
                             <label for="worker">Render Worker</label><br>
-                            <input type="text" id="worker" name="worker"><br>
+                            <select id="worker" name="worker"></select><br>
                             <label for="level_path">Level Path</label><br>
                             <input type="text" id="level_path" name="level_path"><br>
                             <label for="config_path">Config Path</label><br>
@@ -131,7 +131,11 @@
     <script>
         eel.expose("setWorkers")
         function setWorkers(workers) {
-            console.log(workers)
+            const workerSelect = document.getElementById("worker")
+            workers.forEach((worker) => {
+                const option = new Option(worker, worker)
+                workerSelect.add(option, undefined)
+            })
         }
 
         eel.getWorkers()(setWorkers)
