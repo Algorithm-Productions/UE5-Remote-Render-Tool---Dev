@@ -76,7 +76,7 @@ def archive_entry(uuid):
 
 @app.route('/logs/')
 def logs_page():
-    rrequests = RenderLog.read_all()
+    rrequests = RenderLog.RenderLog.read_all()
     if not rrequests:
         return render_template('error.html', errorText="No logs", title="Application Logs",
                                page_passer="logs_page")
@@ -115,6 +115,20 @@ def favicon():
 
 
 # End of Routes Section
+# Start of the General API Section
+
+@app.post('{}/ping'.format(API_EXT))
+def ping():
+    return "Pong"
+
+
+@app.post('{}/register/<worker_name>'.format(API_EXT))
+def register_worker(worker_name):
+    print("Registering Worker: ", worker_name)
+    return {}
+
+
+# End of the General API Section
 # Start of Queue API Section
 
 

@@ -1,5 +1,5 @@
 const createLogsTable = (list) => {
-    const dataCols = ['uuid', 'notificationType', 'jobUUID', 'timestamp', 'message', 'cleared'];
+    const dataCols = ['uuid', 'logType', 'jobUUID', 'timestamp', 'message'];
     const table = document.createElement("table");
     const tr = table.insertRow(-1);
 
