@@ -4,18 +4,13 @@ import time
 import os
 from datetime import datetime, timedelta
 import uuid as genUUID
-
 from flask import request, render_template, send_from_directory, make_response, redirect, url_for
-
-from remote_render.util.datatypes import RenderArchive, RenderRequest, RenderLog, RenderSettings, RenderStatus, \
-    HardwareStats, LogType
-
+from remote_render.util.datatypes import RenderArchive, RenderRequest, RenderLog, RenderSettings, \
+    RenderStatus, HardwareStats, LogType
 from remote_render import app
 
 LOGGER = logging.getLogger(__name__)
-
-# MANAGER_NAME = platform.node()
-
+MANAGER_NAME = platform.node()
 API_EXT = os.getenv("API_EXT")
 ARCHIVE_API_EXT = os.getenv("ARCHIVE_API_EXT")
 LOG_API_EXT = os.getenv("LOG_API_EXT")
@@ -28,8 +23,7 @@ DEFAULT_WORKER = os.getenv("DEFAULT_WORKER")
 
 @app.route('/')
 def index_page():
-    logs = getLogsToDisplay()
-    return render_template('landing.html', logs=logs)
+    return render_template('landing.html', logs=getLogsToDisplay())
 
 
 @app.route('/queue/')
@@ -146,9 +140,9 @@ def update_request(uuid):
     if not rr:
         return {}
 
-    rr.update({ "progress": int(float(progress)),
-                "time_estimate": time_estimate,
-                "status": status })
+    rr.update({"progress": int(float(progress)),
+               "time_estimate": time_estimate,
+               "status": status})
 
     return rr.to_dict()
 
@@ -247,9 +241,9 @@ def delete_archive(uuid):
 
 
 # End of Archive API Section
+
+
 # Start of Logs API Section
-
-
 @app.post('{}{}/post'.format(API_EXT, LOG_API_EXT))
 def create_log():
     content = request.data.decode('utf-8')

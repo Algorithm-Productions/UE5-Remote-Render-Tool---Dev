@@ -15,38 +15,24 @@ if args.env:
 else:
     load_dotenv()
 
-MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
-HTML_FOLDER = os.path.join(MODULE_PATH, 'html')
-
 LOGGER = logging.getLogger(__name__)
-DEFAULT_WORKER = os.getenv("DEFAULT_WORKER")
-
-ROOT_PATH = os.path.dirname(MODULE_PATH)
-DATABASE = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER"))
-ARCHIVE = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER") + os.getenv("ARCHIVE_FOLDER"))
-LOGS = os.path.join(ROOT_PATH, os.getenv("DATABASE_FOLDER") + os.getenv("LOG_FOLDER"))
-
-FLASK_EXE = os.getenv("FLASK_EXE")
-
 MANAGER_NAME = platform.node()
 SERVER_URL = os.getenv('SERVER_URL')
 SERVER_PORT = os.getenv('SERVER_PORT')
-
-API_EXT = os.getenv("API_EXT")
-ARCHIVE_API_EXT = os.getenv("ARCHIVE_API_EXT")
-LOG_API_EXT = os.getenv("LOG_API_EXT")
+SERVER_DATABASE = os.getenv('DATABASE_FOLDER')
+DEBUG = args.debug or os.getenv('DEBUG', False)
 
 from remote_render import app, __version__
 
-
 try:
-    print(f'Running UE5 Remote Render Tool host={SERVER_URL} port={SERVER_PORT} debug={args.debug} version={__version__}')
+
+    print(f'Running UE5 Remote Render Tool: '
+          f'host={SERVER_URL} port={SERVER_PORT} manager={MANAGER_NAME} debug={DEBUG} version={__version__}')
+
     app.run(host=SERVER_URL,
             port=SERVER_PORT,
-            debug=args.debug)
-
-except KeyboardInterrupt:
-    print('Shutting down app')
+            database_path=SERVER_DATABASE,
+            debug=DEBUG)
 finally:
     print('App closed')
 

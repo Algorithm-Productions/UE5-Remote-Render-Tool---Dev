@@ -8,6 +8,7 @@ from .util import ManagerFlaskApp, datatypes
 
 from remote_render.util import ManagerFlaskApp
 
-app = ManagerFlaskApp(__name__, template_folder='./manager/templates', static_folder='./manager/static')
 
+# Must import views after app
+app = ManagerFlaskApp(__name__, template_folder='./manager/templates', static_folder='./manager/static')
 import remote_render.manager.views
