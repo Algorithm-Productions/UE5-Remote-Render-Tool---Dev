@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Render Submitter | Home </title>
+    <link rel="shortcut icon" href="../favicon.png">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../static/css/entry.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/landing.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/global.css">
+
+    <script type="text/javascript" src="../eel.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid headerBlock">
+        <div class="row">
+            <div class="col">
+                <img src="../static/imgs/logo-darkmode.png">
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row mainTitleBlock">
+            <h1 id="title"> New Render </h1>
+        </div>
+
+        <div hidden id="notificationWrapper" class="row notificationBlock">
+            <div class="col" align="center">
+                <div class="notificationCover">
+                    <h1 id="notificationText"></h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="row infoContainer center">
+            <div class="col-3 sideMenu">
+                <a onclick="handleTabSwitch(`basicSettings`)"><h3 id="basicSettingsSelect" class="selected">Basic Settings</h3></a>
+                <a onclick="handleTabSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
+            </div>
+
+            <div hidden id="basicSettingsTwo" class="col infoPanel">
+                <div class="row">
+                    <div class="col">
+                        <p>name</p>
+                        <p>worker</p>
+                        <p>project_path</p>
+                        <p>level_path</p>
+                        <p>sequence_path</p>
+                        <p>config_path</p>
+                        <p>output_path</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="basicSettings" class="col infoPanel">
+                <form id="basicSettingsForm">
+                    <div class="row">
+                        <div class="col">
+                            <label for="name">Render Name</label><br>
+                            <input type="text" id="name" name="name"><br>
+                            <label for="project_path">Project Path</label><br>
+                            <input type="text" id="project_path" name="project_path"><br>
+                            <label for="sequence_path">Sequence Path</label><br>
+                            <input type="text" id="sequence_path" name="sequence_path"><br>
+                            <label for="output_path">Output Path</label><br>
+                            <input type="text" id="output_path" name="output_path"><br>
+                        </div>
+                        <div class="col">
+                            <label for="worker">Render Worker</label><br>
+                            <input type="text" id="worker" name="worker"><br>
+                            <label for="level_path">Level Path</label><br>
+                            <input type="text" id="level_path" name="level_path"><br>
+                            <label for="config_path">Config Path</label><br>
+                            <input type="text" id="config_path" name="config_path"><br>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div hidden id="outputSettings" class="col infoPanel">
+                <form id="outputSettingsForm">
+                    <div class="row">
+                        <div class="col">
+                            <label for="name">Render Name</label><br>
+                            <input type="text" id="name" name="name"><br>
+                            <label for="project_path">Project Path</label><br>
+                            <input type="text" id="project_path" name="project_path"><br>
+                            <label for="sequence_path">Sequence Path</label><br>
+                            <input type="text" id="sequence_path" name="sequence_path"><br>
+                            <label for="output_path">Output Path</label><br>
+                            <input type="text" id="output_path" name="output_path"><br>
+                        </div>
+                        <div class="col">
+                            <label for="worker">Render Worker</label><br>
+                            <input type="text" id="worker" name="worker"><br>
+                            <label for="level_path">Level Path</label><br>
+                            <input type="text" id="level_path" name="level_path"><br>
+                            <label for="config_path">Config Path</label><br>
+                            <input type="text" id="config_path" name="config_path"><br>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row buttonBlock">
+            <div id="newRenderBtn" class="col" align="center">
+                <div class="leftPadding buttonCover">
+                    <a href="./landing.html"> Back </a>
+                </div>
+            </div>
+            <div id="retryBtn" class="col" align="center">
+                <div class="rightPadding buttonCover">
+                    <a href="#" onclick="submitForm()"> Submit Request </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid footer">
+        <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
+    </div>
+    <script src="../static/js/entryUtils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

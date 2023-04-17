@@ -16,7 +16,30 @@ SERVER_API_URL = SERVER_URL + os.getenv("API_EXT")
 ARCHIVE_API_EXT = os.getenv("ARCHIVE_API_EXT")
 LOG_API_EXT = os.getenv("LOG_API_EXT")
 
+# Start of the General Methods Section
 
+
+def ping_server(data=None):
+    try:
+        response = requests.post(SERVER_API_URL + '/ping', json=data)
+    except requests.exceptions.ConnectionError:
+        LOGGER.error('failed to connect to server %s', SERVER_API_URL)
+        return
+
+    return response
+
+
+def register_worker(worker_name, data=None):
+    try:
+        response = requests.post(SERVER_API_URL + '/register/'.format(worker_name), json=data)
+    except requests.exceptions.ConnectionError:
+        LOGGER.error('failed to connect to server %s', SERVER_API_URL)
+        return
+
+    return response
+
+
+# End of the General Methods Section
 # Start of Abstract Methods Section
 
 
