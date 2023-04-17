@@ -25,14 +25,16 @@ DEBUG = args.debug or os.getenv('DEBUG', False)
 from remote_render import app, __version__
 
 try:
-
-    print(f'Running UE5 Remote Render Tool: '
-          f'host={SERVER_URL} port={SERVER_PORT} manager={MANAGER_NAME} debug={DEBUG} version={__version__}')
+    print(f'Running UE5 Remote Render Tool [v{__version__}]: '
+          f'host={SERVER_URL} '
+          f'port={SERVER_PORT} '
+          f'manager={MANAGER_NAME} '
+          f'debug={DEBUG}')
 
     app.run(host=SERVER_URL,
             port=SERVER_PORT,
             database_path=SERVER_DATABASE,
             debug=DEBUG)
 finally:
-    print('App closed')
+    print(f'Shutting down UE5 Remote Render Tool [v{__version__}]')
 
