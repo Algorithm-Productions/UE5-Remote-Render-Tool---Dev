@@ -84,5 +84,19 @@ const specialNavigate = () => {
         window.location.replace("http://127.0.0.1:5000/")
 }
 
+const clearNotification = async (uuid) => {
+    const response = await fetch(`http://127.0.0.1:5000/api/logs/put/${uuid}`, {
+        method: 'PUT',
+        body: '{"cleared": True}',
+        headers: {
+            'Content-type': 'application/json'
+        }
+    });
+
+    window.location.reload()
+
+    return response
+}
+
 
 

@@ -64,7 +64,7 @@
                         <a href='/logs/{{ logs[0]["uuid"] }}?return='>
                                 {{ logs[0]["message"] }}
                         </a>
-                        <button onclick='deleteEntry("logs", {{ logs[0]["uuid"]|tojson|safe }})' class='copyBtn'> ☓ </button>
+                        <button onclick='clearNotification({{ logs[0]["uuid"]|tojson|safe }})' class='copyBtn'> ☓ </button>
                     </div>
                 </div>
             </div>

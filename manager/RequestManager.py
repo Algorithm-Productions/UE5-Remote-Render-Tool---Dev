@@ -296,8 +296,18 @@ def get_log(uuid):
 
 @app.put('{}{}/put/<uuid>'.format(API_EXT, LOG_API_EXT))
 def update_log(uuid):
-    pass
+    content = request.data.decode('utf-8')
+    res = RenderLog.RenderLog.read(uuid)
 
+    if (not res) or (not content):
+        return {}
+
+    parsedContent = eval(content)
+    if not parsedContent:
+        return {}
+
+    res.update(parsedContent)
+    return res.to_dict()
 
 @app.delete('{}{}/delete'.format(API_EXT, LOG_API_EXT))
 def delete_all_logs():
@@ -367,7 +377,7 @@ def getLogsToDisplay():
 
     for log in allLogs:
         deleted = checkAgeAndClear(log)
-        if log.logType != LogType.INFO and (not deleted):
+        if log.logType != LogType.INFO and (not deleted) and (not log.cleared):
             objList.append(log)
 
     objList.sort()

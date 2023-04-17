@@ -38,7 +38,8 @@ class RenderLog(StorableEntity):
             timestamp=None,
             message='',
             log='',
-            logType=None
+            logType=None,
+            cleared=False
     ):
         """
             Class Constructor.
@@ -63,7 +64,7 @@ class RenderLog(StorableEntity):
         self.message = message or ''
         self.log = log or ''
         self.logType = logType or LogType.INFO
-        self.cleared = False
+        self.cleared = cleared
 
     @classmethod
     def from_dict(cls, data):
@@ -76,6 +77,7 @@ class RenderLog(StorableEntity):
         message = data.get('message') or ''
         log = data.get('log') or ''
         logType = (data.get('logType').upper() if LogType.contains(data.get('logType').upper()) else '')
+        cleared = data.get('cleared')
 
         return cls(
             uuid=uuid,
@@ -83,7 +85,8 @@ class RenderLog(StorableEntity):
             timestamp=timestamp,
             message=message,
             log=log,
-            logType=logType
+            logType=logType,
+            cleared=cleared
         )
 
     def clear(self):
