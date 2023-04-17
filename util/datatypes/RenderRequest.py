@@ -48,12 +48,6 @@ class RenderRequest(StorableEntity):
             sequence_path='',
             config_path='',
             output_path='',
-            width=0,
-            height=0,
-            frame_rate=0,
-            format='',
-            start_frame=0,
-            end_frame=0,
             time_estimate='',
             estimated_finish='',
             progress=0
@@ -90,18 +84,6 @@ class RenderRequest(StorableEntity):
             :type config_path: String.
             :param output_path: Path to the Output Directory the Request wants to use.
             :type output_path: String.
-            :param width: Width of the Preview Window for the Request [UNIMPLEMENTED].
-            :type width: Integer.
-            :param height: Height of the Preview Window for the Request [UNIMPLEMENTED].
-            :type height: Integer.
-            :param frame_rate: Output Frame Rate the Request wants to use [UNIMPLEMENTED].
-            :type frame_rate: Integer.
-            :param format: Output Format the Request wants to use [UNIMPLEMENTED].
-            :type format: String.
-            :param start_frame: Custom Start Frame the Request wants to use [UNIMPLEMENTED].
-            :type start_frame: Integer.
-            :param end_frame: Custom End Frame the Request wants to use [UNIMPLEMENTED].
-            :type end_frame: Integer.
             :param time_estimate: Current Time Estimate for the Request Job.
             :type time_estimate: String.
             :param estimated_finish: Current Estimated Finish for the Request Job.
@@ -123,13 +105,6 @@ class RenderRequest(StorableEntity):
         self.sequence_path = sequence_path
         self.config_path = config_path
         self.output_path = output_path
-        self.width = width or 1280
-        self.height = height or 720
-        self.frame_rate = frame_rate or 30
-        self.format = format or 'JPG'
-        self.start_frame = start_frame or 0
-        self.end_frame = end_frame or 0
-        self.length = self.end_frame - self.start_frame
         self.time_estimate = time_estimate
         self.progress = progress
         self.estimated_finish = estimated_finish or ''
@@ -154,12 +129,6 @@ class RenderRequest(StorableEntity):
         sequence_path = data.get('sequence_path') or ''
         config_path = data.get('config_path') or ''
         output_path = data.get('output_path') or ''
-        width = data.get('width') or 0
-        height = data.get('height') or 0
-        frame_rate = data.get('frame_rate') or 0
-        format = data.get('format') or ''
-        start_frame = data.get('start_frame') or 0
-        end_frame = data.get('end_frame') or 0
         time_estimate = data.get('time_estimate') or ''
         estimated_finish = data.get('estimated_finish') or ''
         progress = data.get('progress') or 0
@@ -179,12 +148,6 @@ class RenderRequest(StorableEntity):
             sequence_path=sequence_path,
             config_path=config_path,
             output_path=output_path,
-            width=width,
-            height=height,
-            frame_rate=frame_rate,
-            format=format,
-            start_frame=start_frame,
-            end_frame=end_frame,
             time_estimate=time_estimate,
             estimated_finish=estimated_finish,
             progress=progress
