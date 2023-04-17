@@ -2,10 +2,10 @@
     Copyright Algorithm Productions LLC. 2023.
 """
 
-from enum import Enum
+from util.datatypes.abstracts.EnumProperty import EnumProperty
 
 
-class LogType(Enum):
+class LogType(EnumProperty):
     """
         Enum Class to Represent all Types of Log Messages.
 
@@ -16,6 +16,10 @@ class LogType(Enum):
     WARNING = "WARN"
     INFO = "INFO"
     CRITICAL = "CRITICAL"
+
+    @classmethod
+    def contains(cls, item):
+        return item in [cls.ERROR, cls.WARNING, cls.INFO, cls.CRITICAL]
 
     @classmethod
     def getNumVal(cls, logType):

@@ -16,6 +16,7 @@ from util.ManagerFlaskApp import ManagerFlaskApp
 from util.datatypes.RenderLog import LogType
 from util.datatypes.RenderArchive import HardwareStats
 from util.datatypes.RenderSettings import RenderSettings
+from util.datatypes.enums import RenderStatus
 
 load_dotenv()
 MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -180,7 +181,7 @@ def delete_all_requests():
 @app.delete('{}/delete/<uuid>'.format(API_EXT))
 def delete_request(uuid):
     res = RenderRequest.RenderRequest.read(uuid)
-    res.remove()
+    res.remove_self()
 
     buildLog(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                     'Deleting Request {} from DB'.format(uuid),
@@ -249,7 +250,7 @@ def delete_all_archives():
 @app.delete('{}{}/delete/<uuid>'.format(API_EXT, ARCHIVE_API_EXT))
 def delete_archive(uuid):
     res = RenderArchive.RenderArchive.read(uuid)
-    res.remove()
+    res.remove_self()
 
     buildLog(uuid, [uuid, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                     'Deleting Archive {} from DB'.format(uuid),
@@ -313,7 +314,7 @@ def delete_all_logs():
 @app.delete('{}{}/delete/<uuid>'.format(API_EXT, LOG_API_EXT))
 def delete_log(uuid):
     res = RenderLog.RenderLog.read(uuid)
-    res.remove()
+    res.remove_self()
 
     return res.to_dict()
 
@@ -324,7 +325,7 @@ def delete_log(uuid):
 
 def new_request_trigger(req):
     if req.worker:
-        req.update({"status": util.datatypes.enums.RenderStatus.ready_to_start})
+        req.update({"status": RenderStatus.RenderStatus.ready_to_start})
         return
 
     assign_request(req, DEFAULT_WORKER)
@@ -335,13 +336,13 @@ def new_request_trigger(req):
 
 def assign_request(req, worker):
     req.assign(worker)
-    req.update({"status": util.datatypes.enums.RenderStatus.ready_to_start})
+    req.update({"status": RenderStatus.RenderStatus.ready_to_start})
 
 
 def buildArchive(uuid, renderRequest, metadata):
     renderArchive = RenderArchive.RenderArchive(uuid=uuid, render_request=renderRequest)
     renderArchive.project_name = metadata[1]
-    renderArchive.hardware_stats = HardwareStats.from_dict(eval(metadata[2]))
+    renderArchive.hardware_stats = HardwareStats.HardwareStats.from_dict(eval(metadata[2]))
     renderArchive.finish_time = metadata[3]
     renderArchive.avg_frame = float(metadata[4])
     renderArchive.frame_map = metadata[5].strip('][').split(', ')
@@ -357,7 +358,7 @@ def buildArchive(uuid, renderRequest, metadata):
 def buildLog(jobUUID, metadata):
     return RenderLog.RenderLog(uuid=str(genUUID.uuid4())[:5], jobUUID=jobUUID, timestamp=metadata[1],
                                message=metadata[2], log=metadata[3],
-                               logType=(metadata[4].upper() if metadata[4].upper() in LogType else ''))
+                               logType=(metadata[4].upper() if LogType.contains(metadata[4].upper()) else ''))
 
 
 def getLogsToDisplay():

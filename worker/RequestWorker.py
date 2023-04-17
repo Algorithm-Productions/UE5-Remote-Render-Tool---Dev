@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 from util import Client
 from util.datatypes import RenderRequest
+from util.datatypes.enums import RenderStatus
 
 logging.basicConfig(level=logging.INFO)
 load_dotenv()
@@ -73,7 +74,7 @@ if __name__ == '__main__':
         reqs = Client.get_all_requests()
         uuids = [req.uuid for req in reqs
                  if req.worker == WORKER_NAME and
-                 req.status == util.datatypes.enums.RenderStatus.ready_to_start]
+                 req.status == RenderStatus.RenderStatus.ready_to_start]
 
         for uuid in uuids:
             LOGGER.info('rendering job %s', uuid)

@@ -75,7 +75,7 @@ class RenderLog(StorableEntity):
         timestamp = data.get('timestamp') or ''
         message = data.get('message') or ''
         log = data.get('log') or ''
-        logType = (data.get('logType').upper() if data.get('logType').upper() in LogType else '')
+        logType = (data.get('logType').upper() if LogType.contains(data.get('logType').upper()) else '')
 
         return cls(
             uuid=uuid,

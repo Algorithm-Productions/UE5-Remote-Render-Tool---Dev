@@ -213,8 +213,7 @@ class RenderRequest(StorableEntity):
         value = ((not ignoreDefault) and defaultVal) or ''
         if self.time_estimate == 'N/A':
             value = 'N/A'
-
-        if self.time_estimate != '':
+        elif self.time_estimate != '':
             start = datetime.now()
             end = datetime.strptime(self.time_estimate, '%Hh:%Mm:%Ss')
             delta = timedelta(hours=end.hour, minutes=end.minute, seconds=end.second, microseconds=end.microsecond)
