@@ -43,6 +43,7 @@
                     Settings</h3></a>
                 <a onclick="handleTabSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
                 <a onclick="handleTabSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
+                <a onclick="handleTabSwitch(`consoleSettings`)"><h3 id="consoleSettingsSelect">Console Settings</h3></a>
                 <a onclick="handleTabSwitch(`highResSettings`)"><h3 id="highResSettingsSelect">High-Res Settings</h3></a>
             </div>
 
@@ -127,7 +128,7 @@
                                    onchange='changeCheckBox("useCustomFrameRate", "frameRate")'>
                             <label for="useCustomFrameRate">Use Custom Frame Rate</label><br>
                             <select id="useCustomFrameRate" name="useCustomFrameRate" disabled
-                                    onchange='toggleValue(event, "frameRate")'>
+                                    onchange='toggleValue(event, "frameRate", "outputFrameRate")'>
                                 <option value="False">False</option>
                                 <option value="True">True</option>
                             </select><br><br>
@@ -157,7 +158,7 @@
                                    onchange='changeCheckBox("autoVersion", "version")'>
                             <label for="autoVersion">Auto Versioning</label><br>
                             <select id="autoVersion" name="autoVersion" disabled
-                                    onchange='toggleValue(event, "version")'>
+                                    onchange='toggleValue(event, "version", "versionNumber")'>
                                 <option value="False">False</option>
                                 <option value="True">True</option>
                             </select><br><br>
@@ -195,7 +196,7 @@
                                    onchange='changeCheckBox("overrideAA", "aa")'>
                             <label for="overrideAA">Override Anti-Aliasing Method</label><br>
                             <select id="overrideAA" name="overrideAA" disabled
-                                    onchange='toggleValue(event, "aa")'>
+                                    onchange='toggleValue(event, "aa", "aaMethod")'>
                                 <option value="False">False</option>
                                 <option value="True">True</option>
                             </select><br><br>
@@ -221,7 +222,7 @@
                                    onchange='invertedChangeCheckBox("useCameraCutForWarmUp", "engineWarmUp")'>
                             <label for="useCameraCutForWarmUp">Use Camera Cut For Warm Up</label><br>
                             <select id="useCameraCutForWarmUp" name="useCameraCutForWarmUp" disabled
-                                    onchange='invertedToggleValue(event, "engineWarmUp")'>
+                                    onchange='invertedToggleValue(event, "engineWarmUp", "engineWarmUpCount")'>
                                 <option value="False">False</option>
                                 <option value="True">True</option>
                             </select><br><br>
@@ -231,6 +232,25 @@
                                 <label for="engineWarmUpCount">Engine Warm Up Count</label><br>
                                 <input type="text" id="engineWarmUpCount" name="engineWarmUpCount" disabled><br><br>
                             </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div hidden id="consoleSettings" class="col infoPanel">
+                <form id="consoleSettingsForm">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" id="tileCountFlag" name="tileCountFlag"
+                                   onchange='changeCheckBox("tileCount")'>
+                            <label for="tileCount">Tile Count</label><br>
+                            <input type="number" id="tileCount" name="tileCount" disabled><br><br>
+                        </div>
+                        <div class="col">
+                            <input type="checkbox" id="textureSharpnessBiasFlag" name="textureSharpnessBiasFlag"
+                                   onchange='changeCheckBox("textureSharpnessBias")'>
+                            <label for="textureSharpnessBias">Texture Sharpness Bias</label><br>
+                            <input type="number" id="textureSharpnessBias" name="textureSharpnessBias" disabled><br><br>
                         </div>
                     </div>
                 </form>
@@ -260,7 +280,7 @@
                                    onchange='changeCheckBox("overrideSubSurfaceScattering", "burleySamples")'>
                             <label for="overrideSubSurfaceScattering">Override Sub-Surface Scattering</label><br>
                             <select id="overrideSubSurfaceScattering" name="overrideSubSurfaceScattering" disabled
-                                    onchange='toggleValue(event, "burleySamples")'>
+                                    onchange='toggleValue(event, "burleySamples", "burleySampleCount")'>
                                 <option value="False">False</option>
                                 <option value="True">True</option>
                             </select><br><br>
@@ -274,7 +294,6 @@
                     </div>
                 </form>
             </div>
-
         </div>
 
         <div class="row buttonBlock">

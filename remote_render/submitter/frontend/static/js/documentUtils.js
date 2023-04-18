@@ -3,6 +3,7 @@ const handleTabSwitch = (page) => {
     document.getElementById("outputSettingsSelect").classList.remove("selected");
     document.getElementById("aaSettingsSelect").classList.remove("selected");
     document.getElementById("highResSettingsSelect").classList.remove("selected");
+    document.getElementById("consoleSettingsSelect").classList.remove("selected");
 
     document.getElementById(page + "Select").classList.add("selected")
 
@@ -10,6 +11,7 @@ const handleTabSwitch = (page) => {
     document.getElementById("outputSettings").hidden = (page !== "outputSettings");
     document.getElementById("aaSettings").hidden = (page !== "aaSettings");
     document.getElementById("highResSettings").hidden = (page !== "highResSettings");
+    document.getElementById("consoleSettings").hidden = (page !== "consoleSettings");
 }
 
 const changeCheckBox = (target, secondary='') => {
