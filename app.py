@@ -36,23 +36,25 @@ print(f'Running UE5 Remote Render Tool [v{__version__}]: '
       f'auth_token={AUTHENTICATION_TOKEN} '
       f'debug={DEBUG}')
 
-if args.mode == 'manager':
-
-    try:
+try:
+    if args.mode == 'manager':
 
         app.run(host=SERVER_URL,
                 port=SERVER_PORT,
                 database_path=SERVER_DATABASE,
                 debug=DEBUG)
-    finally:
-        print(f'Shutting down UE5 Remote Render Tool Manager [v{__version__}]')
 
-elif args.mode == 'submitter':
-
-    try:
+    elif args.mode == 'submitter':
         submitter_path = os.path.abspath('./remote_render/submitter/GUISubmitter.py')
-        subprocess.Popen(['python', submitter_path, '--server_host', SERVER_URL, '--server_port', SERVER_PORT,
+        subprocess.call(['python', submitter_path, '--server_host', SERVER_URL, '--server_port', SERVER_PORT,
                           '--auth_token',  AUTHENTICATION_TOKEN], shell=True)
-    finally:
-        print(f'Shutting down UE5 Remote Render Tool [v{__version__}]')
+
+    elif args.mode == 'worker':
+        #TODO: This
+        print('Beep boop i am a worker')
+
+except KeyboardInterrupt:
+    print('Keyboard interrupt')
+finally:
+    print(f'Shutting down UE5 Remote Render Tool [v{__version__}]')
 
