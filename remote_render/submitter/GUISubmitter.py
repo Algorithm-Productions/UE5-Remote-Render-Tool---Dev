@@ -3,7 +3,7 @@ import logging
 import eel
 import platform
 
-from util import Client
+import remote_render.util.Client as Client
 
 eel.init("frontend")
 

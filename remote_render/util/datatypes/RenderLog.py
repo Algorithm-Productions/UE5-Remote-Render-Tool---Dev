@@ -6,6 +6,7 @@ from datetime import datetime
 from .abstracts.StorableEntity import StorableEntity
 from .enums import LogType
 
+
 # from util.datatypes.enums.LogType import LogType
 
 # MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -75,7 +76,8 @@ class RenderLog(StorableEntity):
         timestamp = data.get('timestamp') or ''
         message = data.get('message') or ''
         log = data.get('log') or ''
-        logType = (data.get('logType').upper() if LogType.contains(data.get('logType').upper()) else '')
+        logType = (data.get('logType').upper() if (
+                    data.get('logType') and LogType.contains(data.get('logType').upper())) else '')
         cleared = data.get('cleared')
 
         return cls(
