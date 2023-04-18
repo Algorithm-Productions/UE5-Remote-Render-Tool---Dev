@@ -39,7 +39,8 @@
 
         <div class="row infoContainer center">
             <div class="col-3 sideMenu">
-                <a onclick="handleTabSwitch(`basicSettings`)"><h3 id="basicSettingsSelect" class="selected">Basic Settings</h3></a>
+                <a onclick="handleTabSwitch(`basicSettings`)"><h3 id="basicSettingsSelect" class="selected">Basic
+                    Settings</h3></a>
                 <a onclick="handleTabSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
             </div>
 
@@ -68,8 +69,6 @@
                             <input type="text" id="project_path" name="project_path"><br>
                             <label for="sequence_path">Sequence Path</label><br>
                             <input type="text" id="sequence_path" name="sequence_path"><br>
-                            <label for="output_path">Output Path</label><br>
-                            <input type="text" id="output_path" name="output_path"><br>
                         </div>
                         <div class="col">
                             <label for="worker">Render Worker</label><br>
@@ -87,22 +86,100 @@
                 <form id="outputSettingsForm">
                     <div class="row">
                         <div class="col">
-                            <label for="name">Render Name</label><br>
-                            <input type="text" id="name" name="name"><br>
-                            <label for="project_path">Project Path</label><br>
-                            <input type="text" id="project_path" name="project_path"><br>
-                            <label for="sequence_path">Sequence Path</label><br>
-                            <input type="text" id="sequence_path" name="sequence_path"><br>
-                            <label for="output_path">Output Path</label><br>
-                            <input type="text" id="output_path" name="output_path"><br>
+                            <input type="checkbox" id="outputPathFlag" name="outputPathFlag"
+                                   onchange='changeCheckBox("outputPath")'>
+                            <label for="outputPath">Output Path</label><br>
+                            <input type="text" id="outputPath" name="output_path" disabled><br><br>
+
+                            <input type="checkbox" id="outputResolutionXFlag" name="outputResolutionXFlag"
+                                   onchange='changeCheckBox("outputResolutionX")'>
+                            <label for="outputResolutionX">Resolution X</label><br>
+                            <input type="number" id="outputResolutionX" name="outputResolutionX" disabled><br><br>
+
+                            <input type="checkbox" id="outputResolutionYFlag" name="outputResolutionYFlag"
+                                   onchange='changeCheckBox("outputResolutionY")'>
+                            <label for="outputResolutionY">Resolution Y</label><br>
+                            <input type="number" id="outputResolutionY" name="outputResolutionY" disabled><br><br>
+
+                            <input type="checkbox" id="zeroPadFrameNumbersFlag" name="zeroPadFrameNumbersFlag"
+                                   onchange='changeCheckBox("zeroPadFrameNumbers")'>
+                            <label for="zeroPadFrameNumbers">Zero Pad Frame Numbers</label><br>
+                            <input type="number" id="zeroPadFrameNumbers" name="zeroPadFrameNumbers" disabled><br><br>
+
+                            <input type="checkbox" id="handleFrameCountFlag" name="handleFrameCountFlag"
+                                   onchange='changeCheckBox("handleFrameCount")'>
+                            <label for="handleFrameCount">Handle Frame Count</label><br>
+                            <input type="number" id="handleFrameCount" name="handleFrameCount" disabled><br><br>
+
+                            <input type="checkbox" id="useCustomPlaybackRangeFlag" name="useCustomPlaybackRangeFlag"
+                                   onchange='changeCheckBox("useCustomPlaybackRange", "playback")'>
+                            <label for="useCustomPlaybackRange">Use Custom Playback Range</label><br>
+                            <select id="useCustomPlaybackRange" name="useCustomPlaybackRange" disabled
+                                    onchange='toggleValue(event, "playback")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="playback">
+                                <input type="checkbox" id="customStartFrameFlag" name="customStartFrameFlag"
+                                       onchange='changeCheckBox("customStartFrame")'>
+                                <label for="customStartFrame">Custom Start Frame</label><br>
+                                <input type="number" id="customStartFrame" name="customStartFrame" disabled><br><br>
+                                <input type="checkbox" id="customEndFrameFlag" name="customEndFrameFlag"
+                                       onchange='changeCheckBox("customEndFrame")'>
+                                <label for="customEndFrame">Custom End Frame</label><br>
+                                <input type="number" id="customEndFrame" name="customEndFrame" disabled><br><br>
+                            </div>
                         </div>
                         <div class="col">
-                            <label for="worker">Render Worker</label><br>
-                            <select id="worker" name="worker"></select><br>
-                            <label for="level_path">Level Path</label><br>
-                            <input type="text" id="level_path" name="level_path"><br>
-                            <label for="config_path">Config Path</label><br>
-                            <input type="text" id="config_path" name="config_path"><br>
+                            <input type="checkbox" id="fileFormatFlag" name="fileFormatFlag"
+                                   onchange='changeCheckBox("fileFormat")'>
+                            <label for="fileFormat">File Format</label><br>
+                            <input type="text" id="fileFormat" name="fileFormat" disabled><br><br>
+
+                            <input type="checkbox" id="useCustomFrameRateFlag" name="useCustomFrameRateFlag"
+                                   onchange='changeCheckBox("useCustomFrameRate", "frameRate")'>
+                            <label for="useCustomFrameRate">Use Custom Frame Rate</label><br>
+                            <select id="useCustomFrameRate" name="useCustomFrameRate" disabled
+                                    onchange='toggleValue(event, "frameRate")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="frameRate">
+                                <input type="checkbox" id="outputFrameRateFlag" name="outputFrameRateFlag"
+                                       onchange='changeCheckBox("outputFrameRate")'>
+                                <label for="outputFrameRate">Output Frame Rate</label><br>
+                                <input type="number" id="outputFrameRate" name="outputFrameRate" disabled><br><br>
+                            </div>
+
+                            <input type="checkbox" id="overrideExistingOutputFlag" name="overrideExistingOutputFlag"
+                                   onchange='changeCheckBox("overrideExistingOutput")'>
+                            <label for="overrideExistingOutput">Override Existing Output</label><br>
+                            <input type="text" id="overrideExistingOutput" name="overrideExistingOutput" disabled><br><br>
+
+                            <input type="checkbox" id="frameNumberOutputFlag" name="frameNumberOutputFlag"
+                                   onchange='changeCheckBox("frameNumberOutput")'>
+                            <label for="frameNumberOutput">Frame Number Offset</label><br>
+                            <input type="number" id="frameNumberOutput" name="frameNumberOutput" disabled><br><br>
+
+                            <input type="checkbox" id="outputFrameStepFlag" name="outputFrameStepFlag"
+                                   onchange='changeCheckBox("outputFrameStep")'>
+                            <label for="outputFrameStep">Output Frame Step</label><br>
+                            <input type="number" id="outputFrameStep" name="outputFrameStep" disabled><br><br>
+
+                            <input type="checkbox" id="autoVersionFlag" name="autoVersionFlag"
+                                   onchange='changeCheckBox("autoVersion", "version")'>
+                            <label for="autoVersion">Auto Versioning</label><br>
+                            <select id="autoVersion" name="autoVersion" disabled
+                                    onchange='toggleValue(event, "version")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="version">
+                                <input type="checkbox" id="versionNumberFlag" name="versionNumberFlag"
+                                       onchange='changeCheckBox("versionNumber")'>
+                                <label for="versionNumber">Version Number</label><br>
+                                <input type="number" id="versionNumber" name="versionNumber" disabled><br><br>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -129,7 +206,12 @@
     <script src="../static/js/entryUtils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        let displayCustomFrameRate = false
+        let displayCustomPlayback = false
+        let displayCustomVersion = false
+
         eel.expose("setWorkers")
+
         function setWorkers(workers) {
             const workerSelect = document.getElementById("worker")
             workers.forEach((worker) => {

@@ -125,4 +125,4 @@ class RenderLog(StorableEntity):
                                                                                                "%m/%d/%Y, %H:%M:%S")
         else:
             return LogType.getNumVal(self.logType) < LogType.getNumVal(
-                other.notificationType)
+                other.logType)

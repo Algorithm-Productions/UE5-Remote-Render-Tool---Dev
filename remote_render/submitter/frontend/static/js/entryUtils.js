@@ -8,6 +8,25 @@ const handleTabSwitch = (page) => {
     document.getElementById("outputSettings").hidden = (page !== "outputSettings");
 }
 
+const changeCheckBox = (target, secondary='') => {
+    const element = document.getElementById(target)
+    if (element.disabled)
+        element.disabled = false
+    else {
+        element.disabled = true
+        element.value = ""
+
+        if (secondary !== '')
+            document.getElementById(secondary).hidden = true
+            document.getElementById(secondary).disabled = true
+    }
+}
+
+const toggleValue = (event, value) => {
+    document.getElementById(event.target.id).value = event.target.value
+    document.getElementById(value).hidden = event.target.value === "False"
+}
+
 const submitForm = () => {
     const basicSettingsForm = document.getElementById("basicSettingsForm")
 
