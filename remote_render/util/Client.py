@@ -5,7 +5,7 @@ from .datatypes import RenderArchive, RenderRequest, RenderLog
 
 LOGGER = logging.getLogger(__name__)
 
-class BackendClient:
+class Client:
     def __init__(self, backend_host, backend_port, backend_auth_token=None):
         self.backend_host = backend_host
         self.backend_port = backend_port
@@ -129,56 +129,56 @@ class BackendClient:
     # Start of Archives Methods Section
 
     def create_archive(self, data):
-        response = self.create(data, 'archive')
+        response = self.create(data, '/archive')
         return RenderArchive.from_dict(response.json()) if (response and response.json()) else None
 
     def get_all_archives(self, ):
-        response = self.get_all('archive')
+        response = self.get_all('/archive')
         return [(RenderArchive.from_dict(res) if res else None) for res in
                 response] if response else []
 
     def get_archive(self, uuid):
-        response = self.get(uuid, 'archive')
+        response = self.get(uuid, '/archive')
         return RenderArchive.from_dict(response.json()) if (response and response.json()) else None
 
     def update_archive(self, uuid, params):
-        response = self.update(uuid, params, 'archive')
+        response = self.update(uuid, params, '/archive')
         return RenderArchive.from_dict(response.json()) if (response and response.json()) else None
 
     def delete_all_archives(self, ):
-        response = self.delete_all('archive')
+        response = self.delete_all('/archive')
         return [(RenderArchive.from_dict(res) if res else None) for res in
                 response] if response else []
 
     def delete_archive(self, uuid):
-        response = self.delete(uuid, 'archive')
+        response = self.delete(uuid, '/archive')
         return RenderRequest.from_dict(response.json()) if (response and response.json()) else None
 
     # End of Archives Methods Section
     # Start of Logs Methods Section
 
     def create_log(self, data):
-        response = self.create(data, 'logs')
+        response = self.create(data, '/logs')
         return RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
     def get_all_logs(self):
-        response = self.get_all('logs')
+        response = self.get_all('/logs')
         return [(RenderLog.from_dict(res.json()) if (res and res.json()) else None) for res in
                 response] if response else []
 
     def get_log(self, uuid):
-        response = self.get(uuid, 'logs')
+        response = self.get(uuid, '/logs')
         return RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
     def update_log(self, uuid, params):
-        response = self.update(uuid, params, 'logs')
+        response = self.update(uuid, params, '/logs')
         return RenderLog.from_dict(response.json()) if (response and response.json()) else None
 
     def delete_all_logs(self):
-        response = self.delete_all('logs')
+        response = self.delete_all('/logs')
         return [(RenderLog.from_dict(res) if res else None) for res in
                 response] if response else []
 
     def delete_log(self, uuid):
-        response = self.delete(uuid, 'logs')
+        response = self.delete(uuid, '/logs')
         return RenderLog.from_dict(response.json()) if (response and response.json()) else None

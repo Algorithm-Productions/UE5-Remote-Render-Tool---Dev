@@ -19,22 +19,26 @@ if args.env:
 else:
     load_dotenv()
 
-MANAGER_NAME = platform.node()
+NODE_NAME = platform.node()
 SERVER_URL = os.getenv('SERVER_URL')
 SERVER_PORT = os.getenv('SERVER_PORT')
 SERVER_DATABASE = os.getenv('DATABASE_FOLDER')
+AUTHENTICATION_TOKEN = os.getenv('AUTHENTICATION_TOKEN')
 DEBUG = args.debug or os.getenv('DEBUG', False)
 
 from remote_render import app, __version__
 
+print(f'Running UE5 Remote Render Tool [v{__version__}]: '
+      f'mode={args.mode} '
+      f'node={NODE_NAME} '
+      f'host={SERVER_URL} '
+      f'port={SERVER_PORT} '
+      f'auth_token={AUTHENTICATION_TOKEN} '
+      f'debug={DEBUG}')
+
 if args.mode == 'manager':
 
     try:
-        print(f'Running UE5 Remote Render Tool Manager [v{__version__}]: '
-              f'host={SERVER_URL} '
-              f'port={SERVER_PORT} '
-              f'manager={MANAGER_NAME} '
-              f'debug={DEBUG}')
 
         app.run(host=SERVER_URL,
                 port=SERVER_PORT,
@@ -45,17 +49,10 @@ if args.mode == 'manager':
 
 elif args.mode == 'submitter':
 
-
     try:
-        print(f'Running UE5 Remote Render Tool Submitter [v{__version__}]: ')
-        subprocess.run('python3',
-                       './remote_render/submitter/GUISubmitter.py',
-                       f'--server_host {SERVER_URL}',
-                       f'--server_port {SERVER_PORT}',
-                       f'--authentication_token {AUTHENTICATION_TOKEN}',
-
-                       )
+        submitter_path = os.path.abspath('./remote_render/submitter/GUISubmitter.py')
+        subprocess.Popen(['python', submitter_path, '--server_host', SERVER_URL, '--server_port', SERVER_PORT,
+                          '--auth_token',  AUTHENTICATION_TOKEN], shell=True)
     finally:
-
         print(f'Shutting down UE5 Remote Render Tool [v{__version__}]')
 
