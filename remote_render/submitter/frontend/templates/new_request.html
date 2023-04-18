@@ -42,22 +42,8 @@
                 <a onclick="handleTabSwitch(`basicSettings`)"><h3 id="basicSettingsSelect" class="selected">Basic
                     Settings</h3></a>
                 <a onclick="handleTabSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
+                <a onclick="handleTabSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
             </div>
-
-            <div hidden id="basicSettingsTwo" class="col infoPanel">
-                <div class="row">
-                    <div class="col">
-                        <p>name</p>
-                        <p>worker</p>
-                        <p>project_path</p>
-                        <p>level_path</p>
-                        <p>sequence_path</p>
-                        <p>config_path</p>
-                        <p>output_path</p>
-                    </div>
-                </div>
-            </div>
-
 
             <div id="basicSettings" class="col infoPanel">
                 <form id="basicSettingsForm">
@@ -115,7 +101,7 @@
                                    onchange='changeCheckBox("useCustomPlaybackRange", "playback")'>
                             <label for="useCustomPlaybackRange">Use Custom Playback Range</label><br>
                             <select id="useCustomPlaybackRange" name="useCustomPlaybackRange" disabled
-                                    onchange='toggleValue(event, "playback")'>
+                                    onchange='toggleValue(event, "playback", "customStartFrame;customEndFrame")'>
                                 <option value="False">False</option>
                                 <option value="True">True</option>
                             </select><br><br>
@@ -184,6 +170,71 @@
                     </div>
                 </form>
             </div>
+
+            <div hidden id="aaSettings" class="col infoPanel">
+                <form id="aaSettingsForm">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" id="spatialSampleCountFlag" name="spatialSampleCountFlag"
+                                   onchange='changeCheckBox("spatialSampleCount")'>
+                            <label for="spatialSampleCount">Spatial Sample Count</label><br>
+                            <input type="number" id="spatialSampleCount" name="spatialSampleCount" disabled><br><br>
+
+                            <input type="checkbox" id="renderWarmUpFramesFlag" name="renderWarmUpFramesFlag"
+                                   onchange='changeCheckBox("renderWarmUpFrames",)'>
+                            <label for="renderWarmUpFrames">Render Warm Up Frames</label><br>
+                            <select id="renderWarmUpFrames" name="renderWarmUpFrames" disabled
+                                    onchange='toggleValue(event)'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+
+
+                            <input type="checkbox" id="overrideAAFlag" name="overrideAAFlag"
+                                   onchange='changeCheckBox("overrideAA", "aa")'>
+                            <label for="overrideAA">Override Anti-Aliasing Method</label><br>
+                            <select id="overrideAA" name="overrideAA" disabled
+                                    onchange='toggleValue(event, "aa")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="aa">
+                                <input type="checkbox" id="aaMethodFlag" name="aaMethodFlag"
+                                       onchange='changeCheckBox("aaMethod")'>
+                                <label for="aaMethod">Anti-Aliasing Method</label><br>
+                                <input type="text" id="aaMethod" name="aaMethod" disabled><br><br>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="checkbox" id="temporalSampleCountFlag" name="temporalSampleCountFlag"
+                                   onchange='changeCheckBox("temporalSampleCount")'>
+                            <label for="temporalSampleCount">Temporal Sample Count</label><br>
+                            <input type="number" id="temporalSampleCount" name="temporalSampleCount" disabled><br><br>
+
+                            <input type="checkbox" id="renderWarmUpCountFlag" name="renderWarmUpCountFlag"
+                                   onchange='changeCheckBox("renderWarmUpCount")'>
+                            <label for="renderWarmUpCount">Render Warm Up Count</label><br>
+                            <input type="number" id="renderWarmUpCount" name="renderWarmUpCount" disabled><br><br>
+
+                            <input type="checkbox" id="useCameraCutForWarmUpFlag" name="useCameraCutForWarmUpFlag"
+                                   onchange='changeCheckBox("useCameraCutForWarmUp", "engineWarmUp")'>
+                            <label for="useCameraCutForWarmUp">Use Camera Cut For Warm Up</label><br>
+                            <select id="useCameraCutForWarmUp" name="useCameraCutForWarmUp" disabled
+                                    onchange='toggleValue(event, "engineWarmUp")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="engineWarmUp">
+                                <input type="checkbox" id="engineWarmUpCountFlag" name="engineWarmUpCountFlag"
+                                       onchange='changeCheckBox("engineWarmUpCount")'>
+                                <label for="engineWarmUpCount">Engine Warm Up Count</label><br>
+                                <input type="text" id="engineWarmUpCount" name="engineWarmUpCount" disabled><br><br>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         </div>
 
         <div class="row buttonBlock">
@@ -203,23 +254,11 @@
     <div class="container-fluid footer">
         <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
     </div>
-    <script src="../static/js/entryUtils.js"></script>
+    <script src="../static/js/fetcherUtils.js"></script>
+    <script src="../static/js/dataUtils.js"></script>
+    <script src="../static/js/documentUtils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let displayCustomFrameRate = false
-        let displayCustomPlayback = false
-        let displayCustomVersion = false
-
-        eel.expose("setWorkers")
-
-        function setWorkers(workers) {
-            const workerSelect = document.getElementById("worker")
-            workers.forEach((worker) => {
-                const option = new Option(worker, worker)
-                workerSelect.add(option, undefined)
-            })
-        }
-
         eel.getWorkers()(setWorkers)
     </script>
 </body>
