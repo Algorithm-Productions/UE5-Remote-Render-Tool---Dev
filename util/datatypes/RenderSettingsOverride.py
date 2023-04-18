@@ -1,59 +1,69 @@
-from util.datatypes import RenderSettings
 from util.datatypes.abstracts.StorableProperty import StorableProperty
+from util.datatypes.unreal.overrides import AASettingsOverride, ConsoleSettingsOverride, HighResSettingsOverride, \
+    OutputSettingsOverride
 
 
 class RenderSettingsOverride(StorableProperty):
     def __init__(
             self,
-            overridenBools=None,
-            renderSettings=None
+            output_types_flag=False,
+            render_types_flag=False,
+            aa_settings_flags=None,
+            console_settings_flags=None,
+            high_res_settings_flags=None,
+            output_settings_flags=None
     ):
-        """
-            Class Constructor.
-            Takes in every Parameter as an Optional, allowing for the creation of Empty Objects.
-
-            :param overridenBools: Map of Settings with Overwritten Flags.
-            :type overridenBools: Dict
-            :param renderSettings: Actual Render Settings Object to get Overwrites from.
-            :type renderSettings: RenderSettings.RenderSettings.
-        """
-        self.overridenBools = overridenBools
-        self.renderSettings = renderSettings
+        self.output_types_flag = output_types_flag
+        self.render_types_flag = render_types_flag
+        self.aa_settings_flags = aa_settings_flags
+        self.console_settings_flags = console_settings_flags
+        self.high_res_settings_flags = high_res_settings_flags
+        self.output_settings_flags = output_settings_flags
 
     @classmethod
     def from_dict(cls, data):
-        """
-            @inheritDoc - StorableProperty
-        """
-        overridenBools = eval(data['overridenBools']) if data and data['overridenBools'] else {}
-        renderSettings = RenderSettings.RenderSettings.from_dict(data.get('renderSettings'))
+        output_types_flag = (data["output_types_flag"] or False) if data else False
+        render_types_flag = (data["render_types_flag"] or False) if data else False
+        aa_settings_flags = (AASettingsOverride.AASettingsOverride.from_dict(data.get('aa_settings_flags')) if data.get(
+            'aa_settings_flags') else None) if data else None
+        console_settings_flags = (
+            ConsoleSettingsOverride.ConsoleSettingsOverride.from_dict(data.get('console_settings_flags')) if data.get(
+                'console_settings_flags') else None) if data else None
+        high_res_settings_flags = (
+            HighResSettingsOverride.HighResSettingsOverride.from_dict(data.get('high_res_settings_flags')) if data.get(
+                'high_res_settings_flags') else None) if data else None
+        output_settings_flags = (
+            OutputSettingsOverride.OutputSettingsOverride.from_dict(data.get('output_settings_flags')) if data.get(
+                'output_settings_flags') else None) if data else None
 
         return cls(
-            overridenBools=overridenBools,
-            renderSettings=renderSettings
+            output_types_flag=output_types_flag,
+            render_types_flag=render_types_flag,
+            aa_settings_flags=aa_settings_flags,
+            console_settings_flags=console_settings_flags,
+            high_res_settings_flags=high_res_settings_flags,
+            output_settings_flags=output_settings_flags
         )
 
     def copy(self):
-        """
-            Helper Method to Create a Copy of the Property Object.
-
-            :return: Property Object with same Fields as Self.
-        """
         return RenderSettingsOverride(
-            overridenBools=self.overridenBools,
-            renderSettings=self.renderSettings
+            output_types_flag=self.output_types_flag,
+            render_types_flag=self.render_types_flag,
+            aa_settings_flags=self.aa_settings_flags,
+            console_settings_flags=self.console_settings_flags,
+            high_res_settings_flags=self.high_res_settings_flags,
+            output_settings_flags=self.output_settings_flags
         )
 
     def to_dict(self):
-        """
-            @inheritDoc - StorableProperty
-
-            Custom Implementation to account for Complex Fields.
-        """
         copy = self.copy()
-        if self.overridenBools:
-            copy.overridenBools = self.overridenBools.to_dict()
-        if self.renderSettings:
-            copy.renderSettings = self.renderSettings.to_dict()
+        if self.aa_settings_flags:
+            copy.aa_settings_flags = self.aa_settings_flags.to_dict()
+        if self.console_settings_flags:
+            copy.console_settings_flags = self.console_settings_flags.to_dict()
+        if self.high_res_settings_flags:
+            copy.high_res_settings_flags = self.high_res_settings_flags.to_dict()
+        if self.output_settings_flags:
+            copy.output_settings_flags = self.output_settings_flags.to_dict()
 
         return copy.__dict__

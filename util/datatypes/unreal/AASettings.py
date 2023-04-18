@@ -61,10 +61,10 @@ class AASettings(UnrealDataType):
         """
         spatialSampleCount = (data["spatialSampleCount"] or 0) if data else 0
         temporalSampleCount = (data["temporalSampleCount"] or 0) if data else 0
-        overrideAA = (data["overrideAA"] or False) if data else 0
-        aaMethod = (data["aaMethod"] or '') if data else 0
-        useCameraCutForWarmUp = (data["useCameraCutForWarmUp"] or False) if data else 0
-        renderWarmUpFrames = (data["renderWarmUpFrames"] or False) if data else 0
+        overrideAA = (data["overrideAA"] or False) if data else False
+        aaMethod = (data["aaMethod"] or '') if data else ''
+        useCameraCutForWarmUp = (data["useCameraCutForWarmUp"] or False) if data else False
+        renderWarmUpFrames = (data["renderWarmUpFrames"] or False) if data else False
         renderWarmUpCount = (data["renderWarmUpCount"] or 0) if data else 0
         engineWarmUpCount = (data["engineWarmUpCount"] or 0) if data else 0
 
