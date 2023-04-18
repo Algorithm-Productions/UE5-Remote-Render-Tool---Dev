@@ -1,6 +1,6 @@
 from .RenderArchive import RenderArchive
 from .RenderRequest import RenderRequest
-from .RenderLog import RenderLog, LogType
+from .RenderLog import RenderLog
 from .RenderSettings import RenderSettings
 from .enums import RenderStatus, LogType
 from .HardwareStats import HardwareStats
