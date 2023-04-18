@@ -217,14 +217,14 @@
                             <input type="number" id="renderWarmUpCount" name="renderWarmUpCount" disabled><br><br>
 
                             <input type="checkbox" id="useCameraCutForWarmUpFlag" name="useCameraCutForWarmUpFlag"
-                                   onchange='changeCheckBox("useCameraCutForWarmUp", "engineWarmUp")'>
+                                   onchange='invertedChangeCheckBox("useCameraCutForWarmUp", "engineWarmUp")'>
                             <label for="useCameraCutForWarmUp">Use Camera Cut For Warm Up</label><br>
                             <select id="useCameraCutForWarmUp" name="useCameraCutForWarmUp" disabled
-                                    onchange='toggleValue(event, "engineWarmUp")'>
+                                    onchange='invertedToggleValue(event, "engineWarmUp")'>
                                 <option value="False">False</option>
                                 <option value="True">True</option>
                             </select><br><br>
-                            <div hidden id="engineWarmUp">
+                            <div id="engineWarmUp">
                                 <input type="checkbox" id="engineWarmUpCountFlag" name="engineWarmUpCountFlag"
                                        onchange='changeCheckBox("engineWarmUpCount")'>
                                 <label for="engineWarmUpCount">Engine Warm Up Count</label><br>
