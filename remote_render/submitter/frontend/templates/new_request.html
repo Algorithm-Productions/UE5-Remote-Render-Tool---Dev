@@ -240,16 +240,36 @@
                 <form id="highResSettingsForm">
                     <div class="row">
                         <div class="col">
-                            <input type="checkbox" id="spatialSampleCountFlag" name="spatialSampleCountFlag"
-                                   onchange='changeCheckBox("spatialSampleCount")'>
-                            <label for="spatialSampleCount">Spatial Sample Count</label><br>
-                            <input type="number" id="spatialSampleCount" name="spatialSampleCount" disabled><br><br>
+                            <input type="checkbox" id="tileCountFlag" name="tileCountFlag"
+                                   onchange='changeCheckBox("tileCount")'>
+                            <label for="tileCount">Tile Count</label><br>
+                            <input type="number" id="tileCount" name="tileCount" disabled><br><br>
+
+                            <input type="checkbox" id="overlapRatioFlag" name="overlapRatioFlag"
+                                   onchange='changeCheckBox("overlapRatio")'>
+                            <label for="overlapRatio">Overlap Ratio</label><br>
+                            <input type="number" id="overlapRatio" name="overlapRatio" disabled><br><br>
                         </div>
                         <div class="col">
-                            <input type="checkbox" id="temporalSampleCountFlag" name="temporalSampleCountFlag"
-                                   onchange='changeCheckBox("temporalSampleCount")'>
-                            <label for="temporalSampleCount">Temporal Sample Count</label><br>
-                            <input type="number" id="temporalSampleCount" name="temporalSampleCount" disabled><br><br>
+                            <input type="checkbox" id="textureSharpnessBiasFlag" name="textureSharpnessBiasFlag"
+                                   onchange='changeCheckBox("textureSharpnessBias")'>
+                            <label for="textureSharpnessBias">Texture Sharpness Bias</label><br>
+                            <input type="number" id="textureSharpnessBias" name="textureSharpnessBias" disabled><br><br>
+
+                            <input type="checkbox" id="overrideSubSurfaceScatteringFlag" name="overrideSubSurfaceScatteringFlag"
+                                   onchange='changeCheckBox("overrideSubSurfaceScattering", "burleySamples")'>
+                            <label for="overrideSubSurfaceScattering">Override Sub-Surface Scattering</label><br>
+                            <select id="overrideSubSurfaceScattering" name="overrideSubSurfaceScattering" disabled
+                                    onchange='toggleValue(event, "burleySamples")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="burleySamples">
+                                <input type="checkbox" id="burleySampleCountFlag" name="burleySampleCountFlag"
+                                       onchange='changeCheckBox("burleySampleCount")'>
+                                <label for="burleySampleCount">Burley Sample Count</label><br>
+                                <input type="text" id="burleySampleCount" name="burleySampleCount" disabled><br><br>
+                            </div>
                         </div>
                     </div>
                 </form>
