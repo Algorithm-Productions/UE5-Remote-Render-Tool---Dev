@@ -12,7 +12,7 @@ from ..util import Client
 from .datatypes.enums import RenderStatus
 from .datatypes import HardwareStats, LogType
 from .datatypes.RenderSettings import RenderSettings, AASettings, ConsoleSettings
-from .datatypes.unreal import OutputSettings, HighResSettings
+from .datatypes.unreal_dt import OutputSettings, HighResSettings
 
 
 @unreal.uclass()

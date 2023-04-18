@@ -3,7 +3,7 @@
 """
 
 from .abstracts.StorableProperty import StorableProperty
-from .unreal import ConsoleSettings, AASettings, HighResSettings, OutputSettings
+from .unreal_dt import ConsoleSettings, AASettings, HighResSettings, OutputSettings
 
 
 class RenderSettings(StorableProperty):
