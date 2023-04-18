@@ -43,6 +43,7 @@
                     Settings</h3></a>
                 <a onclick="handleTabSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
                 <a onclick="handleTabSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
+                <a onclick="handleTabSwitch(`highResSettings`)"><h3 id="highResSettingsSelect">High-Res Settings</h3></a>
             </div>
 
             <div id="basicSettings" class="col infoPanel">
@@ -230,6 +231,25 @@
                                 <label for="engineWarmUpCount">Engine Warm Up Count</label><br>
                                 <input type="text" id="engineWarmUpCount" name="engineWarmUpCount" disabled><br><br>
                             </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div hidden id="highResSettings" class="col infoPanel">
+                <form id="highResSettingsForm">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" id="spatialSampleCountFlag" name="spatialSampleCountFlag"
+                                   onchange='changeCheckBox("spatialSampleCount")'>
+                            <label for="spatialSampleCount">Spatial Sample Count</label><br>
+                            <input type="number" id="spatialSampleCount" name="spatialSampleCount" disabled><br><br>
+                        </div>
+                        <div class="col">
+                            <input type="checkbox" id="temporalSampleCountFlag" name="temporalSampleCountFlag"
+                                   onchange='changeCheckBox("temporalSampleCount")'>
+                            <label for="temporalSampleCount">Temporal Sample Count</label><br>
+                            <input type="number" id="temporalSampleCount" name="temporalSampleCount" disabled><br><br>
                         </div>
                     </div>
                 </form>
