@@ -118,7 +118,6 @@ def add_worker(worker_name):
 
 @app.get('{}/worker/get'.format(API_EXT))
 def get_workers():
-    print(app.WORKERS)
     return {'results': app.WORKERS}
 
 

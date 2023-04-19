@@ -2,6 +2,16 @@ from ..abstracts.StorableProperty import StorableProperty
 
 
 class AASettingsOverride(StorableProperty):
+    UNREAL_MAPPINGS = {
+        "spatialSampleCount": "spatial_sample_count",
+        "temporalSampleCount": "temporal_sample_count",
+        "aaMethod": "anti_aliasing_method",
+        "useCameraCutForWarmUp": "use_camera_cut_for_warm_up",
+        "renderWarmUpFrames": "render_warm_up_frames",
+        "renderWarmUpCount": "render_warm_up_count",
+        "engineWarmUpCount": "engine_warm_up_count"
+    }
+
     def __init__(
             self,
             spatialSampleCountFlag=False,
@@ -43,3 +53,9 @@ class AASettingsOverride(StorableProperty):
             renderWarmUpCountFlag=renderWarmUpCountFlag,
             engineWarmUpCountFlag=engineWarmUpCountFlag
         )
+
+    @classmethod
+    def changeUnreal(cls, unrealObject, config, flags):
+        for key, val in config.items():
+            if flags[key + "Flag"]:
+                unrealObject[cls.UNREAL_MAPPINGS[key]] = val

@@ -7,8 +7,7 @@ import remote_render.util.Client as Client
 
 eel.init("frontend")
 
-NECESSARY_KEYS = ['name', 'owner', 'worker', 'project_path', 'level_path', 'sequence_path', 'config_path',
-                  'output_path']
+NECESSARY_KEYS = ['name', 'owner', 'project_path', 'level_path', 'sequence_path', 'config_path']
 
 logging.basicConfig(level=logging.INFO)
 LOGGER = logging.getLogger(__name__)

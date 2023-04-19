@@ -74,10 +74,10 @@
                 <form id="outputSettingsForm">
                     <div class="row">
                         <div class="col">
-                            <input type="checkbox" id="outputPathFlag" name="outputPathFlag"
-                                   onchange='changeCheckBox("outputPath")'>
-                            <label for="outputPath">Output Path</label><br>
-                            <input type="text" id="outputPath" name="output_path" disabled><br><br>
+                            <input type="checkbox" id="outputDirectoryFlag" name="outputDirectoryFlag"
+                                   onchange='changeCheckBox("outputDirectory")'>
+                            <label for="outputDirectory">Output Directory</label><br>
+                            <input type="text" id="outputDirectory" name="outputDirectory" disabled><br><br>
 
                             <input type="checkbox" id="outputResolutionXFlag" name="outputResolutionXFlag"
                                    onchange='changeCheckBox("outputResolutionX")'>
@@ -119,10 +119,10 @@
                             </div>
                         </div>
                         <div class="col">
-                            <input type="checkbox" id="fileFormatFlag" name="fileFormatFlag"
-                                   onchange='changeCheckBox("fileFormat")'>
-                            <label for="fileFormat">File Format</label><br>
-                            <input type="text" id="fileFormat" name="fileFormat" disabled><br><br>
+                            <input type="checkbox" id="fileNameFormatFlag" name="fileNameFormatFlag"
+                                   onchange='changeCheckBox("fileNameFormat")'>
+                            <label for="fileNameFormat">File Format</label><br>
+                            <input type="text" id="fileNameFormat" name="fileNameFormat" disabled><br><br>
 
                             <input type="checkbox" id="useCustomFrameRateFlag" name="useCustomFrameRateFlag"
                                    onchange='changeCheckBox("useCustomFrameRate", "frameRate")'>
@@ -144,10 +144,10 @@
                             <label for="overrideExistingOutput">Override Existing Output</label><br>
                             <input type="text" id="overrideExistingOutput" name="overrideExistingOutput" disabled><br><br>
 
-                            <input type="checkbox" id="frameNumberOutputFlag" name="frameNumberOutputFlag"
-                                   onchange='changeCheckBox("frameNumberOutput")'>
-                            <label for="frameNumberOutput">Frame Number Offset</label><br>
-                            <input type="number" id="frameNumberOutput" name="frameNumberOutput" disabled><br><br>
+                            <input type="checkbox" id="frameNumberOffsetFlag" name="frameNumberOffsetFlag"
+                                   onchange='changeCheckBox("frameNumberOffset")'>
+                            <label for="frameNumberOffset">Frame Number Offset</label><br>
+                            <input type="number" id="frameNumberOffset" name="frameNumberOffset" disabled><br><br>
 
                             <input type="checkbox" id="outputFrameStepFlag" name="outputFrameStepFlag"
                                    onchange='changeCheckBox("outputFrameStep")'>
@@ -240,17 +240,25 @@
             <div hidden id="consoleSettings" class="col infoPanel">
                 <form id="consoleSettingsForm">
                     <div class="row">
+                        <div class="col-12">
+                            <input type="checkbox" id="consoleVariablesFlag" name="consoleVariablesFlag"
+                                   onchange='changeCheckBox("consoleVariables")'>
+                            <label for="consoleVariables">Console Variables</label><br>
+                            <textarea id="consoleVariables" name="consoleVariables" rows="10" style="width: 100%" onchange="tempTextAreaTests(event)" disabled></textarea><br><br>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col">
-                            <input type="checkbox" id="tileCountFlag" name="tileCountFlag"
-                                   onchange='changeCheckBox("tileCount")'>
-                            <label for="tileCount">Tile Count</label><br>
-                            <input type="number" id="tileCount" name="tileCount" disabled><br><br>
+                            <input type="checkbox" id="startConsoleCommandsFlag" name="startConsoleCommandsFlag"
+                                   onchange='changeCheckBox("startConsoleCommands")'>
+                            <label for="startConsoleCommands">Start Console Commands</label><br>
+                            <textarea id="startConsoleCommands" name="startConsoleCommands" rows="10" style="width: 100%" disabled></textarea><br><br>
                         </div>
                         <div class="col">
-                            <input type="checkbox" id="textureSharpnessBiasFlag" name="textureSharpnessBiasFlag"
-                                   onchange='changeCheckBox("textureSharpnessBias")'>
-                            <label for="textureSharpnessBias">Texture Sharpness Bias</label><br>
-                            <input type="number" id="textureSharpnessBias" name="textureSharpnessBias" disabled><br><br>
+                            <input type="checkbox" id="endConsoleCommandsFlag" name="endConsoleCommandsFlag"
+                                   onchange='changeCheckBox("endConsoleCommands")'>
+                            <label for="endConsoleCommands">End Console Commands</label><br>
+                            <textarea id="endConsoleCommands" name="endConsoleCommands" rows="10" style="width: 100%" disabled></textarea><br><br>
                         </div>
                     </div>
                 </form>

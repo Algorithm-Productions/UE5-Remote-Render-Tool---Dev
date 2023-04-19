@@ -8,6 +8,9 @@ import platform
 
 import unreal
 
+from .datatypes.overrides import OutputSettingsOverride, HighResSettingsOverride, AASettingsOverride, \
+    ConsoleSettingsOverride
+from .datatypes.unreal.CustomUnrealPreset import CustomUnrealPreset
 from ..util import Client
 from .datatypes.enums import RenderStatus
 from .datatypes import HardwareStats, LogType
@@ -20,18 +23,20 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
     pipeline = unreal.uproperty(unreal.MoviePipeline)
     job_id = unreal.uproperty(unreal.Text)
     project_name = unreal.uproperty(unreal.Text)
-    jobConfig = unreal.uproperty(unreal.MoviePipelineMasterConfig)
+    finalJobConfig = unreal.uproperty(unreal.MoviePipelineMasterConfig)
     firstFrameTime = unreal.uproperty(unreal.Text)
-    outputFolder = unreal.uproperty(unreal.Text)
+    passedConfig = unreal.uproperty(unreal.Text)
+    passedOverrides = unreal.uproperty(unreal.Text)
 
     def _post_init(self):
         self.pipeline = None
         self.queue = None
         self.job_id = ""
         self.project_name = ""
-        self.jobConfig = None
-        self.outputFolder = ""
+        self.finalJobConfig = None
         self.firstFrameTime = ""
+        self.passedConfig = ""
+        self.passedOverrides = ""
 
         self.http_response_recieved_delegate.add_function_unique(
             self,
@@ -47,7 +52,8 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.sequence_path = cmd_parameters['LevelSequence']
         self.config_path = cmd_parameters['MoviePipelineConfig']
         self.project_name = getProjectName(cmd_parameters["ProjectPath"])
-        self.outputFolder = cmd_parameters['OutputPath']
+        self.passedConfig = cmd_parameters['RenderSettings']
+        self.passedOverrides = cmd_parameters['ConfigOverride']
 
     def add_job(self):
         self.send_http_request(
@@ -66,8 +72,10 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         preset_path = unreal.SoftObjectPath(self.config_path)
         u_preset = unreal.SystemLibrary. \
             conv_soft_obj_path_to_soft_obj_ref(preset_path)
-        job.set_configuration(u_preset)
-        self.jobConfig = job.get_configuration()
+        final_u_preset = CustomUnrealPreset(u_preset)
+        process_settings(final_u_preset, self.passedConfig, self.passedOverrides)
+        job.set_configuration(final_u_preset)
+        self.finalJobConfig = job.get_configuration()
 
         return job
 
@@ -170,14 +178,17 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             unreal.Map(str, str)
         )
 
+        renderSettingsDict = getRenderSettings(self.finalJobConfig).to_dict()
+
         hardwareStats = HardwareStats(platform.node(), platform.processor(), GPUtil.getGPUs()[0].name,
                                       get_size(psutil.virtual_memory().total),
                                       GPUtil.getGPUs()[0].memoryTotal).to_dict()
         finishTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        renderSettings = str(getRenderSettings(self.jobConfig).to_dict())
-        frameTimesArray = getFrameTimes(unreal.TextLibrary.conv_text_to_string(self.outputFolder),
-                                        datetime.strptime(unreal.TextLibrary.conv_text_to_string(self.firstFrameTime),
-                                                          "%m/%d/%Y, %H:%M:%S"))
+        renderSettings = str(renderSettingsDict)
+        frameTimesArray = getFrameTimes(
+            unreal.TextLibrary.conv_text_to_string(renderSettingsDict["output_settings"]["outputDirectory"]),
+            datetime.strptime(unreal.TextLibrary.conv_text_to_string(self.firstFrameTime),
+                              "%m/%d/%Y, %H:%M:%S"))
         avgFrame = statistics.mean([float(val) for val in frameTimesArray])
 
         self.send_http_request(
@@ -322,3 +333,19 @@ def getFrameTimes(path, firstTime):
             returnList.append(delta.total_seconds())
 
     return returnList
+
+
+def process_settings(u_preset, passedConfig, passedOverrides):
+    unreal.log("TEST DUMP")
+    currSettings = u_preset.find_or_add_setting_by_class(
+        unreal.MoviePipelineOutputSetting
+    )
+    unreal.log(currSettings.output_directory)
+
+    dictionaryPassedConfig = eval(unreal.TextLibrary.conv_text_to_string(passedConfig))
+    dictionaryPassedOverrides = eval(unreal.TextLibrary.conv_text_to_string(passedOverrides))
+
+    u_preset.update_properties(overrides=dictionaryPassedOverrides, config=dictionaryPassedConfig)
+
+    unreal.log(currSettings.output_directory)
+    return u_preset

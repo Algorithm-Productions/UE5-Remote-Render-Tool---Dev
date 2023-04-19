@@ -2,6 +2,12 @@ from ..abstracts.StorableProperty import StorableProperty
 
 
 class ConsoleSettingsOverride(StorableProperty):
+    UNREAL_MAPPINGS = {
+        "consoleVariables": "console_variables",
+        "startConsoleCommands": "start_console_commands",
+        "endConsoleCommands": "end_console_commands"
+    }
+
     def __init__(
             self,
             consoleVariablesFlag=False,
@@ -23,3 +29,10 @@ class ConsoleSettingsOverride(StorableProperty):
             startConsoleCommandsFlag=startConsoleCommandsFlag,
             endConsoleCommandsFlag=endConsoleCommandsFlag
         )
+
+    @classmethod
+    def changeUnreal(cls, unrealObject, config, flags):
+        #for key, val in config.items():
+        #    if flags[key + "Flag"]:
+        #        unrealObject[cls.UNREAL_MAPPINGS[key]] = val
+        pass

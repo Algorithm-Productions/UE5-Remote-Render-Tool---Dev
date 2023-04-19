@@ -21,7 +21,7 @@ WORKER_NAME = platform.node()
 UNREAL_EXE = os.getenv("UNREAL_EXE")
 
 
-def render(uuid, project_path, level_path, sequence_path, config_path, output_path):
+def render(uuid, project_path, level_path, sequence_path, config_path, config_override, render_settings):
     command = [
         UNREAL_EXE,
         project_path,
@@ -31,7 +31,8 @@ def render(uuid, project_path, level_path, sequence_path, config_path, output_pa
         "-ProjectPath={}".format(project_path),
         "-LevelSequence={}".format(sequence_path),
         "-MoviePipelineConfig={}".format(config_path),
-        "-OutputPath={}".format(output_path),
+        "-ConfigOverride={}".format(config_override),
+        "-RenderSettings={}".format(render_settings),
 
         "-game",
         "-MoviePipelineLocalExecutorClass=/Script/MovieRenderPipelineCore.MoviePipelinePythonHostExecutor",
@@ -80,7 +81,8 @@ if __name__ == '__main__':
                 req.level_path,
                 req.sequence_path,
                 req.config_path,
-                req.output_path
+                req.config_override.to_dict(),
+                req.render_settings.to_dict()
             )
 
             LOGGER.info("finished rendering job %s", uuid)

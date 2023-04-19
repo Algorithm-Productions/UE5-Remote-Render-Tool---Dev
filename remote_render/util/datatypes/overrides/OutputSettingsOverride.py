@@ -2,6 +2,25 @@ from ..abstracts.StorableProperty import StorableProperty
 
 
 class OutputSettingsOverride(StorableProperty):
+    UNREAL_MAPPINGS = {
+        "outputDirectory": "output_directory",
+        "fileNameFormat": "file_name_format",
+        "outputResolutionX": ["output_resolution", "x"],
+        "outputResolutionY": ["output_resolution", "y"],
+        "useCustomFrameRate": "use_custom_frame_rate",
+        "outputFrameRate": ["output_frame_rate", "numerator"],
+        "overrideExistingOutput": "override_existing_output",
+        "zeroPadFrameNumbers": "zero_pad_frame_numbers",
+        "frameNumberOffset": "frame_number_offset",
+        "handleFrameCount": "handle_frame_count",
+        "outputFrameStep": "output_frame_step",
+        "useCustomPlaybackRange": "use_custom_playback_range",
+        "customStartFrame": "custom_start_frame",
+        "customEndFrame": "custom_end_frame",
+        "versionNumber": "version_number",
+        "autoVersion": "auto_version"
+    }
+
     def __init__(
             self,
             outputDirectoryFlag=False,
@@ -75,3 +94,9 @@ class OutputSettingsOverride(StorableProperty):
             versionNumberFlag=versionNumberFlag,
             autoVersionFlag=autoVersionFlag
         )
+
+    @classmethod
+    def changeUnreal(cls, unrealObject, config, flags):
+        for key, val in config.items():
+            if flags[key + "Flag"]:
+                unrealObject[cls.UNREAL_MAPPINGS[key]] = val

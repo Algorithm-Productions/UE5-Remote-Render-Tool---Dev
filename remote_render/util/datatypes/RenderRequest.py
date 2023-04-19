@@ -5,7 +5,8 @@
 import socket
 from datetime import datetime, timedelta
 
-from . import RenderSettings, RenderSettingsOverride
+from .RenderSettings import RenderSettings
+from .RenderSettingsOverride import RenderSettingsOverride
 from .enums import RenderStatus
 from .abstracts.StorableEntity import StorableEntity
 
