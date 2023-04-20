@@ -8,6 +8,9 @@ import platform
 
 import unreal
 
+from .datatypes.overrides import OutputSettingsOverride, HighResSettingsOverride, AASettingsOverride, \
+    ConsoleSettingsOverride
+from .datatypes.unreal_dt.CustomUnrealPreset import CustomUnrealPreset
 from ..util import Client
 from .datatypes.enums import RenderStatus
 from .datatypes import HardwareStats, LogType
@@ -20,18 +23,22 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
     pipeline = unreal.uproperty(unreal.MoviePipeline)
     job_id = unreal.uproperty(unreal.Text)
     project_name = unreal.uproperty(unreal.Text)
-    jobConfig = unreal.uproperty(unreal.MoviePipelineMasterConfig)
+    finalJobConfig = unreal.uproperty(unreal.MoviePipelineMasterConfig)
     firstFrameTime = unreal.uproperty(unreal.Text)
-    outputFolder = unreal.uproperty(unreal.Text)
+    passedConfig = unreal.uproperty(unreal.Text)
+    passedOverrides = unreal.uproperty(unreal.Text)
+    SERVER_API_URL = unreal.uproperty(unreal.Text)
 
     def _post_init(self):
         self.pipeline = None
         self.queue = None
         self.job_id = ""
         self.project_name = ""
-        self.jobConfig = None
-        self.outputFolder = ""
+        self.finalJobConfig = None
         self.firstFrameTime = ""
+        self.passedConfig = ""
+        self.passedOverrides = ""
+        self.SERVER_API_URL = "http://127.0.0.1:5000/api"
 
         self.http_response_recieved_delegate.add_function_unique(
             self,
@@ -47,11 +54,12 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.sequence_path = cmd_parameters['LevelSequence']
         self.config_path = cmd_parameters['MoviePipelineConfig']
         self.project_name = getProjectName(cmd_parameters["ProjectPath"])
-        self.outputFolder = cmd_parameters['OutputPath']
+        self.passedConfig = cmd_parameters['RenderSettings']
+        self.passedOverrides = cmd_parameters['ConfigOverride']
 
     def add_job(self):
         self.send_http_request(
-            "{}/logs/post".format(Client.SERVER_API_URL),
+            "{}/logs/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
             "POST",
             '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                     "Job {} Began Rendering!".format(self.job_id),
@@ -66,8 +74,10 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         preset_path = unreal.SoftObjectPath(self.config_path)
         u_preset = unreal.SystemLibrary. \
             conv_soft_obj_path_to_soft_obj_ref(preset_path)
-        job.set_configuration(u_preset)
-        self.jobConfig = job.get_configuration()
+        final_u_preset = CustomUnrealPreset(u_preset)
+        process_settings(final_u_preset, self.passedConfig, self.passedOverrides)
+        job.set_configuration(final_u_preset)
+        self.finalJobConfig = job.get_configuration()
 
         return job
 
@@ -116,7 +126,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             self.firstFrameTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
 
         self.send_http_request(
-            "{}/put/{}".format(Client.SERVER_API_URL, self.job_id),
+            "{}/put/{}".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL), self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)
@@ -143,7 +153,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
         if is_errored:
             self.send_http_request(
-                "{}/logs/post".format(Client.SERVER_API_URL),
+                "{}/logs/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
                 "POST",
                 '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                         "Job {} Errored!".format(self.job_id),
@@ -152,7 +162,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             )
         else:
             self.send_http_request(
-                "{}/logs/post".format(Client.SERVER_API_URL),
+                "{}/logs/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
                 "POST",
                 '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                         "Job {} Finished Rendering!".format(self.job_id),
@@ -164,24 +174,27 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         time_estimate = 'N/A'
         status = RenderStatus.finished
         self.send_http_request(
-            "{}/put/{}".format(Client.SERVER_API_URL, self.job_id),
+            "{}/put/{}".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL), self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)
         )
 
+        renderSettingsDict = getRenderSettings(self.finalJobConfig).to_dict()
+
         hardwareStats = HardwareStats(platform.node(), platform.processor(), GPUtil.getGPUs()[0].name,
                                       get_size(psutil.virtual_memory().total),
                                       GPUtil.getGPUs()[0].memoryTotal).to_dict()
         finishTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-        renderSettings = str(getRenderSettings(self.jobConfig).to_dict())
-        frameTimesArray = getFrameTimes(unreal.TextLibrary.conv_text_to_string(self.outputFolder),
-                                        datetime.strptime(unreal.TextLibrary.conv_text_to_string(self.firstFrameTime),
-                                                          "%m/%d/%Y, %H:%M:%S"))
+        renderSettings = str(renderSettingsDict)
+        frameTimesArray = getFrameTimes(
+            unreal.TextLibrary.conv_text_to_string(renderSettingsDict["output_settings"]["outputDirectory"]),
+            datetime.strptime(unreal.TextLibrary.conv_text_to_string(self.firstFrameTime),
+                              "%m/%d/%Y, %H:%M:%S"))
         avgFrame = statistics.mean([float(val) for val in frameTimesArray])
 
         self.send_http_request(
-            "{}/archives/post".format(Client.SERVER_API_URL),
+            "{}/archives/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
             "POST",
             '{};{};{};{};{};{};{}'.format(self.job_id, self.project_name, hardwareStats, finishTime, avgFrame,
                                           frameTimesArray, renderSettings),
@@ -192,7 +205,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                       params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])
     def error_implementation(self, executor, pipeline, fatal, error_reason):
         self.send_http_request(
-            "{}/logs/post".format(Client.SERVER_API_URL),
+            "{}/logs/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
             "POST",
             '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                     "Job {} Errored!".format(self.job_id),
@@ -294,10 +307,6 @@ def getRenderSettings(masterConfig):
     consoleConfig = masterConfig.find_setting_by_class(unreal.MoviePipelineConsoleVariableSetting)
     highResConfig = masterConfig.find_setting_by_class(unreal.MoviePipelineHighResSetting)
 
-    unreal.log(aaConfig)
-    unreal.log(consoleConfig)
-    unreal.log(highResConfig)
-
     if aaConfig:
         returnVal.aa_settings = AASettings.from_unreal(aaConfig)
     if consoleConfig:
@@ -322,3 +331,19 @@ def getFrameTimes(path, firstTime):
             returnList.append(delta.total_seconds())
 
     return returnList
+
+
+def process_settings(u_preset, passedConfig, passedOverrides):
+    dictionaryPassedConfig = eval(unreal.TextLibrary.conv_text_to_string(passedConfig))
+    dictionaryPassedOverrides = eval(unreal.TextLibrary.conv_text_to_string(passedOverrides))
+
+    OutputSettingsOverride.changeUnreal(u_preset, dictionaryPassedConfig["output_settings"],
+                                        dictionaryPassedOverrides["output_settings_flags"])
+    AASettingsOverride.changeUnreal(u_preset, dictionaryPassedConfig["aa_settings"],
+                                    dictionaryPassedOverrides["aa_settings_flags"])
+    ConsoleSettingsOverride.changeUnreal(u_preset, dictionaryPassedConfig["console_settings"],
+                                         dictionaryPassedOverrides["console_settings_flags"])
+    HighResSettingsOverride.changeUnreal(u_preset, dictionaryPassedConfig["high_res_settings"],
+                                         dictionaryPassedOverrides["high_res_settings_flags"])
+
+    return u_preset

@@ -39,24 +39,13 @@
 
         <div class="row infoContainer center">
             <div class="col-3 sideMenu">
-                <a onclick="handleTabSwitch(`basicSettings`)"><h3 id="basicSettingsSelect" class="selected">Basic Settings</h3></a>
+                <a onclick="handleTabSwitch(`basicSettings`)"><h3 id="basicSettingsSelect" class="selected">Basic
+                    Settings</h3></a>
                 <a onclick="handleTabSwitch(`outputSettings`)"><h3 id="outputSettingsSelect">Output Settings</h3></a>
+                <a onclick="handleTabSwitch(`aaSettings`)"><h3 id="aaSettingsSelect">AA Settings</h3></a>
+                <a onclick="handleTabSwitch(`consoleSettings`)"><h3 id="consoleSettingsSelect">Console Settings</h3></a>
+                <a onclick="handleTabSwitch(`highResSettings`)"><h3 id="highResSettingsSelect">High-Res Settings</h3></a>
             </div>
-
-            <div hidden id="basicSettingsTwo" class="col infoPanel">
-                <div class="row">
-                    <div class="col">
-                        <p>name</p>
-                        <p>worker</p>
-                        <p>project_path</p>
-                        <p>level_path</p>
-                        <p>sequence_path</p>
-                        <p>config_path</p>
-                        <p>output_path</p>
-                    </div>
-                </div>
-            </div>
-
 
             <div id="basicSettings" class="col infoPanel">
                 <form id="basicSettingsForm">
@@ -68,8 +57,6 @@
                             <input type="text" id="project_path" name="project_path"><br>
                             <label for="sequence_path">Sequence Path</label><br>
                             <input type="text" id="sequence_path" name="sequence_path"><br>
-                            <label for="output_path">Output Path</label><br>
-                            <input type="text" id="output_path" name="output_path"><br>
                         </div>
                         <div class="col">
                             <label for="worker">Render Worker</label><br>
@@ -87,22 +74,230 @@
                 <form id="outputSettingsForm">
                     <div class="row">
                         <div class="col">
-                            <label for="name">Render Name</label><br>
-                            <input type="text" id="name" name="name"><br>
-                            <label for="project_path">Project Path</label><br>
-                            <input type="text" id="project_path" name="project_path"><br>
-                            <label for="sequence_path">Sequence Path</label><br>
-                            <input type="text" id="sequence_path" name="sequence_path"><br>
-                            <label for="output_path">Output Path</label><br>
-                            <input type="text" id="output_path" name="output_path"><br>
+                            <input type="checkbox" id="outputDirectoryFlag" name="outputDirectoryFlag"
+                                   onchange='changeCheckBox("outputDirectory")'>
+                            <label for="outputDirectory">Output Directory</label><br>
+                            <input type="text" id="outputDirectory" name="outputDirectory" disabled><br><br>
+
+                            <input type="checkbox" id="outputResolutionXFlag" name="outputResolutionXFlag"
+                                   onchange='changeCheckBox("outputResolutionX")'>
+                            <label for="outputResolutionX">Resolution X</label><br>
+                            <input type="number" id="outputResolutionX" name="outputResolutionX" disabled><br><br>
+
+                            <input type="checkbox" id="outputResolutionYFlag" name="outputResolutionYFlag"
+                                   onchange='changeCheckBox("outputResolutionY")'>
+                            <label for="outputResolutionY">Resolution Y</label><br>
+                            <input type="number" id="outputResolutionY" name="outputResolutionY" disabled><br><br>
+
+                            <input type="checkbox" id="zeroPadFrameNumbersFlag" name="zeroPadFrameNumbersFlag"
+                                   onchange='changeCheckBox("zeroPadFrameNumbers")'>
+                            <label for="zeroPadFrameNumbers">Zero Pad Frame Numbers</label><br>
+                            <input type="number" id="zeroPadFrameNumbers" name="zeroPadFrameNumbers" disabled><br><br>
+
+                            <input type="checkbox" id="handleFrameCountFlag" name="handleFrameCountFlag"
+                                   onchange='changeCheckBox("handleFrameCount")'>
+                            <label for="handleFrameCount">Handle Frame Count</label><br>
+                            <input type="number" id="handleFrameCount" name="handleFrameCount" disabled><br><br>
+
+                            <input type="checkbox" id="useCustomPlaybackRangeFlag" name="useCustomPlaybackRangeFlag"
+                                   onchange='changeCheckBox("useCustomPlaybackRange", "playback")'>
+                            <label for="useCustomPlaybackRange">Use Custom Playback Range</label><br>
+                            <select id="useCustomPlaybackRange" name="useCustomPlaybackRange" disabled
+                                    onchange='toggleValue(event, "playback", "customStartFrame;customEndFrame")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="playback">
+                                <input type="checkbox" id="customStartFrameFlag" name="customStartFrameFlag"
+                                       onchange='changeCheckBox("customStartFrame")'>
+                                <label for="customStartFrame">Custom Start Frame</label><br>
+                                <input type="number" id="customStartFrame" name="customStartFrame" disabled><br><br>
+                                <input type="checkbox" id="customEndFrameFlag" name="customEndFrameFlag"
+                                       onchange='changeCheckBox("customEndFrame")'>
+                                <label for="customEndFrame">Custom End Frame</label><br>
+                                <input type="number" id="customEndFrame" name="customEndFrame" disabled><br><br>
+                            </div>
                         </div>
                         <div class="col">
-                            <label for="worker">Render Worker</label><br>
-                            <select id="worker" name="worker"></select><br>
-                            <label for="level_path">Level Path</label><br>
-                            <input type="text" id="level_path" name="level_path"><br>
-                            <label for="config_path">Config Path</label><br>
-                            <input type="text" id="config_path" name="config_path"><br>
+                            <input type="checkbox" id="fileNameFormatFlag" name="fileNameFormatFlag"
+                                   onchange='changeCheckBox("fileNameFormat")'>
+                            <label for="fileNameFormat">File Format</label><br>
+                            <input type="text" id="fileNameFormat" name="fileNameFormat" disabled><br><br>
+
+                            <input type="checkbox" id="useCustomFrameRateFlag" name="useCustomFrameRateFlag"
+                                   onchange='changeCheckBox("useCustomFrameRate", "frameRate")'>
+                            <label for="useCustomFrameRate">Use Custom Frame Rate</label><br>
+                            <select id="useCustomFrameRate" name="useCustomFrameRate" disabled
+                                    onchange='toggleValue(event, "frameRate", "outputFrameRate")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="frameRate">
+                                <input type="checkbox" id="outputFrameRateFlag" name="outputFrameRateFlag"
+                                       onchange='changeCheckBox("outputFrameRate")'>
+                                <label for="outputFrameRate">Output Frame Rate</label><br>
+                                <input type="number" id="outputFrameRate" name="outputFrameRate" disabled><br><br>
+                            </div>
+
+                            <input type="checkbox" id="overrideExistingOutputFlag" name="overrideExistingOutputFlag"
+                                   onchange='changeCheckBox("overrideExistingOutput")'>
+                            <label for="overrideExistingOutput">Override Existing Output</label><br>
+                            <input type="text" id="overrideExistingOutput" name="overrideExistingOutput" disabled><br><br>
+
+                            <input type="checkbox" id="frameNumberOffsetFlag" name="frameNumberOffsetFlag"
+                                   onchange='changeCheckBox("frameNumberOffset")'>
+                            <label for="frameNumberOffset">Frame Number Offset</label><br>
+                            <input type="number" id="frameNumberOffset" name="frameNumberOffset" disabled><br><br>
+
+                            <input type="checkbox" id="outputFrameStepFlag" name="outputFrameStepFlag"
+                                   onchange='changeCheckBox("outputFrameStep")'>
+                            <label for="outputFrameStep">Output Frame Step</label><br>
+                            <input type="number" id="outputFrameStep" name="outputFrameStep" disabled><br><br>
+
+                            <input type="checkbox" id="autoVersionFlag" name="autoVersionFlag"
+                                   onchange='changeCheckBox("autoVersion", "version")'>
+                            <label for="autoVersion">Auto Versioning</label><br>
+                            <select id="autoVersion" name="autoVersion" disabled
+                                    onchange='toggleValue(event, "version", "versionNumber")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="version">
+                                <input type="checkbox" id="versionNumberFlag" name="versionNumberFlag"
+                                       onchange='changeCheckBox("versionNumber")'>
+                                <label for="versionNumber">Version Number</label><br>
+                                <input type="number" id="versionNumber" name="versionNumber" disabled><br><br>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div hidden id="aaSettings" class="col infoPanel">
+                <form id="aaSettingsForm">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" id="spatialSampleCountFlag" name="spatialSampleCountFlag"
+                                   onchange='changeCheckBox("spatialSampleCount")'>
+                            <label for="spatialSampleCount">Spatial Sample Count</label><br>
+                            <input type="number" id="spatialSampleCount" name="spatialSampleCount" disabled><br><br>
+
+                            <input type="checkbox" id="renderWarmUpFramesFlag" name="renderWarmUpFramesFlag"
+                                   onchange='changeCheckBox("renderWarmUpFrames",)'>
+                            <label for="renderWarmUpFrames">Render Warm Up Frames</label><br>
+                            <select id="renderWarmUpFrames" name="renderWarmUpFrames" disabled
+                                    onchange='toggleValue(event)'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+
+
+                            <input type="checkbox" id="overrideAAFlag" name="overrideAAFlag"
+                                   onchange='changeCheckBox("overrideAA", "aa")'>
+                            <label for="overrideAA">Override Anti-Aliasing Method</label><br>
+                            <select id="overrideAA" name="overrideAA" disabled
+                                    onchange='toggleValue(event, "aa", "aaMethod")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="aa">
+                                <input type="checkbox" id="aaMethodFlag" name="aaMethodFlag"
+                                       onchange='changeCheckBox("aaMethod")'>
+                                <label for="aaMethod">Anti-Aliasing Method</label><br>
+                                <input type="text" id="aaMethod" name="aaMethod" disabled><br><br>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <input type="checkbox" id="temporalSampleCountFlag" name="temporalSampleCountFlag"
+                                   onchange='changeCheckBox("temporalSampleCount")'>
+                            <label for="temporalSampleCount">Temporal Sample Count</label><br>
+                            <input type="number" id="temporalSampleCount" name="temporalSampleCount" disabled><br><br>
+
+                            <input type="checkbox" id="renderWarmUpCountFlag" name="renderWarmUpCountFlag"
+                                   onchange='changeCheckBox("renderWarmUpCount")'>
+                            <label for="renderWarmUpCount">Render Warm Up Count</label><br>
+                            <input type="number" id="renderWarmUpCount" name="renderWarmUpCount" disabled><br><br>
+
+                            <input type="checkbox" id="useCameraCutForWarmUpFlag" name="useCameraCutForWarmUpFlag"
+                                   onchange='invertedChangeCheckBox("useCameraCutForWarmUp", "engineWarmUp")'>
+                            <label for="useCameraCutForWarmUp">Use Camera Cut For Warm Up</label><br>
+                            <select id="useCameraCutForWarmUp" name="useCameraCutForWarmUp" disabled
+                                    onchange='invertedToggleValue(event, "engineWarmUp", "engineWarmUpCount")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div id="engineWarmUp">
+                                <input type="checkbox" id="engineWarmUpCountFlag" name="engineWarmUpCountFlag"
+                                       onchange='changeCheckBox("engineWarmUpCount")'>
+                                <label for="engineWarmUpCount">Engine Warm Up Count</label><br>
+                                <input type="text" id="engineWarmUpCount" name="engineWarmUpCount" disabled><br><br>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div hidden id="consoleSettings" class="col infoPanel">
+                <form id="consoleSettingsForm">
+                    <div class="row">
+                        <div class="col-12">
+                            <input type="checkbox" id="consoleVariablesFlag" name="consoleVariablesFlag"
+                                   onchange='changeCheckBox("consoleVariables")'>
+                            <label for="consoleVariables">Console Variables</label><br>
+                            <textarea id="consoleVariables" name="consoleVariables" rows="10" style="width: 100%" onchange="tempTextAreaTests(event)" disabled></textarea><br><br>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" id="startConsoleCommandsFlag" name="startConsoleCommandsFlag"
+                                   onchange='changeCheckBox("startConsoleCommands")'>
+                            <label for="startConsoleCommands">Start Console Commands</label><br>
+                            <textarea id="startConsoleCommands" name="startConsoleCommands" rows="10" style="width: 100%" disabled></textarea><br><br>
+                        </div>
+                        <div class="col">
+                            <input type="checkbox" id="endConsoleCommandsFlag" name="endConsoleCommandsFlag"
+                                   onchange='changeCheckBox("endConsoleCommands")'>
+                            <label for="endConsoleCommands">End Console Commands</label><br>
+                            <textarea id="endConsoleCommands" name="endConsoleCommands" rows="10" style="width: 100%" disabled></textarea><br><br>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div hidden id="highResSettings" class="col infoPanel">
+                <form id="highResSettingsForm">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" id="tileCountFlag" name="tileCountFlag"
+                                   onchange='changeCheckBox("tileCount")'>
+                            <label for="tileCount">Tile Count</label><br>
+                            <input type="number" id="tileCount" name="tileCount" disabled><br><br>
+
+                            <input type="checkbox" id="overlapRatioFlag" name="overlapRatioFlag"
+                                   onchange='changeCheckBox("overlapRatio")'>
+                            <label for="overlapRatio">Overlap Ratio</label><br>
+                            <input type="number" id="overlapRatio" name="overlapRatio" disabled><br><br>
+                        </div>
+                        <div class="col">
+                            <input type="checkbox" id="textureSharpnessBiasFlag" name="textureSharpnessBiasFlag"
+                                   onchange='changeCheckBox("textureSharpnessBias")'>
+                            <label for="textureSharpnessBias">Texture Sharpness Bias</label><br>
+                            <input type="number" id="textureSharpnessBias" name="textureSharpnessBias" disabled><br><br>
+
+                            <input type="checkbox" id="overrideSubSurfaceScatteringFlag" name="overrideSubSurfaceScatteringFlag"
+                                   onchange='changeCheckBox("overrideSubSurfaceScattering", "burleySamples")'>
+                            <label for="overrideSubSurfaceScattering">Override Sub-Surface Scattering</label><br>
+                            <select id="overrideSubSurfaceScattering" name="overrideSubSurfaceScattering" disabled
+                                    onchange='toggleValue(event, "burleySamples", "burleySampleCount")'>
+                                <option value="False">False</option>
+                                <option value="True">True</option>
+                            </select><br><br>
+                            <div hidden id="burleySamples">
+                                <input type="checkbox" id="burleySampleCountFlag" name="burleySampleCountFlag"
+                                       onchange='changeCheckBox("burleySampleCount")'>
+                                <label for="burleySampleCount">Burley Sample Count</label><br>
+                                <input type="text" id="burleySampleCount" name="burleySampleCount" disabled><br><br>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -112,7 +307,7 @@
         <div class="row buttonBlock">
             <div id="newRenderBtn" class="col" align="center">
                 <div class="leftPadding buttonCover">
-                    <a href="./landing.html"> Back </a>
+                    <a href="landing.html"> Back </a>
                 </div>
             </div>
             <div id="retryBtn" class="col" align="center">
@@ -126,18 +321,11 @@
     <div class="container-fluid footer">
         <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
     </div>
-    <script src="../static/js/entryUtils.js"></script>
+    <script src="../static/js/fetcherUtils.js"></script>
+    <script src="../static/js/dataUtils.js"></script>
+    <script src="../static/js/documentUtils.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        eel.expose("setWorkers")
-        function setWorkers(workers) {
-            const workerSelect = document.getElementById("worker")
-            workers.forEach((worker) => {
-                const option = new Option(worker, worker)
-                workerSelect.add(option, undefined)
-            })
-        }
-
         eel.getWorkers()(setWorkers)
     </script>
 </body>

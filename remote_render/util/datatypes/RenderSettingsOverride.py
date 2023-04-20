@@ -21,8 +21,8 @@ class RenderSettingsOverride(StorableProperty):
 
     @classmethod
     def from_dict(cls, data):
-        output_types_flag = (data["output_types_flag"] or False) if data else False
-        render_types_flag = (data["render_types_flag"] or False) if data else False
+        output_types_flag = (data["output_types_flag"] or False) if (data and data['output_types_flag']) else False
+        render_types_flag = (data["render_types_flag"] or False) if (data and data['render_types_flag']) else False
         aa_settings_flags = (AASettingsOverride.from_dict(data.get('aa_settings_flags')) if data.get(
             'aa_settings_flags') else None) if data else None
         console_settings_flags = (

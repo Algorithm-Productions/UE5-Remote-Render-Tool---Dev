@@ -5,6 +5,7 @@ from .datatypes import RenderArchive, RenderRequest, RenderLog
 
 LOGGER = logging.getLogger(__name__)
 
+
 class Client:
     def __init__(self, backend_host, backend_port, backend_auth_token=None):
         self.backend_host = backend_host
@@ -44,7 +45,7 @@ class Client:
 
     def update(self, uuid, params, api_endpoint=''):
         try:
-            response = requests.put( self.SERVER_API_URL + api_endpoint + '/put/{}'.format(uuid), params)
+            response = requests.put(self.SERVER_API_URL + api_endpoint + '/put/{}'.format(uuid), params)
         except requests.exceptions.ConnectionError:
             LOGGER.error('failed to connect to server %s', self.SERVER_API_URL)
             return

@@ -1,7 +1,16 @@
-from ..abstracts.StorableProperty import StorableProperty
+from ..abstracts.UnrealOverride import UnrealOverride
 
 
-class HighResSettingsOverride(StorableProperty):
+class HighResSettingsOverride(UnrealOverride):
+    UNREAL_MAPPINGS = {
+        "tileCount": ["tile_count", "int"],
+        "textureSharpnessBias": ["texture_sharpness_bias", "float"],
+        "overlapRatio": ["overlap_ratio", "float"],
+        "overrideSubSurfaceScattering": ["override_sub_surface_scattering", "bool"],
+        "burleySampleCount": ["burley_sample_count", "int"]
+    }
+    UNREAL_SETTING_KEY = "highRes"
+
     def __init__(
             self,
             tileCountFlag=False,
@@ -10,10 +19,10 @@ class HighResSettingsOverride(StorableProperty):
             overrideSubSurfaceScatteringFlag=False,
             burleySampleCountFlag=False
     ):
-        self.tileCountFlag = tileCountFlag,
-        self.textureSharpnessBiasFlag = textureSharpnessBiasFlag,
-        self.overlapRatioFlag = overlapRatioFlag,
-        self.overrideSubSurfaceScatteringFlag = overrideSubSurfaceScatteringFlag,
+        self.tileCountFlag = tileCountFlag
+        self.textureSharpnessBiasFlag = textureSharpnessBiasFlag
+        self.overlapRatioFlag = overlapRatioFlag
+        self.overrideSubSurfaceScatteringFlag = overrideSubSurfaceScatteringFlag
         self.burleySampleCountFlag = burleySampleCountFlag
 
     @classmethod

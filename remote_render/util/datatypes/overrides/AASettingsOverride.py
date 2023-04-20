@@ -1,7 +1,18 @@
-from ..abstracts.StorableProperty import StorableProperty
+from ..abstracts.UnrealOverride import UnrealOverride
 
 
-class AASettingsOverride(StorableProperty):
+class AASettingsOverride(UnrealOverride):
+    UNREAL_MAPPINGS = {
+        "spatialSampleCount": ["spatial_sample_count", "int"],
+        "temporalSampleCount": ["temporal_sample_count", "int"],
+        "aaMethod": ["anti_aliasing_method", "aaMethod"],
+        "useCameraCutForWarmUp": ["use_camera_cut_for_warm_up", "bool"],
+        "renderWarmUpFrames": ["render_warm_up_frames", "bool"],
+        "renderWarmUpCount": ["render_warm_up_count", "int"],
+        "engineWarmUpCount": ["engine_warm_up_count", "int"]
+    }
+    UNREAL_SETTING_KEY = "aa"
+
     def __init__(
             self,
             spatialSampleCountFlag=False,

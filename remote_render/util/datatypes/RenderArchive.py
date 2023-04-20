@@ -2,7 +2,9 @@
     Copyright Algorithm Productions LLC. 2023.
 """
 
-from ..datatypes import RenderSettings, HardwareStats, RenderRequest
+from ..datatypes.RenderRequest import RenderRequest
+from ..datatypes.HardwareStats import HardwareStats
+from ..datatypes.RenderSettings import RenderSettings
 from .abstracts.StorableEntity import StorableEntity
 
 # MODULE_PATH = os.path.dirname(os.path.abspath(__file__))

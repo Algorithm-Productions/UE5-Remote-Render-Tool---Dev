@@ -46,9 +46,9 @@ class ConsoleSettings(UnrealDataType):
         """
             @inheritDoc - UnrealDataType
         """
-        consoleVariables = (data["consoleVariables"] or {}) if data else {}
-        startConsoleCommands = (data["consoleVariables"] or []) if data else []
-        endConsoleCommands = (data["endConsoleCommands"] or []) if data else []
+        consoleVariables = (dict(data["consoleVariables"]) or {}) if data else {}
+        startConsoleCommands = (list(data["startConsoleCommands"]) or []) if data else []
+        endConsoleCommands = (list(data["endConsoleCommands"]) or []) if data else []
 
         return cls(
             consoleVariables=consoleVariables,
@@ -62,7 +62,7 @@ class ConsoleSettings(UnrealDataType):
             @inheritDoc - UnrealDataType
         """
         return cls(
-            consoleVariables=str(unrealClass.console_variables),
-            startConsoleCommands=str(unrealClass.start_console_commands),
-            endConsoleCommands=str(unrealClass.end_console_commands)
+            consoleVariables=dict(unrealClass.console_variables),
+            startConsoleCommands=list(unrealClass.start_console_commands),
+            endConsoleCommands=list(unrealClass.end_console_commands)
         )

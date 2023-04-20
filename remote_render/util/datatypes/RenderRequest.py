@@ -4,8 +4,12 @@
 
 import socket
 from datetime import datetime, timedelta
+
+from .RenderSettings import RenderSettings
+from .RenderSettingsOverride import RenderSettingsOverride
 from .enums import RenderStatus
 from .abstracts.StorableEntity import StorableEntity
+
 
 # from dotenv import load_dotenv
 # MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
@@ -28,7 +32,7 @@ class RenderRequest(StorableEntity):
         Update to Boilerplate Class Variable using the proper Database Path.
     """
 
-    DATABASE = './database'   # Is not used anywhere in this class - so can remove the dotenv stuff entirely (?)
+    DATABASE = './database'  # Is not used anywhere in this class - so can remove the dotenv stuff entirely (?)
 
     def __init__(
             self,
@@ -49,7 +53,8 @@ class RenderRequest(StorableEntity):
             time_estimate='',
             estimated_finish='',
             progress=0,
-            config_override=None
+            config_override=None,
+            render_settings=None
     ):
         """
             Class Constructor.
@@ -89,8 +94,10 @@ class RenderRequest(StorableEntity):
             :type estimated_finish: Datetime.
             :param progress: Current Progress of the Request Job.
             :type progress: Integer.
-            :param config_override: Any Override Settings for the Request Job.
-            :type config_override: RenderSettings.
+            :param config_override: Dictionary of Flags for Any Override Settings for the Request Job.
+            :type config_override: RenderSettingsOverride.
+            :param render_settings: Any Override Settings for the Request Job.
+            :type render_settings: RenderSettings.
         """
         super().__init__(uuid)
         self.name = name
@@ -109,8 +116,10 @@ class RenderRequest(StorableEntity):
         self.time_estimate = time_estimate
         self.progress = progress
         self.estimated_finish = estimated_finish or ''
-        self.calcFinish(estimated_finish)
         self.config_override = config_override
+        self.render_settings = render_settings
+
+        self.calcFinish(estimated_finish)
 
     @classmethod
     def from_dict(cls, data):
@@ -134,7 +143,9 @@ class RenderRequest(StorableEntity):
         time_estimate = data.get('time_estimate') or ''
         estimated_finish = data.get('estimated_finish') or ''
         progress = data.get('progress') or 0
-        config_override = data.get('config_override') or None
+        config_override = RenderSettingsOverride.from_dict(data.get('config_override')) if data.get(
+            'config_override') else None
+        render_settings = RenderSettings.from_dict(data.get('render_settings')) if data.get('render_settings') else None
 
         return cls(
             uuid=uuid,
@@ -154,8 +165,50 @@ class RenderRequest(StorableEntity):
             time_estimate=time_estimate,
             estimated_finish=estimated_finish,
             progress=progress,
-            config_override=config_override
+            config_override=config_override,
+            render_settings=render_settings
         )
+
+    def copy(self):
+        """
+            Helper Method to Create a Copy of the Entity Object.
+
+            :return: Entity Object with same Fields as Self.
+        """
+        return RenderRequest(
+            uuid=self.uuid,
+            name=self.name,
+            owner=self.owner,
+            worker=self.worker,
+            time_created=self.time_created,
+            priority=self.priority,
+            category=self.category,
+            tags=self.tags,
+            status=self.status,
+            project_path=self.project_path,
+            level_path=self.level_path,
+            sequence_path=self.sequence_path,
+            config_path=self.config_path,
+            output_path=self.output_path,
+            time_estimate=self.time_estimate,
+            estimated_finish=self.estimated_finish,
+            progress=self.progress,
+            config_override=self.config_override,
+            render_settings=self.render_settings
+        )
+
+    def to_dict(self):
+        """
+            @inheritDoc - StorableEntity
+
+            Custom Implementation to account for Complex Fields.
+        """
+        copy = self.copy()
+        if self.config_override:
+            copy.config_override = self.config_override.to_dict()
+        if self.render_settings:
+            copy.render_settings = self.render_settings.to_dict()
+        return copy.__dict__
 
     def assign(self, worker):
         """
@@ -187,4 +240,4 @@ class RenderRequest(StorableEntity):
             value = ((not ignoreDefault) and defaultVal) or (
                 (start + delta).strftime("%m/%d/%Y, %H:%M:%S"))
 
-        self.update({"estimated_finish": value})
+        self.estimated_finish = value

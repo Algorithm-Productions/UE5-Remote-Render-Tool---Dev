@@ -1,7 +1,27 @@
-from ..abstracts.StorableProperty import StorableProperty
+from ..abstracts.UnrealOverride import UnrealOverride
 
 
-class OutputSettingsOverride(StorableProperty):
+class OutputSettingsOverride(UnrealOverride):
+    UNREAL_MAPPINGS = {
+        "outputDirectory": ["output_directory", "path"],
+        "fileNameFormat": ["file_name_format", "str"],
+        "outputResolutionX": ["output_resolution", "resolutionX"],
+        "outputResolutionY": ["output_resolution", "resolutionY"],
+        "useCustomFrameRate": ["use_custom_frame_rate", "bool"],
+        "outputFrameRate": ["output_frame_rate", "frameRate"],
+        "overrideExistingOutput": ["override_existing_output", "bool"],
+        "zeroPadFrameNumbers": ["zero_pad_frame_numbers", "int"],
+        "frameNumberOffset": ["frame_number_offset", "int"],
+        "handleFrameCount": ["handle_frame_count", "int"],
+        "outputFrameStep": ["output_frame_step", "int"],
+        "useCustomPlaybackRange": ["use_custom_playback_range", "bool"],
+        "customStartFrame": ["custom_start_frame", "int"],
+        "customEndFrame": ["custom_end_frame", "int"],
+        "versionNumber": ["version_number", "float"],
+        "autoVersion": ["auto_version", "bool"]
+    }
+    UNREAL_SETTING_KEY = "output"
+
     def __init__(
             self,
             outputDirectoryFlag=False,

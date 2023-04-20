@@ -1,7 +1,14 @@
-from ..abstracts.StorableProperty import StorableProperty
+from ..abstracts.UnrealOverride import UnrealOverride
 
 
-class ConsoleSettingsOverride(StorableProperty):
+class ConsoleSettingsOverride(UnrealOverride):
+    UNREAL_MAPPINGS = {
+        "consoleVariables": ["console_variables", "map"],
+        "startConsoleCommands": ["start_console_commands", "array"],
+        "endConsoleCommands": ["end_console_commands", "array"]
+    }
+    UNREAL_SETTING_KEY = "console"
+
     def __init__(
             self,
             consoleVariablesFlag=False,

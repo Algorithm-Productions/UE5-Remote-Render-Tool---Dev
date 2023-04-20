@@ -20,8 +20,10 @@ MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 WORKER_NAME = platform.node()
 UNREAL_EXE = os.getenv("UNREAL_EXE")
 
+CLIENT = Client("127.0.0.1", "5000")
 
-def render(uuid, project_path, level_path, sequence_path, config_path, output_path):
+
+def render(uuid, project_path, level_path, sequence_path, config_path, config_override, render_settings):
     command = [
         UNREAL_EXE,
         project_path,
@@ -31,7 +33,8 @@ def render(uuid, project_path, level_path, sequence_path, config_path, output_pa
         "-ProjectPath={}".format(project_path),
         "-LevelSequence={}".format(sequence_path),
         "-MoviePipelineConfig={}".format(config_path),
-        "-OutputPath={}".format(output_path),
+        "-ConfigOverride={}".format(config_override),
+        "-RenderSettings={}".format(render_settings),
 
         "-game",
         "-MoviePipelineLocalExecutorClass=/Script/MovieRenderPipelineCore.MoviePipelinePythonHostExecutor",
@@ -56,16 +59,16 @@ def render(uuid, project_path, level_path, sequence_path, config_path, output_pa
 
 
 def sendExit():
-    Client.delete_worker(WORKER_NAME)
+    CLIENT.delete_worker(WORKER_NAME)
 
 
 if __name__ == '__main__':
     atexit.register(sendExit)
     LOGGER.info('Starting render worker %s', WORKER_NAME)
-    Client.add_worker(WORKER_NAME)
+    CLIENT.add_worker(WORKER_NAME)
 
     while True:
-        reqs = Client.get_all_requests()
+        reqs = CLIENT.get_all_requests()
         uuids = [req.uuid for req in reqs
                  if req.worker == WORKER_NAME and
                  req.status == RenderStatus.ready_to_start]
@@ -80,7 +83,8 @@ if __name__ == '__main__':
                 req.level_path,
                 req.sequence_path,
                 req.config_path,
-                req.output_path
+                req.config_override.to_dict(),
+                req.render_settings.to_dict()
             )
 
             LOGGER.info("finished rendering job %s", uuid)
