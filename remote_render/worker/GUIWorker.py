@@ -52,8 +52,7 @@ client = Client(backend_host=SERVER_URL, backend_port=SERVER_PORT, backend_auth_
 eel.init("frontend")
 
 
-class WorkerGUI(object):
-    WORKER = None
+WORKER = Worker(platform.node(), client, UNREAL_EXE)
 
 
 @eel.expose
@@ -64,14 +63,12 @@ def connectToServer():
 
 @eel.expose
 def startWorker():
-    WorkerGUI.WORKER = Worker(platform.node(), client, UNREAL_EXE)
-    WorkerGUI.WORKER.start()
+    WORKER.start()
 
 
 @eel.expose
 def closeWorker():
-    print("THIS")
-    WorkerGUI.WORKER.stop()
+    WORKER.stop()
 
 
 print(f'Running GUIWorker: node={NODE_NAME} host={SUBMITTER_HOST} port={SUBMITTER_PORT}')
