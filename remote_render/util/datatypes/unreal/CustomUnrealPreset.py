@@ -218,8 +218,8 @@ class CustomUnrealPreset(unreal.MoviePipelineMasterConfig):
     def updateArrayProperty(self, settingKey, propertyKey, array):
         self.updateProperty(settingKey, propertyKey, buildArray(array))
 
-    def updateMapProperty(self, settingKey, propertyKey, map):
-        self.updateProperty(settingKey, propertyKey, buildMap(map))
+    def updateMapProperty(self, settingKey, propertyKey, givenMap):
+        self.updateProperty(settingKey, propertyKey, buildMap(givenMap))
 
     def updatePathProperty(self, settingKey, propertyKey, path):
         self.updateProperty(settingKey, propertyKey, unreal.DirectoryPath(path))
@@ -251,15 +251,17 @@ class CustomUnrealPreset(unreal.MoviePipelineMasterConfig):
 
 
 def buildArray(array):
-    returnArray = unreal.Array
+    returnArray = unreal.Array(str)
     for item in array:
         returnArray.append(item)
 
     return returnArray
 
 
-def buildMap(map):
-    returnMap = unreal.Map
+def buildMap(givenMap):
+    returnMap = {}
+    for key, val in givenMap.items():
+        returnMap[key] = float(val)
 
     return returnMap
 
