@@ -51,7 +51,9 @@ try:
 
     elif args.mode == 'worker':
         #TODO: This
-        print('Beep boop i am a worker')
+        submitter_path = os.path.abspath('./remote_render/worker/GUIWorker.py')
+        subprocess.call(['python', submitter_path, '--server_host', SERVER_URL, '--server_port', SERVER_PORT,
+                          '--auth_token',  AUTHENTICATION_TOKEN], shell=True)
 
 except KeyboardInterrupt:
     print('Keyboard interrupt')
