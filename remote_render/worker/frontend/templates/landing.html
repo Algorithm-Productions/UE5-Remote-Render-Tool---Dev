@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Render Submitter | Home </title>
+    <link rel="shortcut icon" href="../favicon.png">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../static/css/landing.css">
+    <link rel="stylesheet" type="text/css" href="../static/css/global.css">
+
+    <script type="text/javascript" src="../eel.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid headerBlock">
+        <div class="row">
+            <div class="col">
+                <img src="../static/imgs/logo-darkmode.png">
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row mainTitleBlock">
+            <h1 id="title"> Render Worker </h1>
+        </div>
+        <div class="row buttonBlock">
+            <div hidden id="newRenderBtn" class="col" align="center">
+                <div class="buttonCover">
+                    <a href="./workercontrol.html"> <img src="../static/imgs/newRender.png"/> Begin Worker </a>
+                </div>
+            </div>
+            <div hidden id="retryBtn" class="col" align="center">
+                <div class="buttonCover">
+                    <a href="./landing.html"> <img src="../static/imgs/retry.png"/> Retry </a>
+                </div>
+            </div>
+        </div>
+        <div hidden id="notification" class="row notificationBlock">
+            <div class="col" align="center">
+                <div class="notificationCover">
+                    <h1> Cannot Connect to Render Server </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid footer">
+        <h5> Copyright &copy; 2023 Algorithm.ie | All Rights Reserved </h5>
+    </div>
+    <script src="../static/js/fetcherUtils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        eel.connectToServer()(setConnectionStatus)
+    </script>
+</body>
+</html>

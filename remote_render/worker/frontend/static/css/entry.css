@@ -1,0 +1,49 @@
+.infoContainer {
+    background-color: #cdd2ce;
+    color: #000000;
+    width: 80%;
+    margin: auto auto 3%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.sideMenu {
+    background-color: #68736a;
+    border-top-left-radius: inherit;
+    border-bottom-left-radius: inherit;
+    padding: 1%;
+}
+
+.sideMenu h3 {
+    background-color: #cdd2ce;
+    margin-bottom: 5%;
+    padding: 2%;
+    font-weight: normal;
+    font-style: italic;
+	box-shadow: 0 10px 29px 0 rgba(68, 88, 144, 0.1);
+	transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+    line-height: 150%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    vertical-align: middle;
+}
+
+.sideMenu h3:hover {
+    -webkit-transform: translateY(-5px);
+    transform: translateY(-5px);
+}
+
+.sideMenu .selected {
+    text-decoration: underline;
+    text-decoration-color: #b00000;;
+    font-weight: bold;
+}
+
+.infoPanel {
+    padding: 2.5%;
+}
+
+.infoPanel p {
+    font-size: 18px;
+}
