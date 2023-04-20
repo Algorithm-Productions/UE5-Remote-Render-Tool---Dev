@@ -60,7 +60,6 @@ def connectToServer():
 @eel.expose
 def getWorkers():
     res = client.get_workers()
-    print(res)
     return res
 
 

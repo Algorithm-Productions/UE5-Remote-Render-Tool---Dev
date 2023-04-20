@@ -40,7 +40,6 @@ class RenderRequest(StorableEntity):
             level_path='',
             sequence_path='',
             config_path='',
-            output_path='',
             time_estimate='',
             estimated_finish='',
             progress=0,
@@ -77,8 +76,6 @@ class RenderRequest(StorableEntity):
             :type sequence_path: String.
             :param config_path: In-Project Path to the UConfig the Request wants to use.
             :type config_path: String.
-            :param output_path: Path to the Output Directory the Request wants to use.
-            :type output_path: String.
             :param time_estimate: Current Time Estimate for the Request Job.
             :type time_estimate: String.
             :param estimated_finish: Current Estimated Finish for the Request Job.
@@ -103,7 +100,6 @@ class RenderRequest(StorableEntity):
         self.level_path = level_path
         self.sequence_path = sequence_path
         self.config_path = config_path
-        self.output_path = output_path
         self.time_estimate = time_estimate
         self.progress = progress
         self.estimated_finish = estimated_finish or ''
@@ -130,7 +126,6 @@ class RenderRequest(StorableEntity):
         level_path = data.get('level_path') or ''
         sequence_path = data.get('sequence_path') or ''
         config_path = data.get('config_path') or ''
-        output_path = data.get('output_path') or ''
         time_estimate = data.get('time_estimate') or ''
         estimated_finish = data.get('estimated_finish') or ''
         progress = data.get('progress') or 0
@@ -152,7 +147,6 @@ class RenderRequest(StorableEntity):
             level_path=level_path,
             sequence_path=sequence_path,
             config_path=config_path,
-            output_path=output_path,
             time_estimate=time_estimate,
             estimated_finish=estimated_finish,
             progress=progress,
@@ -180,7 +174,6 @@ class RenderRequest(StorableEntity):
             level_path=self.level_path,
             sequence_path=self.sequence_path,
             config_path=self.config_path,
-            output_path=self.output_path,
             time_estimate=self.time_estimate,
             estimated_finish=self.estimated_finish,
             progress=self.progress,
