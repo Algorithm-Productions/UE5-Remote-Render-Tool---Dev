@@ -15,9 +15,9 @@ LOGGER = logging.getLogger(__name__)
 MANAGER_NAME = platform.node()
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(MODULE_PATH, '../../.env'))
-API_EXT = os.getenv("API_EXT")
-ARCHIVE_API_EXT = os.getenv("ARCHIVE_API_EXT")
-LOG_API_EXT = os.getenv("LOG_API_EXT")
+API_EXT = "/api"
+ARCHIVE_API_EXT = "/archives"
+LOG_API_EXT = "/logs"
 DEFAULT_WORKER = os.getenv("DEFAULT_WORKER")
 
 

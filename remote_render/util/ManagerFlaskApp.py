@@ -26,7 +26,6 @@ class ManagerFlaskApp(Flask):
             return "Worker Not Active"
 
     def run(self, host, port, database_path, debug=False, load_dotenv=True, **options):
-
         self.check_database(database_path)
 
         if not debug:
