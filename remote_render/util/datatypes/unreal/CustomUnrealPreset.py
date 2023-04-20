@@ -245,10 +245,6 @@ class CustomUnrealPreset(unreal.MoviePipelineMasterConfig):
         self.updateProperty(settingKey, propertyKey, method)
 
     def updateProperty(self, settingKey, propertyKey, val):
-        unreal.log("UPDATE DUMP")
-        unreal.log(str(settingKey))
-        unreal.log(str(propertyKey))
-        unreal.log(val)
         currSettings = self.getSetting(settingKey)
 
         currSettings.set_editor_property(propertyKey, val)

@@ -305,10 +305,6 @@ def getRenderSettings(masterConfig):
     consoleConfig = masterConfig.find_setting_by_class(unreal.MoviePipelineConsoleVariableSetting)
     highResConfig = masterConfig.find_setting_by_class(unreal.MoviePipelineHighResSetting)
 
-    unreal.log(aaConfig)
-    unreal.log(consoleConfig)
-    unreal.log(highResConfig)
-
     if aaConfig:
         returnVal.aa_settings = AASettings.from_unreal(aaConfig)
     if consoleConfig:
@@ -336,12 +332,6 @@ def getFrameTimes(path, firstTime):
 
 
 def process_settings(u_preset, passedConfig, passedOverrides):
-    unreal.log("TEST DUMP")
-    currSettings = u_preset.find_or_add_setting_by_class(
-        unreal.MoviePipelineOutputSetting
-    )
-    unreal.log(currSettings.output_directory)
-
     dictionaryPassedConfig = eval(unreal.TextLibrary.conv_text_to_string(passedConfig))
     dictionaryPassedOverrides = eval(unreal.TextLibrary.conv_text_to_string(passedOverrides))
 
@@ -354,5 +344,4 @@ def process_settings(u_preset, passedConfig, passedOverrides):
     HighResSettingsOverride.changeUnreal(u_preset, dictionaryPassedConfig["high_res_settings"],
                                          dictionaryPassedOverrides["high_res_settings_flags"])
 
-    unreal.log(currSettings.output_directory)
     return u_preset
