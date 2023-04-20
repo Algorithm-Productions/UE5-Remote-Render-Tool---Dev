@@ -5,8 +5,6 @@ from flask_cors import CORS
 logging.basicConfig(level=logging.INFO)
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
-from .util import ManagerFlaskApp, datatypes
-
 from remote_render.util import ManagerFlaskApp
 
 

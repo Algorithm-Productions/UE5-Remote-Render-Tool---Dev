@@ -20,6 +20,8 @@ MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
 WORKER_NAME = platform.node()
 UNREAL_EXE = os.getenv("UNREAL_EXE")
 
+CLIENT = Client("127.0.0.1", "5000")
+
 
 def render(uuid, project_path, level_path, sequence_path, config_path, config_override, render_settings):
     command = [
@@ -57,16 +59,16 @@ def render(uuid, project_path, level_path, sequence_path, config_path, config_ov
 
 
 def sendExit():
-    Client.delete_worker(WORKER_NAME)
+    CLIENT.delete_worker(WORKER_NAME)
 
 
 if __name__ == '__main__':
     atexit.register(sendExit)
     LOGGER.info('Starting render worker %s', WORKER_NAME)
-    Client.add_worker(WORKER_NAME)
+    CLIENT.add_worker(WORKER_NAME)
 
     while True:
-        reqs = Client.get_all_requests()
+        reqs = CLIENT.get_all_requests()
         uuids = [req.uuid for req in reqs
                  if req.worker == WORKER_NAME and
                  req.status == RenderStatus.ready_to_start]

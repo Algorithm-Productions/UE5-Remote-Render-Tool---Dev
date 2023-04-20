@@ -10,12 +10,12 @@ import unreal
 
 from .datatypes.overrides import OutputSettingsOverride, HighResSettingsOverride, AASettingsOverride, \
     ConsoleSettingsOverride
-from .datatypes.unreal.CustomUnrealPreset import CustomUnrealPreset
+from .datatypes.unreal_dt.CustomUnrealPreset import CustomUnrealPreset
 from ..util import Client
 from .datatypes.enums import RenderStatus
 from .datatypes import HardwareStats, LogType
 from .datatypes.RenderSettings import RenderSettings, AASettings, ConsoleSettings
-from .datatypes.unreal import OutputSettings, HighResSettings
+from .datatypes.unreal_dt import OutputSettings, HighResSettings
 
 
 @unreal.uclass()
@@ -27,6 +27,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
     firstFrameTime = unreal.uproperty(unreal.Text)
     passedConfig = unreal.uproperty(unreal.Text)
     passedOverrides = unreal.uproperty(unreal.Text)
+    SERVER_API_URL = unreal.uproperty(unreal.Text)
 
     def _post_init(self):
         self.pipeline = None
@@ -37,6 +38,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.firstFrameTime = ""
         self.passedConfig = ""
         self.passedOverrides = ""
+        self.SERVER_API_URL = "http://127.0.0.1:5000/api"
 
         self.http_response_recieved_delegate.add_function_unique(
             self,
@@ -57,7 +59,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
     def add_job(self):
         self.send_http_request(
-            "{}/logs/post".format(Client.SERVER_API_URL),
+            "{}/logs/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
             "POST",
             '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                     "Job {} Began Rendering!".format(self.job_id),
@@ -124,7 +126,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             self.firstFrameTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
 
         self.send_http_request(
-            "{}/put/{}".format(Client.SERVER_API_URL, self.job_id),
+            "{}/put/{}".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL), self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)
@@ -151,7 +153,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
         if is_errored:
             self.send_http_request(
-                "{}/logs/post".format(Client.SERVER_API_URL),
+                "{}/logs/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
                 "POST",
                 '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                         "Job {} Errored!".format(self.job_id),
@@ -160,7 +162,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
             )
         else:
             self.send_http_request(
-                "{}/logs/post".format(Client.SERVER_API_URL),
+                "{}/logs/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
                 "POST",
                 '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                         "Job {} Finished Rendering!".format(self.job_id),
@@ -172,7 +174,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         time_estimate = 'N/A'
         status = RenderStatus.finished
         self.send_http_request(
-            "{}/put/{}".format(Client.SERVER_API_URL, self.job_id),
+            "{}/put/{}".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL), self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
             unreal.Map(str, str)
@@ -192,7 +194,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         avgFrame = statistics.mean([float(val) for val in frameTimesArray])
 
         self.send_http_request(
-            "{}/archives/post".format(Client.SERVER_API_URL),
+            "{}/archives/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
             "POST",
             '{};{};{};{};{};{};{}'.format(self.job_id, self.project_name, hardwareStats, finishTime, avgFrame,
                                           frameTimesArray, renderSettings),
@@ -203,7 +205,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                       params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])
     def error_implementation(self, executor, pipeline, fatal, error_reason):
         self.send_http_request(
-            "{}/logs/post".format(Client.SERVER_API_URL),
+            "{}/logs/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
             "POST",
             '{};{};{};{};{}'.format(self.job_id, datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                                     "Job {} Errored!".format(self.job_id),

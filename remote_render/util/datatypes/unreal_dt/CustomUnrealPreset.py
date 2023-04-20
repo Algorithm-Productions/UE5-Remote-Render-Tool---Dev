@@ -264,4 +264,3 @@ def buildMap(givenMap):
         returnMap[key] = float(val)
 
     return returnMap
-
