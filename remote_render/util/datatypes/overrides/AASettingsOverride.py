@@ -1,16 +1,17 @@
-from ..abstracts.StorableProperty import StorableProperty
+from ..abstracts.UnrealOverride import UnrealOverride
 
 
-class AASettingsOverride(StorableProperty):
+class AASettingsOverride(UnrealOverride):
     UNREAL_MAPPINGS = {
-        "spatialSampleCount": "spatial_sample_count",
-        "temporalSampleCount": "temporal_sample_count",
-        "aaMethod": "anti_aliasing_method",
-        "useCameraCutForWarmUp": "use_camera_cut_for_warm_up",
-        "renderWarmUpFrames": "render_warm_up_frames",
-        "renderWarmUpCount": "render_warm_up_count",
-        "engineWarmUpCount": "engine_warm_up_count"
+        "spatialSampleCount": ["spatial_sample_count", "int"],
+        "temporalSampleCount": ["temporal_sample_count", "int"],
+        "aaMethod": ["anti_aliasing_method", "aaMethod"],
+        "useCameraCutForWarmUp": ["use_camera_cut_for_warm_up", "bool"],
+        "renderWarmUpFrames": ["render_warm_up_frames", "bool"],
+        "renderWarmUpCount": ["render_warm_up_count", "int"],
+        "engineWarmUpCount": ["engine_warm_up_count", "int"]
     }
+    UNREAL_SETTING_KEY = "aa"
 
     def __init__(
             self,
@@ -53,9 +54,3 @@ class AASettingsOverride(StorableProperty):
             renderWarmUpCountFlag=renderWarmUpCountFlag,
             engineWarmUpCountFlag=engineWarmUpCountFlag
         )
-
-    @classmethod
-    def changeUnreal(cls, unrealObject, config, flags):
-        for key, val in config.items():
-            if flags[key + "Flag"]:
-                unrealObject[cls.UNREAL_MAPPINGS[key]] = val

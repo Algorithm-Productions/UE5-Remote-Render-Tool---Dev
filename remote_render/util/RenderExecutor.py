@@ -345,7 +345,14 @@ def process_settings(u_preset, passedConfig, passedOverrides):
     dictionaryPassedConfig = eval(unreal.TextLibrary.conv_text_to_string(passedConfig))
     dictionaryPassedOverrides = eval(unreal.TextLibrary.conv_text_to_string(passedOverrides))
 
-    u_preset.update_properties(overrides=dictionaryPassedOverrides, config=dictionaryPassedConfig)
+    OutputSettingsOverride.changeUnreal(u_preset, dictionaryPassedConfig["output_settings"],
+                                        dictionaryPassedOverrides["output_settings_flags"])
+    AASettingsOverride.changeUnreal(u_preset, dictionaryPassedConfig["aa_settings"],
+                                    dictionaryPassedOverrides["aa_settings_flags"])
+    ConsoleSettingsOverride.changeUnreal(u_preset, dictionaryPassedConfig["console_settings"],
+                                         dictionaryPassedOverrides["console_settings_flags"])
+    HighResSettingsOverride.changeUnreal(u_preset, dictionaryPassedConfig["high_res_settings"],
+                                         dictionaryPassedOverrides["high_res_settings_flags"])
 
     unreal.log(currSettings.output_directory)
     return u_preset

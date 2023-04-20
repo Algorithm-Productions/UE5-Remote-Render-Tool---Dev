@@ -1,25 +1,26 @@
-from ..abstracts.StorableProperty import StorableProperty
+from ..abstracts.UnrealOverride import UnrealOverride
 
 
-class OutputSettingsOverride(StorableProperty):
+class OutputSettingsOverride(UnrealOverride):
     UNREAL_MAPPINGS = {
-        "outputDirectory": "output_directory",
-        "fileNameFormat": "file_name_format",
-        "outputResolutionX": ["output_resolution", "x"],
-        "outputResolutionY": ["output_resolution", "y"],
-        "useCustomFrameRate": "use_custom_frame_rate",
-        "outputFrameRate": ["output_frame_rate", "numerator"],
-        "overrideExistingOutput": "override_existing_output",
-        "zeroPadFrameNumbers": "zero_pad_frame_numbers",
-        "frameNumberOffset": "frame_number_offset",
-        "handleFrameCount": "handle_frame_count",
-        "outputFrameStep": "output_frame_step",
-        "useCustomPlaybackRange": "use_custom_playback_range",
-        "customStartFrame": "custom_start_frame",
-        "customEndFrame": "custom_end_frame",
-        "versionNumber": "version_number",
-        "autoVersion": "auto_version"
+        "outputDirectory": ["output_directory", "path"],
+        "fileNameFormat": ["file_name_format", "str"],
+        "outputResolutionX": ["output_resolution", "resolutionX"],
+        "outputResolutionY": ["output_resolution", "resolutionY"],
+        "useCustomFrameRate": ["use_custom_frame_rate", "bool"],
+        "outputFrameRate": ["output_frame_rate", "frameRate"],
+        "overrideExistingOutput": ["override_existing_output", "bool"],
+        "zeroPadFrameNumbers": ["zero_pad_frame_numbers", "int"],
+        "frameNumberOffset": ["frame_number_offset", "int"],
+        "handleFrameCount": ["handle_frame_count", "int"],
+        "outputFrameStep": ["output_frame_step", "int"],
+        "useCustomPlaybackRange": ["use_custom_playback_range", "bool"],
+        "customStartFrame": ["custom_start_frame", "int"],
+        "customEndFrame": ["custom_end_frame", "int"],
+        "versionNumber": ["version_number", "float"],
+        "autoVersion": ["auto_version", "bool"]
     }
+    UNREAL_SETTING_KEY = "output"
 
     def __init__(
             self,
@@ -94,9 +95,3 @@ class OutputSettingsOverride(StorableProperty):
             versionNumberFlag=versionNumberFlag,
             autoVersionFlag=autoVersionFlag
         )
-
-    @classmethod
-    def changeUnreal(cls, unrealObject, config, flags):
-        for key, val in config.items():
-            if flags[key + "Flag"]:
-                unrealObject[cls.UNREAL_MAPPINGS[key]] = val

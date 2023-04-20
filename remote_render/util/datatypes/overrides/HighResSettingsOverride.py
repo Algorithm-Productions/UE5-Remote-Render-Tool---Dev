@@ -1,14 +1,15 @@
-from ..abstracts.StorableProperty import StorableProperty
+from ..abstracts.UnrealOverride import UnrealOverride
 
 
-class HighResSettingsOverride(StorableProperty):
+class HighResSettingsOverride(UnrealOverride):
     UNREAL_MAPPINGS = {
-        "tileCount": "tile_count",
-        "textureSharpnessBias": "texture_sharpness_bias",
-        "overlapRatio": "overlap_ratio",
-        "overrideSubSurfaceScattering": "override_sub_surface_scattering",
-        "burleySampleCount": "burley_sample_count"
+        "tileCount": ["tile_count", "int"],
+        "textureSharpnessBias": ["texture_sharpness_bias", "float"],
+        "overlapRatio": ["overlap_ratio", "float"],
+        "overrideSubSurfaceScattering": ["override_sub_surface_scattering", "bool"],
+        "burleySampleCount": ["burley_sample_count", "int"]
     }
+    UNREAL_SETTING_KEY = "highRes"
 
     def __init__(
             self,
@@ -39,9 +40,3 @@ class HighResSettingsOverride(StorableProperty):
             overrideSubSurfaceScatteringFlag=overrideSubSurfaceScatteringFlag,
             burleySampleCountFlag=burleySampleCountFlag
         )
-
-    @classmethod
-    def changeUnreal(cls, unrealObject, config, flags):
-        for key, val in config.items():
-            if flags[key + "Flag"]:
-                unrealObject[cls.UNREAL_MAPPINGS[key]] = val

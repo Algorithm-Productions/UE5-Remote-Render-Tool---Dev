@@ -189,17 +189,81 @@ class CustomUnrealPreset(unreal.MoviePipelineMasterConfig):
         if overrides["startConsoleCommandsFlag"]:
             currSettings.set_editor_property(
                 'start_console_commands',
-                self.buildArray(config["startConsoleCommands"])
+                buildArray(config["startConsoleCommands"])
             )
         if overrides["endConsoleCommandsFlag"]:
             currSettings.set_editor_property(
                 'end_console_commands',
-                self.buildArray(config["endConsoleCommands"])
+                buildArray(config["endConsoleCommands"])
             )
 
-    def buildArray(self, array):
-        returnArray = unreal.Array
-        for item in array:
-            returnArray.append(item)
+    def getSetting(self, key):
+        currSettings = self.find_or_add_setting_by_class(
+            unreal.MoviePipelineOutputSetting
+        )
+        if key == "highRes":
+            currSettings = self.find_or_add_setting_by_class(
+                unreal.MoviePipelineHighResSetting
+            )
+        elif key == "console":
+            currSettings = self.find_or_add_setting_by_class(
+                unreal.MoviePipelineConsoleVariableSetting
+            )
+        elif key == "aa":
+            currSettings = self.find_or_add_setting_by_class(
+                unreal.MoviePipelineAntiAliasingSetting
+            )
+        return currSettings
 
-        return returnArray
+    def updateArrayProperty(self, settingKey, propertyKey, array):
+        self.updateProperty(settingKey, propertyKey, buildArray(array))
+
+    def updateMapProperty(self, settingKey, propertyKey, map):
+        self.updateProperty(settingKey, propertyKey, buildMap(map))
+
+    def updatePathProperty(self, settingKey, propertyKey, path):
+        self.updateProperty(settingKey, propertyKey, unreal.DirectoryPath(path))
+
+    def updateFrameRateProperty(self, settingKey, propertyKey, frameRate):
+        self.updateProperty(settingKey, propertyKey, unreal.FrameRate(frameRate, 1))
+
+    def updateResolutionProperty(self, settingKey, propertyKey, x=0, y=0):
+        currRes = self.getSetting("output").output_resolution
+        if y != 0:
+            self.updateProperty(settingKey, propertyKey, unreal.IntPoint(currRes.x, int(y)))
+        if x != 0:
+            self.updateProperty(settingKey, propertyKey, unreal.IntPoint(int(y), currRes.y))
+
+    def updateAAMethodProperty(self, settingKey, propertyKey, methodKey):
+        method = unreal.AntiAliasingMethod.AAM_NONE
+        if methodKey == "FXAA":
+            method = unreal.AntiAliasingMethod.AAM_FXAA
+        elif methodKey == "MSAA":
+            method = unreal.AntiAliasingMethod.AAM_MSAA
+        elif methodKey == "TEMPORAL_AA":
+            method = unreal.AntiAliasingMethod.TEMPORAL_AA
+        self.updateProperty(settingKey, propertyKey, method)
+
+    def updateProperty(self, settingKey, propertyKey, val):
+        unreal.log("UPDATE DUMP")
+        unreal.log(str(settingKey))
+        unreal.log(str(propertyKey))
+        unreal.log(val)
+        currSettings = self.getSetting(settingKey)
+
+        currSettings.set_editor_property(propertyKey, val)
+
+
+def buildArray(array):
+    returnArray = unreal.Array
+    for item in array:
+        returnArray.append(item)
+
+    return returnArray
+
+
+def buildMap(map):
+    returnMap = unreal.Map
+
+    return returnMap
+
