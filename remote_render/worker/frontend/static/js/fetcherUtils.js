@@ -6,7 +6,6 @@ const setConnectionStatus = (value) => {
 }
 
 const closeWorker = () => {
-    console.log("GGG")
     eel.closeWorker()(closeCallback)
 }
 

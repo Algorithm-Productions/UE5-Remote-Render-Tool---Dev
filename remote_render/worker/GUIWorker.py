@@ -65,7 +65,7 @@ def connectToServer():
 @eel.expose
 def startWorker():
     WorkerGUI.WORKER = Worker(platform.node(), client, UNREAL_EXE)
-    WorkerGUI.WORKER.run()
+    WorkerGUI.WORKER.start()
 
 
 @eel.expose

@@ -12,7 +12,7 @@ LOGGER = logging.getLogger(__name__)
 
 class Worker(threading.Thread):
     def __init__(self, name, client, unrealPath):
-        super().__init__()
+        threading.Thread.__init__(self)
         self.name = name
         self.client = client
         self.unrealPath = unrealPath
@@ -47,7 +47,6 @@ class Worker(threading.Thread):
             LOGGER.info('current job(s) finished, searching for new job(s)')
 
     def stop(self):
-        print("DDDD")
         self.running = False
         self.client.delete_worker(self.name)
 
