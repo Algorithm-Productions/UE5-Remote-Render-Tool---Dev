@@ -15,9 +15,6 @@ LOGGER = logging.getLogger(__name__)
 MANAGER_NAME = platform.node()
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(MODULE_PATH, '../../.env'))
-API_EXT = os.getenv("API_EXT")
-ARCHIVE_API_EXT = os.getenv("ARCHIVE_API_EXT")
-LOG_API_EXT = os.getenv("LOG_API_EXT")
 DEFAULT_WORKER = os.getenv("DEFAULT_WORKER")
 
 
@@ -104,12 +101,12 @@ def favicon():
 # End of Routes Section
 # Start of the General API Section
 
-@app.post('{}/ping'.format(API_EXT))
+@app.post('/api/ping')
 def ping():
     return "Pong"
 
 
-@app.post('{}/worker/post/<worker_name>'.format(API_EXT))
+@app.post('/api/worker/post/<worker_name>')
 def add_worker(worker_name):
     buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                   'Adding {} From App'.format(worker_name),
@@ -117,12 +114,12 @@ def add_worker(worker_name):
     return {'response': app.add_worker(worker_name)}
 
 
-@app.get('{}/worker/get'.format(API_EXT))
+@app.get('/api/worker/get')
 def get_workers():
     return {'results': app.WORKERS}
 
 
-@app.delete('{}/worker/delete/<worker_name>'.format(API_EXT))
+@app.delete('/api/worker/delete/<worker_name>')
 def remove_worker(worker_name):
     buildLog('', ['', datetime.now().strftime("%m/%d/%Y, %H:%M:%S"),
                   'Removing {} From App'.format(worker_name),
@@ -133,7 +130,7 @@ def remove_worker(worker_name):
 # End of the General API Section
 # Start of Queue API Section
 
-@app.post('{}/post'.format(API_EXT))
+@app.post('/api/post')
 def create_request():
     data = request.get_json(force=True)
     req = RenderRequest.from_dict(data)
@@ -147,7 +144,7 @@ def create_request():
     return req.to_dict()
 
 
-@app.get('{}/get'.format(API_EXT))
+@app.get('/api/get')
 def get_all_requests():
     reqs = RenderRequest.read_all()
     if not reqs:
@@ -158,13 +155,13 @@ def get_all_requests():
     return {"results": jsons}
 
 
-@app.get('{}/get/<uuid>'.format(API_EXT))
+@app.get('/api/get/<uuid>')
 def get_request(uuid):
     res = RenderRequest.read(uuid)
     return res.to_dict()
 
 
-@app.put('{}/put/<uuid>'.format(API_EXT))
+@app.put('/api/put/<uuid>')
 def update_request(uuid):
     content = request.data.decode('utf-8')
     progress, time_estimate, status = content.split(';')
@@ -180,7 +177,7 @@ def update_request(uuid):
     return rr.to_dict()
 
 
-@app.delete('{}/delete/'.format(API_EXT))
+@app.delete('/api/delete/')
 def delete_all_requests():
     responses = RenderRequest.read_all()
     RenderRequest.remove_all()
@@ -192,7 +189,7 @@ def delete_all_requests():
     return {"results": [res.to_dict for res in responses]}
 
 
-@app.delete('{}/delete/<uuid>'.format(API_EXT))
+@app.delete('/api/delete/<uuid>')
 def delete_request(uuid):
     res = RenderRequest.read(uuid)
     res.remove_self()
@@ -208,7 +205,7 @@ def delete_request(uuid):
 # Start of Archive API Section
 
 
-@app.post('{}{}/post'.format(API_EXT, ARCHIVE_API_EXT))
+@app.post('/api/archives/post')
 def create_archive():
     content = request.data.decode('utf-8')
 
@@ -227,7 +224,7 @@ def create_archive():
     return renderArchive.to_dict()
 
 
-@app.get('{}{}/get'.format(API_EXT, ARCHIVE_API_EXT))
+@app.get('/api/archives/get')
 def get_all_archives():
     reqs = RenderArchive.read_all()
     if not reqs:
@@ -238,18 +235,18 @@ def get_all_archives():
     return {"results": jsons}
 
 
-@app.get('{}{}/get/<uuid>'.format(API_EXT, ARCHIVE_API_EXT))
+@app.get('/api/archives/get/<uuid>')
 def get_archive(uuid):
     res = RenderArchive.read(uuid)
     return res.to_dict()
 
 
-@app.put('{}{}/<uuid>'.format(API_EXT, ARCHIVE_API_EXT))
+@app.put('/api/archives/<uuid>')
 def update_archive(uuid):
     pass
 
 
-@app.delete('{}{}/delete'.format(API_EXT, ARCHIVE_API_EXT))
+@app.delete('/api/archives/delete')
 def delete_all_archives():
     responses = RenderArchive.read_all()
     RenderArchive.remove_all()
@@ -261,7 +258,7 @@ def delete_all_archives():
     return {"results": [res.to_dict for res in responses]}
 
 
-@app.delete('{}{}/delete/<uuid>'.format(API_EXT, ARCHIVE_API_EXT))
+@app.delete('/api/archives/delete/<uuid>')
 def delete_archive(uuid):
     res = RenderArchive.read(uuid)
     res.remove_self()
@@ -277,7 +274,7 @@ def delete_archive(uuid):
 
 
 # Start of Logs API Section
-@app.post('{}{}/post'.format(API_EXT, LOG_API_EXT))
+@app.post('/api/logs/post')
 def create_log():
     content = request.data.decode('utf-8')
 
@@ -291,7 +288,7 @@ def create_log():
     return renderLog.to_dict()
 
 
-@app.get('{}{}/get'.format(API_EXT, LOG_API_EXT))
+@app.get('/api/logs/get')
 def get_all_logs():
     reqs = RenderArchive.read_all()
     if not reqs:
@@ -302,13 +299,13 @@ def get_all_logs():
     return {"results": jsons}
 
 
-@app.get('{}{}/get/<uuid>'.format(API_EXT, LOG_API_EXT))
+@app.get('/api/logs/get/<uuid>')
 def get_log(uuid):
     res = RenderLog.read(uuid)
     return res.to_dict()
 
 
-@app.put('{}{}/put/<uuid>'.format(API_EXT, LOG_API_EXT))
+@app.put('/api/logs/put/<uuid>')
 def update_log(uuid):
     content = request.data.decode('utf-8')
     res = RenderLog.read(uuid)
@@ -324,7 +321,7 @@ def update_log(uuid):
     return res.to_dict()
 
 
-@app.delete('{}{}/delete'.format(API_EXT, LOG_API_EXT))
+@app.delete('/api/logs/delete')
 def delete_all_logs():
     responses = RenderLog.read_all()
     RenderLog.remove_all()
@@ -336,7 +333,7 @@ def delete_all_logs():
     return {"results": [res.to_dict for res in responses]}
 
 
-@app.delete('{}{}/delete/<uuid>'.format(API_EXT, LOG_API_EXT))
+@app.delete('/api/logs/delete/<uuid>')
 def delete_log(uuid):
     res = RenderLog.read(uuid)
     res.remove_self()
@@ -396,9 +393,13 @@ def getLogsToDisplay():
             objList.append(log)
 
     objList.sort()
+
     returnList = [log.to_dict() for log in objList]
 
-    return returnList
+    if len(returnList) == 0:
+        return []
+    else:
+        return returnList
 
 
 def checkAgeAndClear(log):
