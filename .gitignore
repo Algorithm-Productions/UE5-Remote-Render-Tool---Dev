@@ -75,7 +75,6 @@ fabric.properties
 
 .idea/
 database
-.env
 venv
 
 test.py
