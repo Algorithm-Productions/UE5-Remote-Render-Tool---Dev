@@ -7,13 +7,6 @@ from ..datatypes.HardwareStats import HardwareStats
 from ..datatypes.RenderSettings import RenderSettings
 from .abstracts.StorableEntity import StorableEntity
 
-# MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
-# ROOT_PATH = os.path.dirname(MODULE_PATH)
-#
-# load_dotenv(os.path.join(MODULE_PATH, '../../.env'))
-#
-# DATABASE = os.path.join(ROOT_PATH, "../" + os.getenv("DATABASE_FOLDER") + os.getenv("ARCHIVE_FOLDER"))
-
 
 class RenderArchive(StorableEntity):
     """

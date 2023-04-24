@@ -80,7 +80,7 @@
                         <p><strong>Project Name:</strong> {{ entry.project_name }}</p>
                         <p><strong>Level:</strong> {{ entry.render_request.level_path }}</p>
                         <p><strong>Sequence:</strong> {{ entry.render_request.sequence_path }}</p>
-                        <p><strong>Output Path:</strong> {{ entry.render_request.output_path }}</p>
+                        <p><strong>Output Path:</strong> {{ entry.render_settings.output_settings.outputDirectory }}</p>
                     </div>
                     <div class="col">
                         <p><strong>Time Created:</strong> {{ entry.render_request.time_created }}</p>
