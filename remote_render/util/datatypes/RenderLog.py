@@ -7,16 +7,6 @@ from .abstracts.StorableEntity import StorableEntity
 from .enums import LogType
 
 
-# from util.datatypes.enums.LogType import LogType
-
-# MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
-# ROOT_PATH = os.path.dirname(MODULE_PATH)
-#
-# load_dotenv(os.path.join(MODULE_PATH, '../../.env'))
-#
-# DATABASE = os.path.join(ROOT_PATH, "../" + os.getenv("DATABASE_FOLDER") + os.getenv("LOG_FOLDER"))
-
-
 class RenderLog(StorableEntity):
     """
         Entity Object Class to represent a Log Message for the Render System.

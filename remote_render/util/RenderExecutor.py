@@ -10,8 +10,7 @@ import unreal
 
 from .datatypes.overrides import OutputSettingsOverride, HighResSettingsOverride, AASettingsOverride, \
     ConsoleSettingsOverride
-from .datatypes.unreal_dt.CustomUnrealPreset import CustomUnrealPreset
-from ..util import Client
+from remote_render.util.CustomUnrealPreset import CustomUnrealPreset
 from .datatypes.enums import RenderStatus
 from .datatypes import HardwareStats, LogType
 from .datatypes.RenderSettings import RenderSettings, AASettings, ConsoleSettings
