@@ -70,7 +70,7 @@
     <script src= {{ url_for('static', filename="js/generalUtils.js") }}></script>
     <script src = {{url_for('static', filename="js/archiveUtils.js")}}></script>
     <script>
-        createArchiveTable( {{ config.SERVER_URL|tojson|safe }}{{ requests|tojson|safe }});
+        createArchiveTable( {{ config.SERVER_URL|tojson|safe }}, {{ requests|tojson|safe }});
     </script>
 </body>
 </html>
