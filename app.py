@@ -20,6 +20,7 @@ else:
     load_dotenv()
 
 NODE_NAME = platform.node()
+LISTENING_URL = os.getenv('LISTENING_URL')
 SERVER_URL = os.getenv('SERVER_URL')
 SERVER_PORT = os.getenv('SERVER_PORT')
 SERVER_DATABASE = os.getenv('DATABASE_FOLDER')
@@ -39,7 +40,7 @@ print(f'Running UE5 Remote Render Tool [v{__version__}]: '
 try:
     if args.mode == 'manager':
         app.config["SERVER_URL"] = f'http://{SERVER_URL}:{SERVER_PORT}'
-        app.run(host=SERVER_URL,
+        app.run(host=LISTENING_URL,
                 port=SERVER_PORT,
                 database_path=SERVER_DATABASE,
                 debug=DEBUG)
