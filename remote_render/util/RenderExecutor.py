@@ -146,14 +146,11 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
     @unreal.ufunction(ret=None, params=[unreal.MoviePipeline, bool])
     def on_job_finished(self, pipeline, is_errored):
-        unreal.log("DUMP")
         self.pipeline = None
         unreal.log("Finished rendering movie!")
         self.on_executor_finished_impl()
-        unreal.log("Check One")
 
         time.sleep(1)
-        unreal.log("Check Two")
 
         if is_errored:
             self.send_http_request(
@@ -174,11 +171,11 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                 {"Content-Type": "application/json"}
             )
 
-        unreal.log("Check three")
         progress = 100
         time_estimate = 'N/A'
         status = RenderStatus.finished
-        self.send_http_request(
+        # Waiting for Res to make sure request is sent through before class ends execution
+        res = self.send_http_request(
             "{}/put/{}".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL), self.job_id),
             "PUT",
             '{};{};{}'.format(progress, time_estimate, status),
@@ -198,15 +195,14 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                               "%m/%d/%Y, %H:%M:%S"))
         avgFrame = statistics.mean([float(val) for val in frameTimesArray])
 
-        self.send_http_request(
+        # Waiting for Res to make sure request is sent through before class ends execution
+        res = self.send_http_request(
             "{}/archives/post".format(unreal.TextLibrary.conv_text_to_string(self.SERVER_API_URL)),
             "POST",
             '{};{};{};{};{};{};{}'.format(self.job_id, self.project_name, hardwareStats, finishTime, avgFrame,
                                           frameTimesArray, renderSettings),
             {"Content-Type": "application/json"}
         )
-
-        unreal.log("Check four")
 
     @unreal.ufunction(ret=None,
                       params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])
