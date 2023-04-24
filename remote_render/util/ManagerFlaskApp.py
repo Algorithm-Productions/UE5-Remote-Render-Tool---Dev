@@ -78,14 +78,11 @@ def abstract_read_all(entities):
     return {"results": jsons}
 
 
-def abstract_update(entity, content, data=None):
-    if data:
-        parsedContent = data
-    elif (not entity) or (not content) or (not eval(content)):
+def abstract_update(entity, content):
+    if (not entity) or (not content) or (not eval(content)):
         return {}
-    else:
-        parsedContent = eval(content)
 
+    parsedContent = eval(content)
     entity.update(parsedContent)
     return entity.to_dict()
 

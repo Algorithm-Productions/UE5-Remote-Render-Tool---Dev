@@ -166,9 +166,9 @@ def get_request(uuid):
 @app.put('{}/put/<uuid>'.format(API_EXT))
 def update_request(uuid):
     progress, time_estimate, status = request.data.decode('utf-8').split(';')
-    return abstract_update(RenderRequest.read(uuid), "", {"progress": int(float(progress)),
-                                                          "time_estimate": time_estimate,
-                                                          "status": status})
+    return abstract_update(RenderRequest.read(uuid),
+                           '{"progress": {}, "time_estimate": {}, "status": {}}'.format(int(float(progress)),
+                                                                                        time_estimate, status))
 
 
 @app.delete('{}/delete/'.format(API_EXT))
