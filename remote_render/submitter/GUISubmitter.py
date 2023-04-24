@@ -43,8 +43,10 @@ SUBMITTER_HOST = args.submitter_host
 SUBMITTER_PORT = args.submitter_port
 DEBUG = args.debug or os.getenv('DEBUG', False)
 
-print(f'Running Client: node={NODE_NAME} host={SERVER_URL} port={SERVER_PORT}, auth_token={AUTH_TOKEN}')
+print(f'Creating server client: node={NODE_NAME} host={SERVER_URL} port={SERVER_PORT} auth_token={AUTH_TOKEN}')
 client = Client(backend_host=SERVER_URL, backend_port=SERVER_PORT, backend_auth_token=AUTH_TOKEN)
+
+print(f'Running GUISubmitter: node={NODE_NAME} host={SUBMITTER_HOST} port={SUBMITTER_PORT}')
 
 eel.init("frontend")
 
@@ -86,5 +88,5 @@ def send(data):
     if req:
         LOGGER.info('request %s sent to server', req.uuid)
 
-print(f'Running GUISubmitter: node={NODE_NAME} host={SUBMITTER_HOST} port={SUBMITTER_PORT}')
+
 eel.start('templates/landing.html', host=SUBMITTER_HOST, port=SUBMITTER_PORT)

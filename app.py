@@ -51,7 +51,6 @@ try:
                           '--auth_token',  AUTHENTICATION_TOKEN], shell=True)
 
     elif args.mode == 'worker':
-        #TODO: This
         submitter_path = os.path.abspath('./remote_render/worker/GUIWorker.py')
         subprocess.call(['python', submitter_path, '--server_host', SERVER_URL, '--server_port', SERVER_PORT,
                           '--auth_token',  AUTHENTICATION_TOKEN], shell=True)

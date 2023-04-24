@@ -62,6 +62,7 @@ def archive_entry(uuid):
 
 @app.route('/logs/')
 def logs_page():
+    print('arr')
     requests = RenderLog.read_all()
     if not requests:
         return render_template('error.html', errorText="No logs", title="Application Logs",
