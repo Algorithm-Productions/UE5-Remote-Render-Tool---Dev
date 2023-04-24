@@ -62,9 +62,11 @@
                 <div class="col" align="center">
                     <div class="notificationCover">
                         <a href='/logs/{{ logs[0]["uuid"] }}?return='>
-                                {{ logs[0]["message"] }}
+                            {{ logs[0]["message"] }}
                         </a>
-                        <button onclick='clearNotification({{ logs[0]["uuid"]|tojson|safe }})' class='copyBtn'> ☓ </button>
+                        <button onclick='clearNotification({{ config.SERVER_URL|tojson|safe }}, {{ logs[0]["uuid"]|tojson|safe }})'
+                                class='copyBtn'> ☓
+                        </button>
                     </div>
                 </div>
             </div>

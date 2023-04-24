@@ -38,7 +38,7 @@ print(f'Running UE5 Remote Render Tool [v{__version__}]: '
 
 try:
     if args.mode == 'manager':
-
+        app.config["SERVER_URL"] = f'http://{SERVER_URL}:{SERVER_PORT}'
         app.run(host=SERVER_URL,
                 port=SERVER_PORT,
                 database_path=SERVER_DATABASE,

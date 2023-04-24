@@ -69,12 +69,12 @@
         <div class="row buttonBlock">
             <div class="col leftPadding" align="center">
                 <div class="buttonCover">
-                    <a href="#" onclick="specialNavigate()"> Back </a>
+                    <a href="#" onclick="specialNavigate({{ config.SERVER_URL|tojson|safe }})"> Back </a>
                 </div>
             </div>
             <div class="col rightPadding" align="center">
                 <div class="buttonCover">
-                    <a href="#" onclick='specialDeleteLog({{ entry['uuid']|tojson|safe }})'> Delete </a>
+                    <a href="#" onclick='specialDeleteLog({{ config.SERVER_URL|tojson|safe }}, {{ entry['uuid']|tojson|safe }})'> Delete </a>
                 </div>
             </div>
         </div>

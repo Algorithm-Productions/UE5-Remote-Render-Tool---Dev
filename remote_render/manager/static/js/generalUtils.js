@@ -23,14 +23,14 @@ const getCookie = (name) => {
       return res;
 }
 
-const navigateToPage = (type, uuid, args='') => {
-    window.location.replace(`http://127.0.0.1:5000/${type}/${uuid}${args}`);
+const navigateToPage = (server_url, type, uuid, args='') => {
+    window.location.replace(`${server_url}/${type}/${uuid}${args}`);
 }
 
-const deleteEntry = async (key, uuid) => {
-    let url = `http://127.0.0.1:5000/api/${key}/delete/${uuid}`;
+const deleteEntry = async (server_url, key, uuid) => {
+    let url = `${server_url}/api/${key}/delete/${uuid}`;
     if (key === '')
-        url = `http://127.0.0.1:5000/api/delete/${uuid}`;
+        url = `${server_url}/api/delete/${uuid}`;
 
     const response = await fetch(url, {
         method: 'DELETE',

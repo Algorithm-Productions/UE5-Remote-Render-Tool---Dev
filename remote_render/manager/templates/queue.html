@@ -61,7 +61,7 @@
             </div>
             <div class="col rightPadding" align="center">
                 <div class="buttonCover">
-                    <a href="#" onclick='clearCompleted({{requests|tojson|safe}})'> Clear Completed </a>
+                    <a href="#" onclick='clearCompleted({{ config.SERVER_URL|tojson|safe }}, {{requests|tojson|safe}})'> Clear Completed </a>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
     <script src= {{ url_for('static', filename="js/generalUtils.js") }}></script>
     <script src= {{ url_for('static', filename="js/queueUtils.js") }}></script>
     <script>
-        createQueueTable({{requests|tojson|safe}});
+        createQueueTable({{ config.SERVER_URL|tojson|safe }}, {{requests|tojson|safe}});
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>

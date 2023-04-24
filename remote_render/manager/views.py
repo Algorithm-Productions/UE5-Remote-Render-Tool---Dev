@@ -37,7 +37,7 @@ def queue_page():
         return render_template('error.html', errorText="No Ongoing Renders", title="Render Queue",
                                page_passer="queue_page")
 
-    jsons = [request.to_dict() for request in requests]
+    jsons = [request.to_dict() if request else {} for request in requests]
 
     return render_template('queue.html', requests=jsons)
 

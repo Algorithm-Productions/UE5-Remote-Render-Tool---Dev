@@ -1,4 +1,4 @@
-const createArchiveTable = (list) => {
+const createArchiveTable = (server_url, list) => {
     const dataCols = ['uuid', 'name', 'owner', 'worker'];
     const metaCols = ['project_name', 'finish_time', 'total_time', 'avg_frame'];
     const table = document.createElement("table");
@@ -38,14 +38,14 @@ const createArchiveTable = (list) => {
         const infoBtn = document.createElement("button")
         infoBtn.innerText = `ℹ`
         infoBtn.className = 'copyBtn'
-        infoBtn.addEventListener('click', () => navigateToPage("archive", uuid), false)
+        infoBtn.addEventListener('click', () => navigateToPage(server_url, "archive", uuid), false)
         const infoCell = trow.insertCell(-1);
         infoCell.appendChild(infoBtn)
 
         const deleteBtn = document.createElement("button")
         deleteBtn.innerText = `☓`
         deleteBtn.className = 'copyBtn'
-        deleteBtn.addEventListener('click', () => deleteEntry("archive", uuid), false)
+        deleteBtn.addEventListener('click', () => deleteEntry(server_url, "archive", uuid), false)
         const deleteCell = trow.insertCell(-1);
         deleteCell.appendChild(deleteBtn)
     })

@@ -38,7 +38,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.firstFrameTime = ""
         self.passedConfig = ""
         self.passedOverrides = ""
-        self.SERVER_API_URL = "http://127.0.0.1:5000/api"
+        self.SERVER_API_URL = ""
 
         self.http_response_recieved_delegate.add_function_unique(
             self,
@@ -56,6 +56,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
         self.project_name = getProjectName(cmd_parameters["ProjectPath"])
         self.passedConfig = cmd_parameters['RenderSettings']
         self.passedOverrides = cmd_parameters['ConfigOverride']
+        self.SERVER_API_URL = cmd_parameters['SERVER_API_URL']
 
     def add_job(self):
         self.send_http_request(
@@ -145,11 +146,14 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
 
     @unreal.ufunction(ret=None, params=[unreal.MoviePipeline, bool])
     def on_job_finished(self, pipeline, is_errored):
+        unreal.log("DUMP")
         self.pipeline = None
         unreal.log("Finished rendering movie!")
         self.on_executor_finished_impl()
+        unreal.log("Check One")
 
         time.sleep(1)
+        unreal.log("Check Two")
 
         if is_errored:
             self.send_http_request(
@@ -170,6 +174,7 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                 {"Content-Type": "application/json"}
             )
 
+        unreal.log("Check three")
         progress = 100
         time_estimate = 'N/A'
         status = RenderStatus.finished
@@ -200,6 +205,8 @@ class RenderExecutor(unreal.MoviePipelinePythonHostExecutor):
                                           frameTimesArray, renderSettings),
             {"Content-Type": "application/json"}
         )
+
+        unreal.log("Check four")
 
     @unreal.ufunction(ret=None,
                       params=[unreal.MoviePipelinePythonHostExecutor, unreal.MoviePipeline, bool, unreal.Text])

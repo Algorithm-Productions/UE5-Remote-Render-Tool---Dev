@@ -1,4 +1,4 @@
-const createQueueTable = (list) => {
+const createQueueTable = (server_url, list) => {
     const dataCols = ['uuid', 'name', 'owner', 'worker', 'time_created', 'status', 'estimated_finish', 'time_estimate', 'progress'];
     const table = document.createElement("table");
     const tr = table.insertRow(-1);
@@ -64,7 +64,7 @@ const createQueueTable = (list) => {
         const deleteBtn = document.createElement("button")
         deleteBtn.innerText = `☓`
         deleteBtn.className = 'copyBtn'
-        deleteBtn.addEventListener('click', () => deleteEntry("", uuid), false)
+        deleteBtn.addEventListener('click', () => deleteEntry(server_url, "", uuid), false)
         const deleteCell = trow.insertCell(-1);
         deleteCell.appendChild(deleteBtn)
     });
@@ -78,11 +78,11 @@ const copyPath = (path) => {
     navigator.clipboard.writeText(path).catch(e => console.error(e.message))
 }
 
-const clearCompleted = async (queue) => {
+const clearCompleted = async (config, queue) => {
     const completedList = queue.filter(value => value['status'] === "Finished")
 
     for (const item of completedList) {
-        const response = await fetch(`http://127.0.0.1:5000/api/delete/${item['uuid']}`, {
+        const response = await fetch(`${server_url}/api/delete/${item['uuid']}`, {
             method: 'DELETE',
             headers: {
                 'Content-type': 'application/json'

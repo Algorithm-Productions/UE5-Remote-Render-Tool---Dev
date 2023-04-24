@@ -68,7 +68,7 @@
     <script src = {{url_for('static', filename="js/logsUtils.js")}}></script>
     <script type="text/JavaScript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.js"></script>
     <script>
-        createLogsTable( {{requests|tojson|safe}} );
+        createLogsTable( {{ config.SERVER_URL|tojson|safe }}, {{requests|tojson|safe}} );
     </script>
 </body>
 </html>

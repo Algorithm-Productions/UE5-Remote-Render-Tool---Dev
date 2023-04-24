@@ -1,4 +1,4 @@
-const createLogsTable = (list) => {
+const createLogsTable = (server_url, list) => {
     const dataCols = ['uuid', 'logType', 'jobUUID', 'timestamp', 'message'];
     const table = document.createElement("table");
     const tr = table.insertRow(-1);
@@ -26,14 +26,14 @@ const createLogsTable = (list) => {
         const infoBtn = document.createElement("button");
         infoBtn.innerText = `ℹ`;
         infoBtn.className = 'copyBtn';
-        infoBtn.addEventListener('click', () => navigateToPage("logs", uuid, "?return=logs"), false);
+        infoBtn.addEventListener('click', () => navigateToPage(server_url, "logs", uuid, "?return=logs"), false);
         const infoCell = trow.insertCell(-1);
         infoCell.appendChild(infoBtn)
 
         const deleteBtn = document.createElement("button");
         deleteBtn.innerText = `☓`;
         deleteBtn.className = 'copyBtn';
-        deleteBtn.addEventListener('click', () => deleteEntry("logs", uuid), false);
+        deleteBtn.addEventListener('click', () => deleteEntry(server_url, "logs", uuid), false);
         const deleteCell = trow.insertCell(-1);
         deleteCell.appendChild(deleteBtn)
     });
@@ -53,13 +53,11 @@ const getReturnPath = () => {
     });
 
     const itemArray = (returnOptions.length !== 0) ? returnOptions[0].split("=") : [];
-    const path = (itemArray.length === 2) ? itemArray[1] : ""
-
-    return path;
+    return (itemArray.length === 2) ? itemArray[1] : "";
 }
 
-const specialDeleteLog = async (uuid) => {
-    const response = await fetch(`http://127.0.0.1:5000/api/logs/delete/${uuid}`, {
+const specialDeleteLog = async (server_url, uuid) => {
+    const response = await fetch(`${server_url}/api/logs/delete/${uuid}`, {
         method: 'DELETE',
         headers: {
             'Content-type': 'application/json'
@@ -69,23 +67,24 @@ const specialDeleteLog = async (uuid) => {
     const returnUrl = getReturnPath();
     console.log(returnUrl)
     if (returnUrl === "logs")
-        window.location.replace("http://127.0.0.1:5000/logs/")
+        window.location.replace(`${server_url}/logs/`)
     else
-        window.location.replace("http://127.0.0.1:5000/")
+        window.location.replace(`${server_url}/`)
 
     return response
 }
 
-const specialNavigate = () => {
+const specialNavigate = (server_url) => {
     const returnUrl = getReturnPath();
     if (returnUrl === "logs")
-        window.location.replace("http://127.0.0.1:5000/logs/")
+        window.location.replace(`${server_url}/logs/`)
     else
-        window.location.replace("http://127.0.0.1:5000/")
+        window.location.replace(`${server_url}/`)
 }
 
-const clearNotification = async (uuid) => {
-    const response = await fetch(`http://127.0.0.1:5000/api/logs/put/${uuid}`, {
+const clearNotification = async (server_url, uuid) => {
+
+    const response = await fetch(`${server_url}/api/logs/put/${uuid}`, {
         method: 'PUT',
         body: '{"cleared": True}',
         headers: {

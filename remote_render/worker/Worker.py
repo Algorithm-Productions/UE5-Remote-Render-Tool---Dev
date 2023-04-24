@@ -62,6 +62,7 @@ class Worker(threading.Thread):
             "-MoviePipelineConfig={}".format(config_path),
             "-ConfigOverride={}".format(config_override),
             "-RenderSettings={}".format(render_settings),
+            "-SERVER_API_URL={}".format(self.client.SERVER_API_URL),
 
             "-game",
             "-MoviePipelineLocalExecutorClass=/Script/MovieRenderPipelineCore.MoviePipelinePythonHostExecutor",
