@@ -28,6 +28,10 @@ Todo.
 
 # Docker 
 
+### docker-compose 
+docker compose will build the images, create a persistant docker volume and run the container.  
+- ```docker compose up --build```
+
 ### Building image:
 - Navigate to project root directory
 - ```docker build -t render_tool .```

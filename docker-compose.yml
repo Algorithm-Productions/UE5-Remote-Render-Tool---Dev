@@ -1,0 +1,17 @@
+version: '3'
+
+volumes:
+  render_db: { }
+
+services:
+  render_tool:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: render_tool:latest
+    container_name: render_tool
+    ports:
+      - '5000:5000'
+    volumes:
+      - render_db:/app/database
+

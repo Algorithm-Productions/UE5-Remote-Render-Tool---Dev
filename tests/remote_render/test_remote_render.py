@@ -5,7 +5,7 @@ import os
 def test_app_get_request(test_app, url):
 
     response = test_app.get(url)
-    assert response.status_code == 200
+    assert response.status_code == 200, 'expected status code 200'
 
 def test_make_render_start_log(test_app):
 
