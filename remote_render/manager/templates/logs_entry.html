@@ -55,7 +55,7 @@
                         <p><strong>Job UUID:</strong> {{ entry.jobUUID }}</p>
                         <p><strong>Timestamp:</strong> {{ entry.timestamp }}</p>
                         <p><strong>Message:</strong> {{ entry.message }}</p>
-                        <p><strong>Type:</strong> {{ entry.notificationType }}</p>
+                        <p><strong>Type:</strong> {{ entry.logType }}</p>
                     </div>
                     <div class="col">
                         <p><strong>Log</strong>:</strong> {{ entry.log }}</p>
@@ -69,7 +69,7 @@
         <div class="row buttonBlock">
             <div class="col leftPadding" align="center">
                 <div class="buttonCover">
-                    <a href="#" onclick="specialNavigate({{ config.SERVER_URL|tojson|safe }})"> Back </a>
+                    <a href="#" onclick='specialNavigate({{ config.SERVER_URL|tojson|safe }})'> Back </a>
                 </div>
             </div>
             <div class="col rightPadding" align="center">

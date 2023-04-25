@@ -45,7 +45,7 @@ const createArchiveTable = (server_url, list) => {
         const deleteBtn = document.createElement("button")
         deleteBtn.innerText = `☓`
         deleteBtn.className = 'copyBtn'
-        deleteBtn.addEventListener('click', () => deleteEntry(server_url, "archive", uuid), false)
+        deleteBtn.addEventListener('click', () => deleteEntry(server_url, "archives", uuid), false)
         const deleteCell = trow.insertCell(-1);
         deleteCell.appendChild(deleteBtn)
     })

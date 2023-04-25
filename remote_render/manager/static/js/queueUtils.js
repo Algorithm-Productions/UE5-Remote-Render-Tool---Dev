@@ -57,7 +57,7 @@ const createQueueTable = (server_url, list) => {
         const pathBtn = document.createElement("button")
         pathBtn.innerText = `🔗`
         pathBtn.className = 'copyBtn'
-        pathBtn.addEventListener('click', () => copyPath(item['output_path']), false)
+        pathBtn.addEventListener('click', () => copyPath(item), false)
         const pathCell = trow.insertCell(-1);
         pathCell.appendChild(pathBtn)
 
@@ -75,10 +75,20 @@ const createQueueTable = (server_url, list) => {
 }
 
 const copyPath = (path) => {
-    navigator.clipboard.writeText(path).catch(e => console.error(e.message))
+    const textArea = document.createElement("textarea");
+    textArea.value = path.render_settings.output_settings.outputDirectory;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+    } catch (err) {
+        console.error('Unable to copy to clipboard', err);
+    }
+    document.body.removeChild(textArea);
 }
 
-const clearCompleted = async (config, queue) => {
+const clearCompleted = async (server_url, queue) => {
     const completedList = queue.filter(value => value['status'] === "Finished")
 
     for (const item of completedList) {
@@ -96,13 +106,15 @@ const clearCompleted = async (config, queue) => {
 
 $(document).ready(() => {
     setInterval(
-        function(){ajaxRequest()},
+        function () {
+            ajaxRequest()
+        },
         2000)
 })
 
 
 const ajaxRequest = () => {
-    $.getJSON('/api/get', function(data){
+    $.getJSON('/api/get', function (data) {
         updateProgress(data);
     })
 }
