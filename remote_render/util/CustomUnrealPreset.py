@@ -7,11 +7,23 @@ class CustomUnrealPreset(unreal.MoviePipelineMasterConfig):
         super(CustomUnrealPreset, self).__init__(preset)
         self.copy_from(preset)
 
-    def update_properties(self, overrides, config):
-        self.update_output(overrides["output_settings_flags"], config["output_settings"])
-        self.update_high_res(overrides["high_res_settings_flags"], config["high_res_settings"])
-        self.update_aa(overrides["aa_settings_flags"], config["aa_settings"])
-        self.update_console(overrides["console_settings_flags"], config["console_settings"])
+    def getSetting(self, settingKey):
+        if settingKey == "aa":
+            return self.find_or_add_setting_by_class(
+                unreal.MoviePipelineAntiAliasingSetting
+            )
+        elif settingKey == "highRes":
+            return self.find_or_add_setting_by_class(
+                unreal.MoviePipelineHighResSetting
+            )
+        elif settingKey == "console":
+            return self.find_or_add_setting_by_class(
+                unreal.MoviePipelineConsoleVariableSetting
+            )
+        else:
+            return self.find_or_add_setting_by_class(
+                unreal.MoviePipelineOutputSetting
+            )
 
     def updateArrayProperty(self, settingKey, propertyKey, array):
         self.updateProperty(settingKey, propertyKey, buildArray(array))
