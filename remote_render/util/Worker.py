@@ -46,6 +46,10 @@ class Worker(threading.Thread):
             time.sleep(10)
             LOGGER.info('current job(s) finished, searching for new job(s)')
 
+    def start(self):
+        self.running = True
+        super().start()
+
     def stop(self):
         self.running = False
         self.client.delete_worker(self.name)
