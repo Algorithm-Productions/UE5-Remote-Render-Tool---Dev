@@ -80,6 +80,9 @@ def verifyData(data):
         if (key not in data.keys()) or (not data[key]):
             return False, "Missing Data for Key: {}".format(key)
 
+    if not data["render_settings"]["output_settings"]["outputDirectory"]:
+        return False, "Missing Data for Key: OutputDirectory"
+
     return True, "200"
 
 

@@ -31,7 +31,7 @@ const submitForm = () => {
             'burleySampleCountFlag': highResSettings.elements.burleySampleCountFlag.checked
         },
         'output_settings_flags': {
-            'outputDirectoryFlag': outputSettings.elements.outputDirectoryFlag.checked,
+            'outputDirectoryFlag': true,
             'fileNameFormatFlag': outputSettings.elements.fileNameFormatFlag.checked,
             'outputResolutionXFlag': outputSettings.elements.outputResolutionXFlag.checked,
             'outputResolutionYFlag': outputSettings.elements.outputResolutionYFlag.checked,
