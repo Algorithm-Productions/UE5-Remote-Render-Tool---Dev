@@ -221,7 +221,6 @@ class RenderRequest(StorableEntity):
             start = datetime.now()
             end = datetime.strptime(self.time_estimate, '%Hh:%Mm:%Ss')
             delta = timedelta(hours=end.hour, minutes=end.minute, seconds=end.second, microseconds=end.microsecond)
-            value = ((not ignoreDefault) and defaultVal) or (
-                (start + delta).strftime("%m/%d/%Y, %H:%M:%S"))
+            value = (start + delta).strftime("%m/%d/%Y, %H:%M:%S")
 
         self.estimated_finish = value
