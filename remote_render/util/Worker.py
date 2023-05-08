@@ -3,6 +3,11 @@ import os
 import subprocess
 import threading
 import time
+import sys
+
+current_dir = os.path.dirname(__file__)
+module_dir = os.path.abspath(os.path.join(current_dir, '../../'))
+sys.path.append(module_dir)
 
 from remote_render.util.datatypes import RenderStatus, RenderRequest
 
