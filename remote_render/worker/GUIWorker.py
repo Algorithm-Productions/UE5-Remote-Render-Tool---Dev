@@ -6,13 +6,14 @@ import argparse
 from dotenv import load_dotenv
 import sys
 
-from remote_render.util.Worker import Worker
-
 current_dir = os.path.dirname(__file__)
 module_dir = os.path.abspath(os.path.join(current_dir, '../../'))
 sys.path.append(module_dir)
 
 os.chdir(current_dir)
+
+from remote_render.util.Worker import Worker
+
 from remote_render.util import Client
 
 logging.basicConfig(level=logging.INFO)
