@@ -1,2 +1,4 @@
-mkdocs==1.3.0
+mkdocs==1.4.3
+mkdocstrings[python]
 mkdocs-material
+mkdocs-gen-files

@@ -4,8 +4,26 @@ nav:
 - Overview: overview.md
 - Setup: setup.md
 - Documentation: documentation.md
+- Reference: reference.md 
 - Maintenance: maintenance.md
 - Licence: licence.md
 - Roadmap: roadmap.md
 
 theme: 'material'
+
+plugins:
+- search
+- gen-files:
+    scripts:
+      - docs/gen_ref_pages.py
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          show_submodules: true
+        paths: remote_render
+    watch:
+      - remote_render/manager
+      - remote_render/submitter
+      - remote_render/worker
+      - remote_render/util
